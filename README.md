@@ -8,3 +8,32 @@ Client for connectivity to our API, realized in Node.JS .
 [![codecov.io](https://codecov.io/github/neeedo/neeedo-api-nodejs-client/coverage.svg?branch=master)](https://codecov.io/github/neeedo/neeedo-webapp?branch=master)
 
 ![codecov.io](https://codecov.io/github/neeedo/neeedo-api-nodejs-client/branch.svg?branch=master)
+
+Usage
+----------
+
+- Include in your package.json as NPM dependency:
+
+```
+npm install git://github.com/neeedo/neeedo-api-nodejs-client.git
+```
+
+- Use as module:
+
+```
+require('neeedo-api-nodejs-client');
+```
+
+Tests
+----------
+
+- Run tests:
+```
+npm test
+```
+
+- Generate code coverage report:
+```
+npm install -g istanbul
+npm run-script coverage
+```
