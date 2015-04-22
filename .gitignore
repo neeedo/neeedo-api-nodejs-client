@@ -1,0 +1,5 @@
+.idea
+.node_history
+coverage
+node_modules
+npm-debug.log

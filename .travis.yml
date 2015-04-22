@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+- '0.10'
+- '0.12'
+before_install:
+  - npm install -g istanbul
+notifications:
+  email:
+  - sascha.feldmann@gmx.de
+after_success:
+  - istanbul cover ./node_modules/mocha/bin/_mocha test/**/*.test.js --report lcovonly -- -R spec \
+      && cat ./coverage/lcov.info | ./node_modules/codecov.io/bin/codecov.io.js \
+      && rm -rf ./coverage
