@@ -5,7 +5,7 @@ Client for connectivity to our API, realized in Node.JS .
 
 [![Dependency Status](https://www.versioneye.com/user/projects/5537db871758e5a83c000087/badge.svg?style=flat)](https://www.versioneye.com/user/projects/5537db871758e5a83c000087)
 
-[![codecov.io](https://codecov.io/github/neeedo/neeedo-api-nodejs-client/coverage.svg?branch=master)](https://codecov.io/github/neeedo/neeedo-webapp?branch=master)
+[![codecov.io](https://codecov.io/github/neeedo/neeedo-api-nodejs-client/coverage.svg?branch=master)](https://codecov.io/github/neeedo/neeedo-api-nodejs-client?branch=master)
 
 ![codecov.io](https://codecov.io/github/neeedo/neeedo-api-nodejs-client/branch.svg?branch=master)
 
