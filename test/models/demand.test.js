@@ -4,7 +4,7 @@
 var Demand    = require('../../models/demand.js'),
     User      = require('../../models/user.js'),
     Location  = require('../../models/location.js'),
-    Price     = require('../../models/price.js'),
+    Price     = require('../../models/demand/price.js'),
     should    = require('should');
 
 describe('#Demand', function() {
@@ -39,8 +39,6 @@ describe('#Demand', function() {
 
         // a plain javascript object with the following fields should be returned...
         serializeObj.should.be.a.Object;
-        should.equal(serializeObj['id'], demandId);
-        should.equal(serializeObj['version'], version);
         should.equal(serializeObj['userId'], userId);
         should.equal(serializeObj['mustTags'], mustTags);
         should.equal(serializeObj['shouldTags'], shouldTags);

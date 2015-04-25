@@ -3,7 +3,7 @@
  */
 var Location = require('./location'),
     User = require('./user'),
-    Price = require('./price');
+    Price = require('./demand/price');
 
 /*
  * Class: Demand
@@ -168,7 +168,6 @@ Demand.prototype.serializeForApi = function() {
     var _this = this;
     
     var serializedObj = {
-       "version" :      _this.getVersion(),
        "userId" :       _this.getUser().getId(),
        "mustTags" :     _this.getMustTags(),
        "shouldTags" :   _this.getShouldTags(),
@@ -176,10 +175,6 @@ Demand.prototype.serializeForApi = function() {
        "distance" :     _this.getDistance(),
        "price" :        _this.getPrice().serializeForApi()
     };
-    
-    if (this.hasId()) {
-        serializedObj["id"] = this.getId();
-    }
     
     return serializedObj;
 };

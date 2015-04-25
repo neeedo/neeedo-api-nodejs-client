@@ -1,7 +1,7 @@
 /*
  * dependencies
  */
-var Price = require('../../models/price.js'),
+var Price = require('../../../models/demand/price.js'),
     should = require('should');
 
 describe('#Price', function() {
