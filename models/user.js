@@ -23,16 +23,24 @@ User.prototype.getId = function()
     return this.id;
 };
 
+User.prototype.hasId = function()
+{
+    return undefined !== this.getId();
+};
+
 /*
- * Function: toApiJson
+ * Function: serializeForApi
  * Returns the serialized simple javascript object that can be send to the neeedo API.
  */
-User.prototype.serializeToApi = function() {
+User.prototype.serializeForApi = function() {
     var _this = this;
 
-    return {
-        "id" :       _this.userId
-    };
+    serializedObj = {};
+    if (this.hasId()) {
+        serializedObj["id"] = this.getId();
+    }
+
+    return serializedObj;
 };
 
 /*

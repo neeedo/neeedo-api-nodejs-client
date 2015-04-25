@@ -2,7 +2,8 @@
  * dependencies
  */
 var Location = require('./location'),
-    User = require('./user');
+    User = require('./user'),
+    Price = require('./price');
 
 /*
  * Class: Demand
@@ -36,6 +37,11 @@ Demand.prototype.getId = function()
     return this.id;
 };
 
+Demand.prototype.hasId = function()
+{
+    return undefined !== this.getId();
+};
+
 Demand.prototype.setVersion = function(version)
 {
     if (version !== parseInt(version)) {
@@ -53,9 +59,8 @@ Demand.prototype.getVersion = function()
 
 Demand.prototype.setUser = function(user)
 {
-    if (user !== null && typeof user === 'object') {
+    if (user === null || typeof user !== 'object') {
         throw new Error("Type of user must be object.");
-
     }
     
     this.user = user;
@@ -103,9 +108,8 @@ Demand.prototype.getShouldTags = function()
 
 Demand.prototype.setLocation = function(location)
 {
-    if (location !== null && typeof location === 'object') {
+    if (location === null || typeof location !== 'object') {
         throw new Error("Type of location must be object.");
-
     }
 
     this.location = location;
@@ -139,9 +143,8 @@ Demand.prototype.getDistance = function()
 
 Demand.prototype.setPrice = function(price)
 {
-    if (price !== parseFloat(price)) {
-        throw new Error("Type of price must be float.");
-
+    if (price === null || typeof price !== 'object') {
+        throw new Error("Type of price must be object.");
     }
 
     this.price = price;
@@ -150,24 +153,28 @@ Demand.prototype.setPrice = function(price)
 
 Demand.prototype.getPrice = function()
 {
+    if (undefined === this.price) {
+        this.price = new Price();
+    }
+    
     return this.price;
 };
 
 /*
- * Function: toApiJson
+ * Function: serializeForApi
  * Returns the serialized simple javascript object that can be send to the neeedo API.
  */
-Demand.prototype.serializeToApi = function() {
+Demand.prototype.serializeForApi = function() {
     var _this = this;
     
     var serializedObj = {
-       "version" :      _this.version,
-       "userId" :       _this.user.getId(),
-       "mustTags" :     _this.mustTags,
-       "shouldTags" :   _this.shouldTags,
-       "location" :     _this.getLocation().serializeToApi(),
-       "distance" :     _this.distance,
-       "price" :        _this.price
+       "version" :      _this.getVersion(),
+       "userId" :       _this.getUser().getId(),
+       "mustTags" :     _this.getMustTags(),
+       "shouldTags" :   _this.getShouldTags(),
+       "location" :     _this.getLocation().serializeForApi(),
+       "distance" :     _this.getDistance(),
+       "price" :        _this.getPrice().serializeForApi()
     };
     
     if (this.hasId()) {
@@ -184,7 +191,6 @@ Demand.prototype.serializeToApi = function() {
 Demand.prototype.loadFromSerialized = function(serializedDemand) {
     if (serializedDemand === null || typeof serializedDemand !== 'object') {
         throw new Error("Type of serializedDemand must be object.");
-        
     }
     
     if ("id" in serializedDemand) {
@@ -216,7 +222,7 @@ Demand.prototype.loadFromSerialized = function(serializedDemand) {
     }
 
     if ("price" in serializedDemand) {
-        this.setPrice(serializedDemand["price"]);
+        this.setPrice(new Price().loadFromSerialized(serializedDemand["price"]));
     }
 
     return this;

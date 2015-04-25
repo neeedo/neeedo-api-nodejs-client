@@ -4,7 +4,7 @@
 var urlValidator = require('../../validators/url.js'),
     should = require('should');
 
-describe('#isValidUrl', function() {
+describe('#Url validator', function() {
     it("throws an exception if no string value is given", function() {        
         var someNonStringInput = 1245;
 

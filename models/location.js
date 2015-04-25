@@ -40,15 +40,15 @@ Location.prototype.getLongitude = function()
 };
 
 /*
- * Function: toApiJson
+ * Function: serializeForApi
  * Returns the serialized simple javascript object that can be send to the neeedo API.
  */
-Location.prototype.serializeToApi = function() {
+Location.prototype.serializeForApi = function() {
     var _this = this;
 
     return {
-        "lat" :      _this.latitude,
-        "lon" :      _this.longitude
+        "lat" :      _this.getLatitude(),
+        "lon" :      _this.getLongitude()
     };
 };
 
