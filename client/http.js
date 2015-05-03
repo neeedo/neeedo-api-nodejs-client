@@ -14,7 +14,7 @@ function HttpWrapper()
     
     var _this = this;
     this.getHttpOptions = function(path) {
-          var urlParts = url.parse(url);
+          var urlParts = url.parse(options.getApiUrl());
             
           _this.httpOptions = {
                   "host": urlParts.hostname,
@@ -23,6 +23,13 @@ function HttpWrapper()
           };
         
          return _this.httpOptions;
+    };
+    this.extendJsonParameters = function(httpOptions) {
+        httpOptions['headers'] = {
+            'Content-Type': 'application/json'
+        };
+      
+        return httpOptions;
     };
 };
 
@@ -36,10 +43,11 @@ HttpWrapper.prototype.doGet = function (path, callback) {
     req.end();
 };
 
-HttpWrapper.prototype.doPost = function (path, body, callback) {
+HttpWrapper.prototype.doPost = function (path, json, callback) {
    var method = "POST";
 
    var httpOptions = this.getHttpOptions(path);
+   httpOptions = this.extendJsonParameters(httpOptions);
    httpOptions['method'] = method;
 
    var req = http.request(httpOptions, callback);
@@ -47,10 +55,11 @@ HttpWrapper.prototype.doPost = function (path, body, callback) {
     req.end();
 };
 
-HttpWrapper.prototype.doPut = function (path, body, callback) {
+HttpWrapper.prototype.doPut = function (path, json, callback) {
    var method = "PUT";
 
    var httpOptions = this.getHttpOptions(path);
+   httpOptions = this.extendJsonParameters(httpOptions);
    httpOptions['method'] = method;
 
    var req = http.request(httpOptions, callback);

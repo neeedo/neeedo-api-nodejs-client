@@ -8,6 +8,8 @@ var options = require('./client/options'),
 
 module.exports.initClient = function(neeedoApiUrl)
 {
+    console.log("Initializing client with apiUrl " + neeedoApiUrl + "...");
+    
     options.setApiUrl(neeedoApiUrl);
 }
 

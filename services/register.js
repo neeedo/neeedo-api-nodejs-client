@@ -23,14 +23,18 @@ function Register()
  */
 Register.prototype.registerUser = function(registrationModel, onSuccessCallback, onErrorCallback)
 {
-    if (user === null || typeof user !== 'object') {
-        throw new Error("Type of user must be object.");
+    if (registrationModel === null || typeof registrationModel !== 'object') {
+        throw new Error("Type of registrationModel must be object.");
     }
     
     var registerUrlPath = this.apiEndpoint;
-    var json = Json.stringify(registrationModel.serializeForApi());
+    var json = JSON.stringify(registrationModel.serializeForApi());
 
-    http.doPost(registerUrlPath, json, this.processRegisterResponse);
+    try {
+        http.doPost(registerUrlPath, json, this.processRegisterResponse);
+    } catch (e) {
+        onErrorCallback(e);
+    }
 };
 
 Register.prototype.processRegisterResponse = function(response)
