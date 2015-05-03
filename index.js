@@ -14,11 +14,16 @@ module.exports.initClient = function(neeedoApiUrl)
 /**
  * Constructor functions that are exported.
  */
-module.exports.models.demand = demand;
-module.exports.models.offer = offer;
-module.exports.models.location = location;
-module.exports.models.user = user;
-module.exports.models.register = register;
-module.exports.services.register = registerService;
+module.exports.models = {
+    "demand" : demand,
+    "offer": offer,
+    "location" : location,
+    "user": user,
+    "register" : register
+};
 
+module.exports.services = {
+    "register": registerService
+};
 
+console.log("Neeedo API NodeJs client lifted...");
