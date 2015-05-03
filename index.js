@@ -4,7 +4,7 @@ var options = require('./client/options'),
     location = require('./models/location'),
     user = require('./models/user'),
     register = require('./models/register'),
-    registerService = require('./service/register');
+    registerService = require('./services/register');
 
 module.exports.initClient = function(neeedoApiUrl)
 {
