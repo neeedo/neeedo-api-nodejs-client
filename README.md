@@ -15,7 +15,7 @@ Usage
 - Include in your package.json as NPM dependency:
 
 ```
-npm install git://github.com/neeedo/neeedo-api-nodejs-client.git --save
+npm install neeedo-api-nodejs-client --save
 ```
 
 - Use as module:
