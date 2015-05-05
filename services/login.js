@@ -31,7 +31,7 @@ Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallb
         throw new Error("Type of loginModel must be object.");
     }
     
-    var loginUrlPath = this.apiEndpoint;
+    var loginUrlPath = this.apiEndpoint + loginModel.getQueryStringForApi();
     
     // closure
     var _this = this;
