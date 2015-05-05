@@ -11,12 +11,12 @@ var options = require('./client/options'),
 
 module.exports.initClient = function(neeedoApiUrl, allowSelfSignedHttpsCertificates)
 {
-    console.log("Initializing client with apiUrl " + neeedoApiUrl + "...");
+    console.info("Initializing client with apiUrl " + neeedoApiUrl + "...");
 
     options.setApiUrl(neeedoApiUrl);
     
     if (allowSelfSignedHttpsCertificates) {
-        console.log("Allowing self signed HTTPS certificates...");
+        console.info("Allowing self signed HTTPS certificates...");
         
         options.setAllowSelfSignedCertificates(true);
     }   

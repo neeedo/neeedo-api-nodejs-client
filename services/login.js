@@ -44,7 +44,7 @@ Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallb
                         var userData = JSON.parse(data);
                         
                         if (options.isDevelopment()) {
-                            console.log("Services\Login::loginUser(): server sent response data " + data);
+                            console.info("Services\Login::loginUser(): server sent response data " + data);
                         }
                         
                         var loggedInUser = new User().loadFromSerialized(userData['user']);

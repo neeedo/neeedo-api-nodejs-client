@@ -45,7 +45,7 @@ Register.prototype.registerUser = function(registrationModel, onSuccessCallback,
                         var userData = JSON.parse(data);
                         
                         if (options.isDevelopment()) {
-                            console.log("Services/Register::registerUser(): server sent response data " + data);
+                            console.info("Services/Register::registerUser(): server sent response data " + data);
                         }
                         
                         var registeredUser = new User().loadFromSerialized(userData['user']);

@@ -8,7 +8,9 @@ var options = require('./options'),
     util = require('util');
 
 /*
- * class constructor
+ * Class: HttpWrapper
+ * 
+ * This adapter class allows to do GET, POST, PUT and DELETE REST operations on the NEEEDO API, on both HTTP and HTTPS layer.
  */
 function HttpWrapper()
 {
@@ -22,7 +24,7 @@ function HttpWrapper()
                   "path": path
           };
         
-        if (options.isAllowSelfSignedCertificates()) {
+        if (_this.isHttps() && options.isAllowSelfSignedCertificates()) {
             _this.httpOptions['rejectUnauthorized'] = false;
         }
         
@@ -37,20 +39,32 @@ function HttpWrapper()
     };
 };
 
+HttpWrapper.prototype.isHttps = function()
+{
+    return 'https' == options.getApiUrl().substring(0, 5);
+}
+
+/**
+ * Get the underlying adapter (either HTTP or HTTPS, depending on the Neeedo API base URL).
+ * @returns {exports|*}
+ */
 HttpWrapper.prototype.getAdapter = function()
 {
     if (undefined == this.adapter) {
         // use https library if API URL starts with HTTPS
-        this.adapter = 'https' == options.getApiUrl().substring(0, 5) ? https : http;
+        this.adapter = this.isHttps() ? https : http;
         
-        if (options.isDevelopment()) {
-            console.log('Using adapter ' + 'https' == options.getApiUrl().substring(0, 5) ? 'https' : 'http');
-        }
+        console.info('HttpWrapper: Using adapter ' + 'https' == options.getApiUrl().substring(0, 5) ? 'https' : 'http');
     }
     
     return this.adapter;
 };
 
+/**
+ * Do a simple GET operation.
+ * @param path String the Query path that will be appended to the API baseURL.
+ * @param callback callback callback method that will be called in each case
+ */
 HttpWrapper.prototype.doGet = function (path, callback) {
     var method = "GET";
     
@@ -61,6 +75,13 @@ HttpWrapper.prototype.doGet = function (path, callback) {
     req.end();
 };
 
+/**
+ * Do a POST operation.
+ *
+ * @param path String the Query path that will be appended to the API baseURL.
+ * @param json String marshalled JSON that will be sent to the API
+ * @param callback callback method that will be called in each case
+ */
 HttpWrapper.prototype.doPost = function (path, json, callback) {
    var method = "POST";
 
@@ -73,12 +94,19 @@ HttpWrapper.prototype.doPost = function (path, json, callback) {
     req.end();
     
     if (options.isDevelopment()) {
-        console.log("Sending request..."
+        console.info("HttpWrapper: Sending request..."
         + "\n" + util.inspect(req, {showHidden: false, depth: null})
         );
     }
 };
 
+/**
+ * Do a PUT operation.
+ *
+ * @param path String the Query path that will be appended to the API baseURL.
+ * @param json String marshalled JSON that will be sent to the API
+ * @param callback callback method that will be called in each case
+ */
 HttpWrapper.prototype.doPut = function (path, json, callback) {
    var method = "PUT";
 
@@ -91,6 +119,12 @@ HttpWrapper.prototype.doPut = function (path, json, callback) {
     req.end();
 };
 
+/**
+ * Do a DELETE operation.
+ *
+ * @param path String the Query path that will be appended to the API baseURL.
+ * @param callback callback method that will be called in each case
+ */
 HttpWrapper.prototype.doDelete = function (path, callback) {
    var method = "DELETE";
 
