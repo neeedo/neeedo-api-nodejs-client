@@ -1,7 +1,7 @@
 /*
  * dependencies
  */
-var options = require('./options'),
+var globalOptions = require('./options'),
     http = require('http'),
     https = require('https'),
     url = require('url'),
@@ -16,7 +16,7 @@ function HttpWrapper()
 {
     var _this = this;
     this.getHttpOptions = function(path) {
-          var urlParts = url.parse(options.getApiUrl());
+          var urlParts = url.parse(globalOptions.getApiUrl());
             
           _this.httpOptions = {
                   "hostname": urlParts.hostname,
@@ -24,7 +24,7 @@ function HttpWrapper()
                   "path": path
           };
         
-        if (_this.isHttps() && options.isAllowSelfSignedCertificates()) {
+        if (_this.isHttps() && globalOptions.isAllowSelfSignedCertificates()) {
             _this.httpOptions['rejectUnauthorized'] = false;
         }
         
@@ -39,8 +39,8 @@ function HttpWrapper()
       
         return httpOptions;
     };
-    this.extendByAdditionalOptions = function(httpOptions) {
-        var authorizationToken = httpOptions.authorizationToken || undefined;
+    this.extendByAdditionalOptions = function(httpOptions, additionalOptions) {
+        var authorizationToken = additionalOptions.authorizationToken || undefined;
         
         if (!('headers' in httpOptions)) {
             httpOptions['headers'] = {};
@@ -57,7 +57,7 @@ function HttpWrapper()
 
 HttpWrapper.prototype.isHttps = function()
 {
-    return 'https' == options.getApiUrl().substring(0, 5);
+    return 'https' == globalOptions.getApiUrl().substring(0, 5);
 }
 
 /**
@@ -113,7 +113,7 @@ HttpWrapper.prototype.doPost = function (path, json, callback, options) {
     req.write(json);
     req.end();
     
-    if (options.isDevelopment()) {
+    if (globalOptions.isDevelopment()) {
         console.info("HttpWrapper: Sending request..."
         + "\n" + util.inspect(req, {showHidden: false, depth: null})
         );
