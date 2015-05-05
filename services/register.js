@@ -55,7 +55,7 @@ Register.prototype.registerUser = function(registrationModel, onSuccessCallback,
                 } else {
                     _this.onErrorCallback(response);
                 }
-            });
+            }, {});
     } catch (e) {
         onErrorCallback(e);
     }

@@ -31,10 +31,26 @@ function HttpWrapper()
          return _this.httpOptions;
     };
     this.extendJsonParameters = function(httpOptions) {
-        httpOptions['headers'] = {
-            'Content-Type': 'application/json'
-        };
+        if (!'headers' in httpOptions) {
+            httpOptions['headers'] = {};
+        }
+        
+        httpOptions['headers']['Content-Type'] = 'application/json';
       
+        return httpOptions;
+    };
+    this.extendByAdditionalOptions = function(httpOptions) {
+        var authorizationToken = httpOptions.authorizationToken || undefined;
+        
+        if (!'headers' in httpOptions) {            
+            httpOptions['headers'] = {};
+        }
+        
+        // append Basic authorization token if given
+        if (undefined !== authorizationToken) {
+            httpOptions['headers']['Authorization'] = 'Basic ' + authorizationToken;
+        }
+
         return httpOptions;
     };
 };
@@ -64,12 +80,14 @@ HttpWrapper.prototype.getAdapter = function()
  * Do a simple GET operation.
  * @param path String the Query path that will be appended to the API baseURL.
  * @param callback callback callback method that will be called in each case
+ * @param options additional options 
  */
-HttpWrapper.prototype.doGet = function (path, callback) {
+HttpWrapper.prototype.doGet = function (path, callback, options) {
     var method = "GET";
     
     var httpOptions = this.getHttpOptions(path);
     httpOptions['method'] = method;
+    httpOptions = this.extendByAdditionalOptions(httpOptions, options);
     
     var req = this.getAdapter().request(httpOptions, callback);
     req.end();
@@ -81,13 +99,15 @@ HttpWrapper.prototype.doGet = function (path, callback) {
  * @param path String the Query path that will be appended to the API baseURL.
  * @param json String marshalled JSON that will be sent to the API
  * @param callback callback method that will be called in each case
+ * @param options additional options
  */
-HttpWrapper.prototype.doPost = function (path, json, callback) {
+HttpWrapper.prototype.doPost = function (path, json, callback, options) {
    var method = "POST";
 
    var httpOptions = this.getHttpOptions(path);
    httpOptions = this.extendJsonParameters(httpOptions);
    httpOptions['method'] = method;
+   httpOptions = this.extendByAdditionalOptions(httpOptions, options);
 
    var req = this.getAdapter().request(httpOptions, callback);
     req.write(json);
@@ -106,13 +126,15 @@ HttpWrapper.prototype.doPost = function (path, json, callback) {
  * @param path String the Query path that will be appended to the API baseURL.
  * @param json String marshalled JSON that will be sent to the API
  * @param callback callback method that will be called in each case
+ * @param options additional options 
  */
-HttpWrapper.prototype.doPut = function (path, json, callback) {
+HttpWrapper.prototype.doPut = function (path, json, callback, options) {
    var method = "PUT";
 
    var httpOptions = this.getHttpOptions(path);
    httpOptions = this.extendJsonParameters(httpOptions);
    httpOptions['method'] = method;
+   httpOptions = this.extendByAdditionalOptions(httpOptions, options);
 
    var req = this.getAdapter().request(httpOptions, callback);
     req.write(json);
@@ -124,14 +146,16 @@ HttpWrapper.prototype.doPut = function (path, json, callback) {
  *
  * @param path String the Query path that will be appended to the API baseURL.
  * @param callback callback method that will be called in each case
+ * @param options additional options
  */
-HttpWrapper.prototype.doDelete = function (path, callback) {
+HttpWrapper.prototype.doDelete = function (path, callback, options) {
    var method = "DELETE";
 
    var httpOptions = this.getHttpOptions(path);
    httpOptions['method'] = method;
+   httpOptions = this.extendByAdditionalOptions(httpOptions, options);
 
-    this.getAdapter().request(httpOptions, callback);
+   this.getAdapter().request(httpOptions, callback);
 };
 
 var httpWrapper = new HttpWrapper();

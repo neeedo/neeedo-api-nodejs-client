@@ -32,12 +32,11 @@ Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallb
     }
     
     var loginUrlPath = this.apiEndpoint;
-    var json = JSON.stringify(loginModel.serializeForApi());
     
     // closure
     var _this = this;
     try {
-        http.doPost(loginUrlPath, json,
+        http.doGet(loginUrlPath,
             function(response) {
                 if (200 == response.statusCode) {
                     response.on('data', function (data) {
@@ -48,13 +47,17 @@ Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallb
                         }
                         
                         var loggedInUser = new User().loadFromSerialized(userData['user']);
+                        loggedInUser.setAccessToken(loginModel.getAccessToken());
 
                         _this.onSuccessCallback(loggedInUser);
                     });
                 } else {
                     _this.onErrorCallback(response);
                 }
-            });
+            }, 
+        {
+          authorizationToken: loginModel.getAccessToken()
+        });
     } catch (e) {
         onErrorCallback(e);
     }
