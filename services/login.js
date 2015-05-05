@@ -3,11 +3,11 @@ var http = require('../client/http'),
     options = require('../client/options');
 
 /*
- * Class: Register
+ * Class: Login
  *
- * This class realizes the connectivity to register the user.
+ * This class contains the logic to authenticate a User via neeedo API.
  */
-function Register()
+function Login()
 {
     this.apiEndpoint = '/users';
     this.onSuccessCallback = undefined;
@@ -18,39 +18,38 @@ function Register()
  * Function: registerUser
  * Triggers user's registration to neeedo api.
  * 
- * - registrationModel: see /models/register.js
+ * - loginModel: see /models/login.js
  * - onSuccessCallback: given function will be called with a given /models/user.js object filled by the API
  * - onErrorCallback: given function will be called with the HTTP response object to trigger error handling
  */
-Register.prototype.registerUser = function(registrationModel, onSuccessCallback, onErrorCallback)
+Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallback)
 {
     this.onSuccessCallback = onSuccessCallback;
     this.onErrorCallback = onErrorCallback;
     
-    if (registrationModel === null || typeof registrationModel !== 'object') {
-        throw new Error("Type of registrationModel must be object.");
+    if (loginModel === null || typeof loginModel !== 'object') {
+        throw new Error("Type of loginModel must be object.");
     }
     
-    var registerUrlPath = this.apiEndpoint;
-    var json = JSON.stringify(registrationModel.serializeForApi());
+    var loginUrlPath = this.apiEndpoint;
+    var json = JSON.stringify(loginModel.serializeForApi());
     
     // closure
     var _this = this;
     try {
-        http.doPost(registerUrlPath, json,
+        http.doPost(loginUrlPath, json,
             function(response) {
-                if (201 == response.statusCode) {
+                if (200 == response.statusCode) {
                     response.on('data', function (data) {
-                        // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-user
                         var userData = JSON.parse(data);
                         
                         if (options.isDevelopment()) {
-                            console.log("Services/Register::registerUser(): server sent response data " + data);
+                            console.log("Services\Login::loginUser(): server sent response data " + data);
                         }
                         
-                        var registeredUser = new User().loadFromSerialized(userData['user']);
+                        var loggedInUser = new User().loadFromSerialized(userData['user']);
 
-                        _this.onSuccessCallback(registeredUser);
+                        _this.onSuccessCallback(loggedInUser);
                     });
                 } else {
                     _this.onErrorCallback(response);
@@ -61,4 +60,4 @@ Register.prototype.registerUser = function(registrationModel, onSuccessCallback,
     }
 };
 
-module.exports = Register;
+module.exports = Login;
