@@ -6,7 +6,7 @@
 function Register()
 {
     this.username = undefined;
-    this.eMail = undefined;
+    this.email = undefined;
     this.password = undefined;
 }
 
@@ -28,16 +28,16 @@ Register.prototype.getUsername = function()
 Register.prototype.setEMail = function(eMail)
 {
     if ("string" !== typeof(eMail) ) {
-        throw new Error("Type of eMail must be string.");
+        throw new Error("Type of email must be string.");
     }
 
-    this.eMail = eMail;
+    this.email = eMail;
     return this;
 };
 
 Register.prototype.getEMail = function()
 {
-    return this.eMail;
+    return this.email;
 };
 
 Register.prototype.setPassword = function(password)

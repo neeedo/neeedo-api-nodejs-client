@@ -28,4 +28,6 @@ module.exports.services = {
     "register": registerService
 };
 
+module.exports.options = options;
+
 console.log("Neeedo API NodeJs client lifted...");

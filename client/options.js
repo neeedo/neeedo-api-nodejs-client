@@ -23,5 +23,13 @@ Options.prototype.setApiUrl = function(url) {
     this.neeedoApiUrl = url;
 }
 
+Options.prototype.isDevelopment = function () {
+    if ("development" == process.env.NODE_ENV) {
+        return true;        
+    }
+    
+    return false;
+}
+
 var options = new Options();
 module.exports = options;

@@ -7,7 +7,7 @@ function User()
 {
     this.id = undefined;
     this.username = undefined;
-    this.eMail = undefined;
+    this.email = undefined;
     this.accessToken = undefined;
 }
 
@@ -64,16 +64,16 @@ User.prototype.getUsername = function()
 User.prototype.setEMail = function(eMail)
 {
     if ("string" !== typeof(eMail) ) {
-        throw new Error("Type of eMail must be string.");
+        throw new Error("Type of email must be string.");
     }
 
-    this.eMail = eMail;
+    this.email = eMail;
     return this;
 };
 
 User.prototype.getEMail = function()
 {
-    return this.eMail;
+    return this.email;
 };
 
 /**
@@ -120,8 +120,8 @@ User.prototype.loadFromSerialized = function(serializedUser) {
         throw new Error("Type of serializedUser must be object.");
     }
 
-    if ("id" in serializedUser) {
-        this.setId(serializedUser["id"]);
+    if ("uid" in serializedUser) {
+        this.setId(serializedUser["uid"]);
     }
     
     if ("version" in serializedUser) {

@@ -33,7 +33,7 @@ describe('#User', function() {
 
         // given some JSON returned by the API
         var neeedoUserJson = {
-            "id": userId,
+            "uid": userId,
             "version": version,
             "username": username,
             "email" : email

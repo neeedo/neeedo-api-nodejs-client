@@ -1,5 +1,6 @@
 var http = require('../client/http'),
-    user = require('../models/user');
+    User = require('../models/user'),
+    options = require('../client/options');
 
 /*
  * Class: User
@@ -8,7 +9,7 @@ var http = require('../client/http'),
  */
 function Register()
 {
-    this.apiEndpoint = 'user';
+    this.apiEndpoint = '/users';
     this.onSuccessCallback = undefined;
     this.onErrorCallback = undefined;
 }
@@ -23,15 +24,37 @@ function Register()
  */
 Register.prototype.registerUser = function(registrationModel, onSuccessCallback, onErrorCallback)
 {
+    this.onSuccessCallback = onSuccessCallback;
+    this.onErrorCallback = onErrorCallback;
+    
     if (registrationModel === null || typeof registrationModel !== 'object') {
         throw new Error("Type of registrationModel must be object.");
     }
     
     var registerUrlPath = this.apiEndpoint;
     var json = JSON.stringify(registrationModel.serializeForApi());
-
+    
+    // closure
+    var _this = this;
     try {
-        http.doPost(registerUrlPath, json, this.processRegisterResponse);
+        http.doPost(registerUrlPath, json,
+            function(response) {
+                if (201 == response.statusCode) {
+                    response.on('data', function (data) {
+                        var userData = JSON.parse(data);
+                        
+                        if (options.isDevelopment()) {
+                            console.log("Services\Register::registerUser(): server sent response data " + data);
+                        }
+                        
+                        var registeredUser = new User().loadFromSerialized(userData['user']);
+
+                        _this.onSuccessCallback(registeredUser);
+                    });
+                } else {
+                    _this.onErrorCallback(response);
+                }
+            });
     } catch (e) {
         onErrorCallback(e);
     }
@@ -43,7 +66,7 @@ Register.prototype.processRegisterResponse = function(response)
         res.on('data', function (data) {
             var userData = JSON.parse(data);
             var registeredUser = new User().loadFromSerialized(userData);
-            
+
             this.onSuccessCallback(registeredUser);
         });
     } else {

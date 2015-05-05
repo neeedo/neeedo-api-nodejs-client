@@ -3,7 +3,8 @@
  */
 var options = require('./options'),
     http = require('http'),
-    url = require('url');
+    url = require('url'),
+    util = require('util');
 
 /*
  * class constructor
@@ -17,7 +18,7 @@ function HttpWrapper()
           var urlParts = url.parse(options.getApiUrl());
             
           _this.httpOptions = {
-                  "host": urlParts.hostname,
+                  "hostname": urlParts.hostname,
                   "port": urlParts.port,
                   "path": path
           };
@@ -53,6 +54,12 @@ HttpWrapper.prototype.doPost = function (path, json, callback) {
    var req = http.request(httpOptions, callback);
     req.write(json);
     req.end();
+    
+    if (options.isDevelopment()) {
+        console.log("Sending request..."
+        + "\n" + util.inspect(req, {showHidden: false, depth: null})
+        );
+    }
 };
 
 HttpWrapper.prototype.doPut = function (path, json, callback) {
