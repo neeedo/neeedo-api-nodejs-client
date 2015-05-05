@@ -31,7 +31,7 @@ function HttpWrapper()
          return _this.httpOptions;
     };
     this.extendJsonParameters = function(httpOptions) {
-        if (!'headers' in httpOptions) {
+        if (!('headers' in httpOptions)) {
             httpOptions['headers'] = {};
         }
         
@@ -42,7 +42,7 @@ function HttpWrapper()
     this.extendByAdditionalOptions = function(httpOptions) {
         var authorizationToken = httpOptions.authorizationToken || undefined;
         
-        if (!'headers' in httpOptions) {            
+        if (!('headers' in httpOptions)) {
             httpOptions['headers'] = {};
         }
         
@@ -70,7 +70,7 @@ HttpWrapper.prototype.getAdapter = function()
         // use https library if API URL starts with HTTPS
         this.adapter = this.isHttps() ? https : http;
         
-        console.info('HttpWrapper: Using adapter ' + 'https' == options.getApiUrl().substring(0, 5) ? 'https' : 'http');
+        console.info('HttpWrapper: Using adapter ' + (this.isHttps() ? 'https' : 'http'));
     }
     
     return this.adapter;

@@ -91,7 +91,7 @@ User.prototype.setAccessToken = function(accessToken)
     return this;
 };
 
-User.prototype.getAccessToken = function()
+User.prototype.generateAccessToken = function()
 {
     return this.accessToken;
 };

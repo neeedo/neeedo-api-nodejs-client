@@ -1,6 +1,6 @@
 var http = require('../client/http'),
     User = require('../models/user'),
-    options = require('../client/options');
+    globalOptions = require('../client/options');
 
 /*
  * Class: Login
@@ -42,12 +42,14 @@ Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallb
                     response.on('data', function (data) {
                         var userData = JSON.parse(data);
                         
-                        if (options.isDevelopment()) {
+                        if (globalOptions.isDevelopment()) {
                             console.info("Services\Login::loginUser(): server sent response data " + data);
                         }
                         
                         var loggedInUser = new User().loadFromSerialized(userData['user']);
-                        loggedInUser.setAccessToken(loginModel.getAccessToken());
+                        
+                        // store access token in user model
+                        loggedInUser.setAccessToken(loginModel.generateAccessToken());
 
                         _this.onSuccessCallback(loggedInUser);
                     });
@@ -56,7 +58,7 @@ Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallb
                 }
             }, 
         {
-          authorizationToken: loginModel.getAccessToken()
+          authorizationToken: loginModel.generateAccessToken()
         });
     } catch (e) {
         onErrorCallback(e);

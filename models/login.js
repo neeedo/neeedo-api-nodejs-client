@@ -65,10 +65,10 @@ Login.prototype.getQueryStringForApi = function()
 };
 
 /**
- * Function: getAccessToken
+ * Function: generateAccessToken
  * @returns {string} the value to be sent in an authentication header.
  */
-Login.prototype.getAccessToken = function()
+Login.prototype.generateAccessToken = function()
 {
     return new Buffer(this.getEMail() + ':' + this.getPassword()).toString('base64');
 }

@@ -29,4 +29,14 @@ describe('#Login', function() {
 
         should.equal('/mail/' + eMail, loginModel.getQueryStringForApi());
     });
+
+    it("generates the correct HTTP Authorization token", function() {
+        var eMail = "max@mustermann.de";
+        var password = "secretpassword";
+
+        var loginModel = new Login();
+        loginModel.setEMail(eMail).setPassword(password);
+
+        should.equal("bWF4QG11c3Rlcm1hbm4uZGU6c2VjcmV0cGFzc3dvcmQ=", loginModel.generateAccessToken());
+    });
 });

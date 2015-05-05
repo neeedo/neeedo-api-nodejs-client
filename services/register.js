@@ -1,6 +1,6 @@
 var http = require('../client/http'),
     User = require('../models/user'),
-    options = require('../client/options');
+    globalOptions = require('../client/options');
 
 /*
  * Class: Register
@@ -44,7 +44,7 @@ Register.prototype.registerUser = function(registrationModel, onSuccessCallback,
                         // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-user
                         var userData = JSON.parse(data);
                         
-                        if (options.isDevelopment()) {
+                        if (globalOptions.isDevelopment()) {
                             console.info("Services/Register::registerUser(): server sent response data " + data);
                         }
                         
