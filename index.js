@@ -6,13 +6,20 @@ var options = require('./client/options'),
     register = require('./models/register'),
     login = require('./models/login'),
     loginService = require('./services/login'),
-    registerService = require('./services/register');
+    registerService = require('./services/register')
+    ;
 
-module.exports.initClient = function(neeedoApiUrl)
+module.exports.initClient = function(neeedoApiUrl, allowSelfSignedHttpsCertificates)
 {
     console.log("Initializing client with apiUrl " + neeedoApiUrl + "...");
-    
+
     options.setApiUrl(neeedoApiUrl);
+    
+    if (allowSelfSignedHttpsCertificates) {
+        console.log("Allowing self signed HTTPS certificates...");
+        
+        options.setAllowSelfSignedCertificates(true);
+    }   
 }
 
 /**

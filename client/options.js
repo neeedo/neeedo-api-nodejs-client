@@ -9,6 +9,7 @@ var validUrl = require('../validators/url');
 function Options()
 {
     this.neeedoApiUrl = undefined;
+    this.allowSelfSignedCertificates = undefined;
 }
 
 Options.prototype.getApiUrl = function () {
@@ -21,6 +22,18 @@ Options.prototype.setApiUrl = function(url) {
     }
     
     this.neeedoApiUrl = url;
+}
+
+Options.prototype.isAllowSelfSignedCertificates = function () {
+    if (true == this.allowSelfSignedCertificates) {
+        return true;
+    }
+    
+    return false;
+}
+
+Options.prototype.setAllowSelfSignedCertificates = function(allow) {
+    this.allowSelfSignedCertificates = allow;
 }
 
 Options.prototype.isDevelopment = function () {

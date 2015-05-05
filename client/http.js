@@ -3,6 +3,7 @@
  */
 var options = require('./options'),
     http = require('http'),
+    https = require('https'),
     url = require('url'),
     util = require('util');
 
@@ -11,8 +12,6 @@ var options = require('./options'),
  */
 function HttpWrapper()
 {
-    this.neeedoApiUrl = options.getApiUrl();
-    
     var _this = this;
     this.getHttpOptions = function(path) {
           var urlParts = url.parse(options.getApiUrl());
@@ -22,6 +21,10 @@ function HttpWrapper()
                   "port": urlParts.port,
                   "path": path
           };
+        
+        if (options.isAllowSelfSignedCertificates()) {
+            _this.httpOptions['rejectUnauthorized'] = false;
+        }
         
          return _this.httpOptions;
     };
@@ -34,13 +37,27 @@ function HttpWrapper()
     };
 };
 
+HttpWrapper.prototype.getAdapter = function()
+{
+    if (undefined == this.adapter) {
+        // use https library if API URL starts with HTTPS
+        this.adapter = 'https' == options.getApiUrl().substring(0, 5) ? https : http;
+        
+        if (options.isDevelopment()) {
+            console.log('Using adapter ' + 'https' == options.getApiUrl().substring(0, 5) ? 'https' : 'http');
+        }
+    }
+    
+    return this.adapter;
+};
+
 HttpWrapper.prototype.doGet = function (path, callback) {
     var method = "GET";
     
     var httpOptions = this.getHttpOptions(path);
     httpOptions['method'] = method;
     
-    var req = http.request(httpOptions, callback);
+    var req = this.getAdapter().request(httpOptions, callback);
     req.end();
 };
 
@@ -51,7 +68,7 @@ HttpWrapper.prototype.doPost = function (path, json, callback) {
    httpOptions = this.extendJsonParameters(httpOptions);
    httpOptions['method'] = method;
 
-   var req = http.request(httpOptions, callback);
+   var req = this.getAdapter().request(httpOptions, callback);
     req.write(json);
     req.end();
     
@@ -69,7 +86,7 @@ HttpWrapper.prototype.doPut = function (path, json, callback) {
    httpOptions = this.extendJsonParameters(httpOptions);
    httpOptions['method'] = method;
 
-   var req = http.request(httpOptions, callback);
+   var req = this.getAdapter().request(httpOptions, callback);
     req.write(json);
     req.end();
 };
@@ -80,7 +97,7 @@ HttpWrapper.prototype.doDelete = function (path, callback) {
    var httpOptions = this.getHttpOptions(path);
    httpOptions['method'] = method;
 
-   http.request(httpOptions, callback);
+    this.getAdapter().request(httpOptions, callback);
 };
 
 var httpWrapper = new HttpWrapper();
