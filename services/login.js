@@ -15,8 +15,8 @@ function Login()
 }
 
 /*
- * Function: registerUser
- * Triggers user's registration to neeedo api.
+ * Function: loginUser
+ * Triggers user's "login" / authentication action to neeedo api.
  * 
  * - loginModel: see /models/login.js
  * - onSuccessCallback: given function will be called with a given /models/user.js object filled by the API

@@ -4,6 +4,8 @@ var options = require('./client/options'),
     location = require('./models/location'),
     user = require('./models/user'),
     register = require('./models/register'),
+    login = require('./models/login'),
+    loginService = require('./services/login'),
     registerService = require('./services/register');
 
 module.exports.initClient = function(neeedoApiUrl)
@@ -21,11 +23,13 @@ module.exports.models = {
     "offer": offer,
     "location" : location,
     "user": user,
-    "register" : register
+    "register" : register,
+    "login": login
 };
 
 module.exports.services = {
-    "register": registerService
+    "register": registerService,
+    "login": loginService
 };
 
 module.exports.options = options;
