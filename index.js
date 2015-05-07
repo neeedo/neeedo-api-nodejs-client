@@ -1,15 +1,15 @@
 var options = require('./client/options'), 
-    demand = require('./models/demand'),
-    offer = require('./models/offer'),
-    location = require('./models/location'),
-    user = require('./models/user'),
-    register = require('./models/register'),
-    login = require('./models/login'),
-    loginService = require('./services/login'),
-    registerService = require('./services/register')
+    Demand = require('./models/demand'),
+    Offer = require('./models/offer'),
+    Location = require('./models/location'),
+    User = require('./models/user'),
+    Register = require('./models/register'),
+    Login = require('./models/login'),
+    LoginService = require('./services/login'),
+    RegisterService = require('./services/register')
     ;
 
-module.exports.initClient = function(neeedoApiUrl, allowSelfSignedHttpsCertificates)
+module.exports.initClient = function(neeedoApiUrl, allowSelfSignedHttpsCertificates, isDebug)
 {
     console.info("Initializing client with apiUrl " + neeedoApiUrl + "...");
 
@@ -17,26 +17,27 @@ module.exports.initClient = function(neeedoApiUrl, allowSelfSignedHttpsCertifica
     
     if (allowSelfSignedHttpsCertificates) {
         console.info("Allowing self signed HTTPS certificates...");
-        
         options.setAllowSelfSignedCertificates(true);
     }   
+    
+    options.setDebug(isDebug);
 }
 
 /**
  * Constructor functions that are exported.
  */
 module.exports.models = {
-    "demand" : demand,
-    "offer": offer,
-    "location" : location,
-    "user": user,
-    "register" : register,
-    "login": login
+    "Demand" : Demand,
+    "Offer": Offer,
+    "Location" : Location,
+    "User": User,
+    "Register" : Register,
+    "Login": Login
 };
 
 module.exports.services = {
-    "register": registerService,
-    "login": loginService
+    "Register": RegisterService,
+    "Login": LoginService
 };
 
 module.exports.options = options;

@@ -10,6 +10,7 @@ function Options()
 {
     this.neeedoApiUrl = undefined;
     this.allowSelfSignedCertificates = undefined;
+    this.isDebug = undefined;
 }
 
 Options.prototype.getApiUrl = function () {
@@ -43,6 +44,14 @@ Options.prototype.isDevelopment = function () {
     
     return false;
 }
+
+Options.prototype.setDebug = function(isDebug) {
+    this.isDebug = isDebug;
+};
+
+Options.prototype.isDebugMode = function() {
+    return this.isDevelopment() && this.isDebug;
+};
 
 var options = new Options();
 module.exports = options;

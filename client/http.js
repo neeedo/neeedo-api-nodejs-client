@@ -92,9 +92,9 @@ HttpWrapper.prototype.doGet = function (path, callback, options) {
     var req = this.getAdapter().request(httpOptions, callback);
     req.end();
 
-    if (globalOptions.isDevelopment()) {
+    if (globalOptions.isDebugMode()) {
         console.info("HttpWrapper: Sending GET request..."
-            + "\n" + util.inspect(req, {showHidden: false, depth: null})
+            + "\n" + util.inspect(httpOptions, {showHidden: false, depth: 3})
         );
     }
 };
@@ -119,9 +119,9 @@ HttpWrapper.prototype.doPost = function (path, json, callback, options) {
     req.write(json);
     req.end();
     
-    if (globalOptions.isDevelopment()) {
+    if (globalOptions.isDebugMode()) {
         console.info("HttpWrapper: Sending POST request..."
-        + "\n" + util.inspect(req, {showHidden: false, depth: null})
+        + "\n" + util.inspect(httpOptions, {showHidden: false, depth: 3})
         );
     }
 };
@@ -146,9 +146,9 @@ HttpWrapper.prototype.doPut = function (path, json, callback, options) {
     req.write(json);
     req.end();
 
-    if (globalOptions.isDevelopment()) {
+    if (globalOptions.isDebugMode()) {
         console.info("HttpWrapper: Sending PUT request..."
-            + "\n" + util.inspect(req, {showHidden: false, depth: null})
+            + "\n" + util.inspect(httpOptions, {showHidden: false, depth: 3})
         );
     }
 };

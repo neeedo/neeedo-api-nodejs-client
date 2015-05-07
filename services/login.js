@@ -42,7 +42,7 @@ Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallb
                     response.on('data', function (data) {
                         var userData = JSON.parse(data);
                         
-                        if (globalOptions.isDevelopment()) {
+                        if (globalOptions.isDebugMode()) {
                             console.info("Services\Login::loginUser(): server sent response data " + data);
                         }
                         

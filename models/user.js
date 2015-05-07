@@ -91,9 +91,14 @@ User.prototype.setAccessToken = function(accessToken)
     return this;
 };
 
-User.prototype.generateAccessToken = function()
+User.prototype.getAccessToken = function()
 {
     return this.accessToken;
+};
+
+User.prototype.hasAccessToken = function()
+{
+    return undefined !== this.getAccessToken();
 };
 
 /*
@@ -120,8 +125,8 @@ User.prototype.loadFromSerialized = function(serializedUser) {
         throw new Error("Type of serializedUser must be object.");
     }
 
-    if ("uid" in serializedUser) {
-        this.setId(serializedUser["uid"]);
+    if ("id" in serializedUser) {
+        this.setId(serializedUser["id"]);
     }
     
     if ("version" in serializedUser) {
@@ -134,6 +139,10 @@ User.prototype.loadFromSerialized = function(serializedUser) {
     
     if ("email" in serializedUser) {
         this.setEMail(serializedUser["email"]);
+    }
+    
+    if ("accessToken" in serializedUser) {
+        this.setAccessToken(serializedUser['accessToken']);
     }
 
     return this;

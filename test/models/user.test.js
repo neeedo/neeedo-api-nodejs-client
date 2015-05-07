@@ -33,7 +33,7 @@ describe('#User', function() {
 
         // given some JSON returned by the API
         var neeedoUserJson = {
-            "uid": userId,
+            "id": userId,
             "version": version,
             "username": username,
             "email" : email
@@ -49,5 +49,34 @@ describe('#User', function() {
         should.equal(user.getVersion(), version);
         should.equal(user.getUsername(), username);
         should.equal(user.getEMail(), email);
+    });
+
+    it("is loaded correctly from session", function() {
+        var userId = "12345";
+        var version = 1;
+        var username = "maxmuster";
+        var email = "max@muster.de";
+        var accessToken = "Zw1244124fasfawerf=";
+
+        // given some JSON restored from session
+        var userSessionDate = {
+            "id": userId,
+            "version": version,
+            "username": username,
+            "email" : email,
+            "accessToken" : accessToken
+        };
+
+        // when loadFromSerialized is called
+        var user = new User();
+        user.loadFromSerialized(userSessionDate);
+
+        // then the object should be loaded correctly...
+        user.should.be.a.Object;
+        should.equal(user.getId(), userId);
+        should.equal(user.getVersion(), version);
+        should.equal(user.getUsername(), username);
+        should.equal(user.getEMail(), email);
+        should.equal(user.getAccessToken(), accessToken);
     });
 });
