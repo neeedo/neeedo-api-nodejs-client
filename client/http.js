@@ -8,11 +8,11 @@ var globalOptions = require('./options'),
     util = require('util');
 
 /*
- * Class: HttpWrapper
+ * Class: HttpAdapter
  * 
  * This adapter class allows to do GET, POST, PUT and DELETE REST operations on the NEEEDO API, on both HTTP and HTTPS layer.
  */
-function HttpWrapper()
+function HttpAdapter()
 {
     var _this = this;
     this.getHttpOptions = function(path) {
@@ -55,7 +55,7 @@ function HttpWrapper()
     };
 };
 
-HttpWrapper.prototype.isHttps = function()
+HttpAdapter.prototype.isHttps = function()
 {
     return 'https' == globalOptions.getApiUrl().substring(0, 5);
 }
@@ -64,13 +64,13 @@ HttpWrapper.prototype.isHttps = function()
  * Get the underlying adapter (either HTTP or HTTPS, depending on the Neeedo API base URL).
  * @returns {exports|*}
  */
-HttpWrapper.prototype.getAdapter = function()
+HttpAdapter.prototype.getAdapter = function()
 {
     if (undefined == this.adapter) {
         // use https library if API URL starts with HTTPS
         this.adapter = this.isHttps() ? https : http;
         
-        console.info('HttpWrapper: Using adapter ' + (this.isHttps() ? 'https' : 'http'));
+        console.info('HttpAdapter: Using adapter ' + (this.isHttps() ? 'https' : 'http'));
     }
     
     return this.adapter;
@@ -82,7 +82,7 @@ HttpWrapper.prototype.getAdapter = function()
  * @param callback callback callback method that will be called in each case
  * @param options additional options 
  */
-HttpWrapper.prototype.doGet = function (path, callback, options) {
+HttpAdapter.prototype.doGet = function (path, callback, options) {
     var method = "GET";
     
     var httpOptions = this.getHttpOptions(path);
@@ -93,7 +93,7 @@ HttpWrapper.prototype.doGet = function (path, callback, options) {
     req.end();
 
     if (globalOptions.isDebugMode()) {
-        console.info("HttpWrapper: Sending GET request..."
+        console.info("HttpAdapter: Sending GET request..."
             + "\n" + util.inspect(httpOptions, {showHidden: false, depth: 3})
         );
     }
@@ -107,7 +107,7 @@ HttpWrapper.prototype.doGet = function (path, callback, options) {
  * @param callback callback method that will be called in each case
  * @param options additional options
  */
-HttpWrapper.prototype.doPost = function (path, json, callback, options) {
+HttpAdapter.prototype.doPost = function (path, json, callback, options) {
    var method = "POST";
 
    var httpOptions = this.getHttpOptions(path);
@@ -120,7 +120,7 @@ HttpWrapper.prototype.doPost = function (path, json, callback, options) {
     req.end();
     
     if (globalOptions.isDebugMode()) {
-        console.info("HttpWrapper: Sending POST request..."
+        console.info("HttpAdapter: Sending POST request..."
         + "\n" + util.inspect(httpOptions, {showHidden: false, depth: 3})
         );
     }
@@ -134,7 +134,7 @@ HttpWrapper.prototype.doPost = function (path, json, callback, options) {
  * @param callback callback method that will be called in each case
  * @param options additional options 
  */
-HttpWrapper.prototype.doPut = function (path, json, callback, options) {
+HttpAdapter.prototype.doPut = function (path, json, callback, options) {
    var method = "PUT";
 
    var httpOptions = this.getHttpOptions(path);
@@ -147,7 +147,7 @@ HttpWrapper.prototype.doPut = function (path, json, callback, options) {
     req.end();
 
     if (globalOptions.isDebugMode()) {
-        console.info("HttpWrapper: Sending PUT request..."
+        console.info("HttpAdapter: Sending PUT request..."
             + "\n" + util.inspect(httpOptions, {showHidden: false, depth: 3})
         );
     }
@@ -160,16 +160,22 @@ HttpWrapper.prototype.doPut = function (path, json, callback, options) {
  * @param callback callback method that will be called in each case
  * @param options additional options
  */
-HttpWrapper.prototype.doDelete = function (path, callback, options) {
+HttpAdapter.prototype.doDelete = function (path, callback, options) {
    var method = "DELETE";
 
    var httpOptions = this.getHttpOptions(path);
    httpOptions['method'] = method;
    httpOptions = this.extendByAdditionalOptions(httpOptions, options);
 
-   this.getAdapter().request(httpOptions, callback);
+   var req = this.getAdapter().request(httpOptions, callback);
+   req.end();
+
+    if (globalOptions.isDebugMode()) {
+        console.info("HttpAdapter: Sending DELETE request..."
+            + "\n" + util.inspect(httpOptions, {showHidden: false, depth: 3})
+        );
+    }
 };
 
-var httpWrapper = new HttpWrapper();
-module.exports = httpWrapper;
-
+var httpAdapter = new HttpAdapter();
+module.exports = httpAdapter;

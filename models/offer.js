@@ -122,6 +122,15 @@ Offer.prototype.getPrice = function()
     return this.price;
 };
 
+/**
+ * Function: getQueryStringForApi
+ * Get the query string to be appended to the neeedo API endpoint URL in order to perform PUT + DELETE operations.
+ */
+Offer.prototype.getQueryStringForApi = function()
+{
+    return "/offers/" + this.getId() + "/" + this.getVersion();
+};
+
 /*
  * Function: serializeForApi
  * Returns the serialized simple javascript object that can be send to the neeedo API.

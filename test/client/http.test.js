@@ -5,7 +5,7 @@ var http = require('../../client/http'),
     options = require('../../client/options'),
     should = require('should');
 
-describe('#HttpWrapper', function() {
+describe('#HttpAdapter', function() {
     it("can adapt to HTTPS", function() {
         var apiUrl = "https://something.tld";
         
