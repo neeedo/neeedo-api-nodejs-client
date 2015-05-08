@@ -18,8 +18,8 @@ AssociatedEntity.prototype.isValid = function(associatedEntity) {
         return false;
     }
     
-    if (!Demand.isPrototypeOf(associatedEntity)
-    || !Offer.isPrototypeOf(associatedEntity)) {
+    if (!Demand.prototype.isPrototypeOf(associatedEntity)
+        && !Offer.prototype.isPrototypeOf(associatedEntity)) {
         this.error = 'AssociatedEntity is not a Demand or Offer.';
         return false;
     }

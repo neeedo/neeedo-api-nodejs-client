@@ -6,17 +6,19 @@ var Login = require('../../models/login.js'),
 
 describe('#Login', function() {
     it("throws exception when serializeForApi is called", function() {
+        var loginModel = new Login();
         // wrap function to be called because it will be called later within should.throw()
         (function() {
-            register.loadFromSerialized("")
+            loginModel.loadFromSerialized("")
         }
         ).should.throw();
     });
 
     it("throws exception when loadFromSerialized is called", function() {
+        var loginModel = new Login();
         // wrap function to be called because it will be called later within should.throw()
         (function() {
-            register.loadFromSerialized("")
+            loginModel.loadFromSerialized("")
         }
         ).should.throw();
     });
