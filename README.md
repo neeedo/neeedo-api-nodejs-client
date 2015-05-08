@@ -40,5 +40,5 @@ npm install -g istanbul
 npm run-script coverage
 ```
 
-[npm-image]: https://img.shields.io/npm/v/sails-auth.svg?style=flat-square
+[npm-image]: https://img.shields.io/npm/v/neeedo-api-nodejs-client.svg?style=flat-square
 [npm-url]: https://www.npmjs.com/package/neeedo-api-nodejs-client
