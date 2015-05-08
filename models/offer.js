@@ -128,7 +128,7 @@ Offer.prototype.getPrice = function()
  */
 Offer.prototype.getQueryStringForApi = function()
 {
-    return "/offers/" + this.getId() + "/" + this.getVersion();
+    return "/" + this.getId() + "/" + this.getVersion();
 };
 
 /*

@@ -1,5 +1,5 @@
 var http = require('../client/http'),
-    OfferModel = require('../models/user'),
+    OfferModel = require('../models/offer'),
     globalOptions = require('../client/options');
 
 /*
