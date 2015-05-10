@@ -1,5 +1,6 @@
 {
     "register_internal_error" : "An internal error occured during the registration. Please contact Neeedo customer care.",
+    "login_internal_error" : "An error occured during login. Please contact Neeedo customer care.",
     "login_user_not_found" : "We didn't find any user registered with given eMail address.",
     "create_demand_internal_error" : "The demand couldn't be created. Please contact Neeedo customer care.",
     "demand_not_found" : "We didn't find any demand matching your input.",

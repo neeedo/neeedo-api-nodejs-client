@@ -28,7 +28,7 @@ Error.prototype.getResponse = function()
 Error.prototype.addErrorMessage = function(message)
 {
     if ("string" !== typeof(message) ) {
-        throw new Error("Type of message must be string.");
+        throw new Error("Type of message must be string, but is " + typeof (message));
     }
 
     this.errorMessages.push(message);

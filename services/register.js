@@ -55,12 +55,12 @@ Register.prototype.registerUser = function(registrationModel, onSuccessCallback,
                         _this.onSuccessCallback(registeredUser);
                     });
                 } else {
-                    var error = new Error();
-                    error.setResponse(response).addErrorMessage(messages.register_internal_error);
-                    error.addLogMessage('Service/Register::registerUser(): Neeedo API sent response '
-                        + response.statusCode + ' ' + response.statusMessage + "\nRequest JSON was: " + json +"\n\n");
+                        var error = new Error();
+                        error.setResponse(response).addErrorMessage(messages.register_internal_error);
+                        error.addLogMessage('Service/Register::registerUser(): Neeedo API sent response '
+                            + response.statusCode + ' ' + response.statusMessage + "\nRequest JSON was: " + json +"\n\n");
 
-                    _this.onErrorCallback(error);
+                        _this.onErrorCallback(error);
                 }
             }, {});
     } catch (e) {

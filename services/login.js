@@ -67,7 +67,7 @@ Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallb
                         error
                             .addErrorMessage(messages.login_internal_error)
                             .addLogMessage('Service/Login::loginUser(): Neeedo API sent response '
-                            + response.statusCode + ' ' + response.statusMessage + "\nRequest JSON was: " + json +"\n\n");
+                            + response.statusCode + ' ' + response.statusMessage + "\n\n");
                     }
                     
                     _this.onErrorCallback(error);
