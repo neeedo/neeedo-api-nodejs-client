@@ -21,7 +21,7 @@ describe('#Offer', function() {
 
         var offer = new Offer();
         offer.setId(offerId)
-              .setVersion(version)
+              .addErrorMessage(version)
               .setUser(user)
               .setTags(tags)
               .setLocation(location)

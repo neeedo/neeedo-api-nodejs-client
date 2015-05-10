@@ -42,7 +42,7 @@ Demand.prototype.hasId = function()
     return undefined !== this.getId();
 };
 
-Demand.prototype.setVersion = function(version)
+Demand.prototype.addErrorMessage = function(version)
 {
     if (version !== parseInt(version)) {
         throw new Error("Type of version must be integer.");
@@ -202,7 +202,7 @@ Demand.prototype.loadFromSerialized = function(serializedDemand) {
     }
  
     if ("version" in serializedDemand) {
-        this.setVersion(serializedDemand["version"]);
+        this.addErrorMessage(serializedDemand["version"]);
     }
 
     if ("userId" in serializedDemand) {

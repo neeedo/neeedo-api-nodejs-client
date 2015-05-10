@@ -1,5 +1,7 @@
 var http = require('../client/http'),
     DemandModel = require('../models/demand'),
+    Error = require('../models/error'),
+    messages = require('../config/messages.json'),
     globalOptions = require('../client/options');
 
 /*
@@ -20,7 +22,7 @@ function Demand()
  * 
  * - demandModel: see /models/demand.js
  * - onSuccessCallback: given function will be called with a given /models/offer.js object filled by the API
- * - onErrorCallback: given function will be called with the HTTP response object to trigger error handling
+ * - onErrorCallback: given function will be called with the /models/error.js instance
  */
 Demand.prototype.createDemand = function(demandModel,onSuccessCallback, onErrorCallback)
 {
@@ -54,7 +56,15 @@ Demand.prototype.createDemand = function(demandModel,onSuccessCallback, onErrorC
                         _this.onSuccessCallback(createdDemand);
                     });
                 } else {
-                    _this.onErrorCallback(response);
+                    var error = new Error();
+
+                    error.setResponse(response)
+                         .addErrorMessage(messages.create_demand_internal_error)
+                         .addLogMessage('Service/Demand::createDemand(): Neeedo API sent response '
+                              + response.statusCode + ' ' + response.statusMessage + "\nRequest JSON was: " + json +"\n\n");
+
+
+                    _this.onErrorCallback(error);
                 }
             }, 
         {
@@ -71,7 +81,7 @@ Demand.prototype.createDemand = function(demandModel,onSuccessCallback, onErrorC
  *
  * - demandModel: see /models/demand.js
  * - onSuccessCallback: given function will be called with a given /models/offer.js object filled by the API
- * - onErrorCallback: given function will be called with the HTTP response object to trigger error handling
+ * - onErrorCallback: given function will be called with the /models/error.js instance
  */
 Demand.prototype.updateDemand = function(demandModel,onSuccessCallback, onErrorCallback)
 {
@@ -105,7 +115,21 @@ Demand.prototype.updateDemand = function(demandModel,onSuccessCallback, onErrorC
                         _this.onSuccessCallback(createdDemand);
                     });
                 } else {
-                    _this.onErrorCallback(response);
+                    var error = new Error();
+
+                    error.setResponse(response);
+                    if (404 == response.statusCode) {
+                        error.addErrorMessage(messages.demand_not_found);
+                    } else if (401 == response.statusCode) {
+                        error.addErrorMessage(messages.login_wrong_password);
+                    } else {
+                        error
+                            .addErrorMessage(messages.update_demand_internal_error)
+                            .addLogMessage('Service/Demand::updateDemand(): Neeedo API sent response '
+                            + response.statusCode + ' ' + response.statusMessage + "\nRequest JSON was: " + json +"\n\n");
+                    }
+
+                    _this.onErrorCallback(error);
                 }
             },
         {
@@ -122,7 +146,7 @@ Demand.prototype.updateDemand = function(demandModel,onSuccessCallback, onErrorC
  *
  * - offerModel: see /models/offer.js
  * - onSuccessCallback: given function will be called with the originally given offerModel on success
- * - onErrorCallback: given function will be called with the HTTP response object to trigger error handling
+ * - onErrorCallback: given function will be called with the /models/error.js instance
  */
 Demand.prototype.deleteDemand = function(demandModel,onSuccessCallback, onErrorCallback)
 {
@@ -145,7 +169,21 @@ Demand.prototype.deleteDemand = function(demandModel,onSuccessCallback, onErrorC
                 if (200 == response.statusCode) {
                     _this.onSuccessCallback(demandModel);
                 } else {
-                    _this.onErrorCallback(response);
+                    var error = new Error();
+
+                    error.setResponse(response);
+                    if (404 == response.statusCode) {
+                        error.addErrorMessage(messages.demand_not_found);
+                    } else if (401 == response.statusCode) {
+                        error.addErrorMessage(messages.login_wrong_password);
+                    } else {
+                        error
+                            .addErrorMessage(messages.delete_demand_internal_error)
+                            .addLogMessage('Service/Demand::deleteDemand(): Neeedo API sent response '
+                            + response.statusCode + ' ' + response.statusMessage + "\nRequest JSON was: " + json +"\n\n");
+                    }
+
+                    _this.onErrorCallback(error);
                 }
             },
             {

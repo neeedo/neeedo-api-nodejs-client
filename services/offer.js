@@ -1,5 +1,7 @@
 var http = require('../client/http'),
     OfferModel = require('../models/offer'),
+    Error = require('../models/error'),
+    messages = require('../config/messages.json'),
     globalOptions = require('../client/options');
 
 /*
@@ -20,7 +22,7 @@ function Offer()
  * 
  * - offerModel: see /models/offer.js
  * - onSuccessCallback: given function will be called with a given /models/offer.js object filled by the API
- * - onErrorCallback: given function will be called with the HTTP response object to trigger error handling
+ * - onErrorCallback: given function will be called with the /models/error.js instance
  */
 Offer.prototype.createOffer = function(offerModel,onSuccessCallback, onErrorCallback)
 {
@@ -54,7 +56,14 @@ Offer.prototype.createOffer = function(offerModel,onSuccessCallback, onErrorCall
                         _this.onSuccessCallback(createdOffer);
                     });
                 } else {
-                    _this.onErrorCallback(response);
+                    var error = new Error();
+
+                    error.setResponse(response)
+                        .addErrorMessage(messages.create_offer_internal_error)
+                        .addLogMessage('Service/Demand::createOffer(): Neeedo API sent response '
+                        + response.statusCode + ' ' + response.statusMessage + "\nRequest JSON was: " + json +"\n\n");
+
+                    _this.onErrorCallback(error);
                 }
             }, 
         {
@@ -71,7 +80,7 @@ Offer.prototype.createOffer = function(offerModel,onSuccessCallback, onErrorCall
  *
  * - offerModel: see /models/offer.js
  * - onSuccessCallback: given function will be called with a given /models/offer.js object filled by the API
- * - onErrorCallback: given function will be called with the HTTP response object to trigger error handling
+ * - onErrorCallback: given function will be called with the /models/error.js instance
  */
 Offer.prototype.updateOffer = function(offerModel,onSuccessCallback, onErrorCallback)
 {
@@ -105,7 +114,21 @@ Offer.prototype.updateOffer = function(offerModel,onSuccessCallback, onErrorCall
                         _this.onSuccessCallback(createdOffer);
                     });
                 } else {
-                    _this.onErrorCallback(response);
+                    var error = new Error();
+
+                    error.setResponse(response);
+                    if (404 == response.statusCode) {
+                        error.addErrorMessage(messages.offer_not_found);
+                    } else if (401 == response.statusCode) {
+                        error.addErrorMessage(messages.login_wrong_password);
+                    } else {
+                        error
+                            .addErrorMessage(messages.update_offer_internal_error)
+                            .addLogMessage('Service/Demand::updateOffer(): Neeedo API sent response '
+                            + response.statusCode + ' ' + response.statusMessage + "\nRequest JSON was: " + json +"\n\n");
+                    }
+
+                    _this.onErrorCallback(error);
                 }
             },
         {
@@ -122,7 +145,7 @@ Offer.prototype.updateOffer = function(offerModel,onSuccessCallback, onErrorCall
  *
  * - offerModel: see /models/offer.js
  * - onSuccessCallback: given function will be called with the originally given offerModel on success
- * - onErrorCallback: given function will be called with the HTTP response object to trigger error handling
+ * - onErrorCallback: given function will be called with the /models/error.js instance
  */
 Offer.prototype.deleteOffer = function(offerModel,onSuccessCallback, onErrorCallback)
 {
@@ -145,7 +168,21 @@ Offer.prototype.deleteOffer = function(offerModel,onSuccessCallback, onErrorCall
                 if (200 == response.statusCode) {
                     _this.onSuccessCallback(offerModel);
                 } else {
-                    _this.onErrorCallback(response);
+                    var error = new Error();
+
+                    error.setResponse(response);
+                    if (404 == response.statusCode) {
+                        error.addErrorMessage(messages.offer_not_found);
+                    } else if (401 == response.statusCode) {
+                        error.addErrorMessage(messages.login_wrong_password);
+                    } else {
+                        error
+                            .addErrorMessage(messages.delete_offer_internal_error)
+                            .addLogMessage('Service/Demand::deleteOffer(): Neeedo API sent response '
+                            + response.statusCode + ' ' + response.statusMessage + "\nRequest JSON was: " + json +"\n\n");
+                    }
+
+                    _this.onErrorCallback(error);
                 }
             },
             {
@@ -162,7 +199,7 @@ Offer.prototype.deleteOffer = function(offerModel,onSuccessCallback, onErrorCall
  *
  * - externalImage: see /models/external-image.js
  * - onSuccessCallback: given function will be called with the associated offerModel on success
- * - onErrorCallback: given function will be called with the HTTP response object to trigger error handling
+ * - onErrorCallback: given function will be called with the /models/error.js instance
  */
 Offer.prototype.addImageToOffer = function(externalImage,onSuccessCallback, onErrorCallback)
 {
@@ -196,7 +233,12 @@ Offer.prototype.addImageToOffer = function(externalImage,onSuccessCallback, onEr
                         _this.onSuccessCallback(createdOffer);
                     });
                 } else {
-                    _this.onErrorCallback(response);
+                    var error = new Error();
+                    error.setResponse(response).addErrorMessage(messages.add_image_to_offer_internal_error);
+                    error.addLogMessage('Service/Offer::addImageToOffer(): Neeedo API sent response '
+                    + response.statusCode + ' ' + response.statusMessage + "\nRequest JSON was: " + json +"\n\n");
+
+                    _this.onErrorCallback(error);;
                 }
             },
             {

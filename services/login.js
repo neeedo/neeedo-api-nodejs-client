@@ -1,5 +1,7 @@
 var http = require('../client/http'),
     User = require('../models/user'),
+    Error = require('../models/error'),
+    messages = require('../config/messages.json'),
     globalOptions = require('../client/options');
 
 /*
@@ -20,7 +22,7 @@ function Login()
  * 
  * - loginModel: see /models/login.js
  * - onSuccessCallback: given function will be called with a given /models/user.js object filled by the API
- * - onErrorCallback: given function will be called with the HTTP response object to trigger error handling
+ * - onErrorCallback: given function will be called with the /models/error.js instance
  */
 Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallback)
 {
@@ -43,7 +45,7 @@ Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallb
                         var userData = JSON.parse(data);
                         
                         if (globalOptions.isDebugMode()) {
-                            console.info("Services\Login::loginUser(): server sent response data " + data);
+                            console.info("Services/Login::loginUser(): server sent response data " + data);
                         }
                         
                         var loggedInUser = new User().loadFromSerialized(userData['user']);
@@ -54,7 +56,21 @@ Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallb
                         _this.onSuccessCallback(loggedInUser);
                     });
                 } else {
-                    _this.onErrorCallback(response);
+                    var error = new Error();
+                    
+                    error.setResponse(response);
+                    if (404 == response.statusCode) {
+                        error.addErrorMessage(messages.login_user_not_found);
+                    } else if (401 == response.statusCode) {
+                        error.addErrorMessage(messages.login_wrong_password);
+                    } else {
+                        error
+                            .addErrorMessage(messages.login_internal_error)
+                            .addLogMessage('Service/Login::loginUser(): Neeedo API sent response '
+                            + response.statusCode + ' ' + response.statusMessage + "\nRequest JSON was: " + json +"\n\n");
+                    }
+                    
+                    _this.onErrorCallback(error);
                 }
             }, 
         {

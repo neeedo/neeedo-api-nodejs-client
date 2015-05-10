@@ -31,7 +31,7 @@ User.prototype.hasId = function()
     return undefined !== this.getId();
 };
 
-User.prototype.setVersion = function(version)
+User.prototype.addErrorMessage = function(version)
 {
     if (version !== parseInt(version)) {
         throw new Error("Type of version must be integer.");
@@ -130,7 +130,7 @@ User.prototype.loadFromSerialized = function(serializedUser) {
     }
     
     if ("version" in serializedUser) {
-        this.setVersion(serializedUser["version"]);
+        this.addErrorMessage(serializedUser["version"]);
     }
     
     if ("username" in serializedUser) {

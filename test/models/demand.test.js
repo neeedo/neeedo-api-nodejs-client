@@ -26,7 +26,7 @@ describe('#Demand', function() {
 
         var demand = new Demand();
         demand.setId(demandId)
-              .setVersion(version)
+              .addErrorMessage(version)
               .setUser(user)
               .setMustTags(mustTags)
               .setShouldTags(shouldTags)

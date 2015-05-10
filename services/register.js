@@ -1,5 +1,7 @@
 var http = require('../client/http'),
     User = require('../models/user'),
+    Error = require('../models/error'),
+    messages = require('../config/messages.json'),
     globalOptions = require('../client/options');
 
 /*
@@ -20,7 +22,7 @@ function Register()
  * 
  * - registrationModel: see /models/register.js
  * - onSuccessCallback: given function will be called with a given /models/user.js object filled by the API
- * - onErrorCallback: given function will be called with the HTTP response object to trigger error handling
+ * - onErrorCallback: given function will be called with the /models/error.js instance
  */
 Register.prototype.registerUser = function(registrationModel, onSuccessCallback, onErrorCallback)
 {
@@ -53,7 +55,12 @@ Register.prototype.registerUser = function(registrationModel, onSuccessCallback,
                         _this.onSuccessCallback(registeredUser);
                     });
                 } else {
-                    _this.onErrorCallback(response);
+                    var error = new Error();
+                    error.setResponse(response).addErrorMessage(messages.register_internal_error);
+                    error.addLogMessage('Service/Register::registerUser(): Neeedo API sent response '
+                        + response.statusCode + ' ' + response.statusMessage + "\nRequest JSON was: " + json +"\n\n");
+
+                    _this.onErrorCallback(error);
                 }
             }, {});
     } catch (e) {
