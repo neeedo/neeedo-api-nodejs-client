@@ -24,7 +24,7 @@ function Offer()
  * - onSuccessCallback: given function will be called with a given /models/offer.js object filled by the API
  * - onErrorCallback: given function will be called with the /models/error.js instance
  */
-Offer.prototype.createOffer = function(offerModel,onSuccessCallback, onErrorCallback)
+Offer.prototype.createOffer = function(offerModel, onSuccessCallback, onErrorCallback)
 {
     this.onSuccessCallback = onSuccessCallback;
     this.onErrorCallback = onErrorCallback;
