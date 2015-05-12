@@ -156,33 +156,33 @@ Offer.prototype.serializeForApi = function() {
  * Function: loadFromSerialized
  * Load the demand by the given serialized one.
  */
-Offer.prototype.loadFromSerialized = function(serializedDemand) {
-    if (serializedDemand === null || typeof serializedDemand !== 'object') {
+Offer.prototype.loadFromSerialized = function(serializedOffer) {
+    if (serializedOffer === null || typeof serializedOffer !== 'object') {
         throw new Error("Type of serializedDemand must be object.");
     }
     
-    if ("id" in serializedDemand) {
-        this.setId(serializedDemand["id"]);
+    if ("id" in serializedOffer) {
+        this.setId(serializedOffer["id"]);
     }
  
-    if ("version" in serializedDemand) {
-        this.addErrorMessage(serializedDemand["version"]);
+    if ("version" in serializedOffer) {
+        this.addErrorMessage(serializedOffer["version"]);
     }
 
-    if ("userId" in serializedDemand) {
-        this.getUser().setId(serializedDemand["userId"]);
+    if ("userId" in serializedOffer) {
+        this.getUser().setId(serializedOffer["userId"]);
     }
 
-    if ("tags" in serializedDemand) {
-        this.setTags(serializedDemand["tags"]);
+    if ("tags" in serializedOffer) {
+        this.setTags(serializedOffer["tags"]);
     }
 
-    if ("location" in serializedDemand) {
-        this.setLocation(new Location().loadFromSerialized(serializedDemand["location"]));
+    if ("location" in serializedOffer) {
+        this.setLocation(new Location().loadFromSerialized(serializedOffer["location"]));
     }
 
-    if ("price" in serializedDemand) {
-        this.setPrice(serializedDemand["price"]);
+    if ("price" in serializedOffer) {
+        this.setPrice(serializedOffer["price"]);
     }
 
     return this;

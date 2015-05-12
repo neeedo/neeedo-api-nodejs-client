@@ -5,6 +5,7 @@ var options = require('./client/options'),
     User = require('./models/user'),
     Register = require('./models/register'),
     Login = require('./models/login'),
+    Error = require('./models/error'),
     LoginService = require('./services/login'),
     RegisterService = require('./services/register')
     ;
@@ -32,7 +33,8 @@ module.exports.models = {
     "Location" : Location,
     "User": User,
     "Register" : Register,
-    "Login": Login
+    "Login": Login,
+    "Error": Error
 };
 
 module.exports.services = {
