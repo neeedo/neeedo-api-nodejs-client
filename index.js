@@ -9,18 +9,18 @@ var options = require('./client/options'),
     RegisterService = require('./services/register')
     ;
 
-module.exports.initClient = function(neeedoApiUrl, allowSelfSignedHttpsCertificates, isDebug)
+module.exports.initClient = function(neeedoApiUrl, allowSelfSignedHttpsCertificates, logger)
 {
-    console.info("Initializing client with apiUrl " + neeedoApiUrl + "...");
+    logger.info("Initializing client with apiUrl " + neeedoApiUrl + "...");
 
     options.setApiUrl(neeedoApiUrl);
     
     if (allowSelfSignedHttpsCertificates) {
-        console.info("Allowing self signed HTTPS certificates...");
+        logger.info("Allowing self signed HTTPS certificates...");
         options.setAllowSelfSignedCertificates(true);
     }   
     
-    options.setDebug(isDebug);
+    options.setLogger(logger);
 }
 
 /**
@@ -41,5 +41,3 @@ module.exports.services = {
 };
 
 module.exports.options = options;
-
-console.log("Neeedo API NodeJs client lifted...");

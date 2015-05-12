@@ -70,7 +70,7 @@ HttpAdapter.prototype.getAdapter = function()
         // use https library if API URL starts with HTTPS
         this.adapter = this.isHttps() ? https : http;
         
-        console.info('HttpAdapter: Using adapter ' + (this.isHttps() ? 'https' : 'http'));
+        globalOptions.getLogger().info('HttpAdapter: Using adapter ' + (this.isHttps() ? 'https' : 'http'));
     }
     
     return this.adapter;
@@ -92,11 +92,8 @@ HttpAdapter.prototype.doGet = function (path, callback, options) {
     var req = this.getAdapter().request(httpOptions, callback);
     req.end();
 
-    if (globalOptions.isDebugMode()) {
-        console.info("HttpAdapter: Sending GET request..."
-            + "\n" + util.inspect(httpOptions, {showHidden: false, depth: 3})
-        );
-    }
+    globalOptions.getLogger().info("HttpAdapter: Sending GET request..."
+            + "\n" + util.inspect(httpOptions, {showHidden: false, depth: 3}));
 };
 
 /**
@@ -118,12 +115,10 @@ HttpAdapter.prototype.doPost = function (path, json, callback, options) {
    var req = this.getAdapter().request(httpOptions, callback);
     req.write(json);
     req.end();
-    
-    if (globalOptions.isDebugMode()) {
-        console.info("HttpAdapter: Sending POST request..."
+
+    globalOptions.getLogger().info("HttpAdapter: Sending POST request..."
         + "\n" + util.inspect(httpOptions, {showHidden: false, depth: 3})
         );
-    }
 };
 
 /**
@@ -146,11 +141,9 @@ HttpAdapter.prototype.doPut = function (path, json, callback, options) {
     req.write(json);
     req.end();
 
-    if (globalOptions.isDebugMode()) {
-        console.info("HttpAdapter: Sending PUT request..."
+    globalOptions.getLogger().info("HttpAdapter: Sending PUT request..."
             + "\n" + util.inspect(httpOptions, {showHidden: false, depth: 3})
         );
-    }
 };
 
 /**
@@ -170,11 +163,9 @@ HttpAdapter.prototype.doDelete = function (path, callback, options) {
    var req = this.getAdapter().request(httpOptions, callback);
    req.end();
 
-    if (globalOptions.isDebugMode()) {
-        console.info("HttpAdapter: Sending DELETE request..."
+    globalOptions.getLogger().info("HttpAdapter: Sending DELETE request..."
             + "\n" + util.inspect(httpOptions, {showHidden: false, depth: 3})
         );
-    }
 };
 
 var httpAdapter = new HttpAdapter();

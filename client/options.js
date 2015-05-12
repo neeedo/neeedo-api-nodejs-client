@@ -10,7 +10,7 @@ function Options()
 {
     this.neeedoApiUrl = undefined;
     this.allowSelfSignedCertificates = undefined;
-    this.isDebug = undefined;
+    this.logger = undefined;
 }
 
 Options.prototype.getApiUrl = function () {
@@ -45,12 +45,12 @@ Options.prototype.isDevelopment = function () {
     return false;
 }
 
-Options.prototype.setDebug = function(isDebug) {
-    this.isDebug = isDebug;
+Options.prototype.setLogger = function(logger) {
+    this.logger = logger;
 };
 
-Options.prototype.isDebugMode = function() {
-    return this.isDevelopment() && this.isDebug;
+Options.prototype.getLogger = function() {
+    return this.logger;
 };
 
 var options = new Options();

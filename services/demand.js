@@ -46,10 +46,9 @@ Demand.prototype.createDemand = function(demandModel,onSuccessCallback, onErrorC
                     response.on('data', function (data) {
                         // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-offer
                         var demandData = JSON.parse(data);
-                        
-                        if (globalOptions.isDebugMode()) {
-                            console.info("Services/Demand::createDemand(): server sent response data " + data);
-                        }
+
+                        globalOptions.getLogger().info("Services/Demand::createDemand(): server sent response data " + data);
+
                         
                         var createdDemand = new DemandModel().loadFromSerialized(demandData['demand']);
 
@@ -105,10 +104,8 @@ Demand.prototype.updateDemand = function(demandModel,onSuccessCallback, onErrorC
                     response.on('data', function (data) {
                         // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#update-offer
                         var demandData = JSON.parse(data);
-
-                        if (globalOptions.isDebugMode()) {
-                            console.info("Services/Demand::updateDemand(): server sent response data " + data);
-                        }
+                        
+                        globalOptions.getLogger().info("Services/Demand::updateDemand(): server sent response data " + data);
 
                         var createdDemand = new DemandModel().loadFromSerialized(demandData['demand']);
 

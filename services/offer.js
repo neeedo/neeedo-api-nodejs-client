@@ -46,10 +46,8 @@ Offer.prototype.createOffer = function(offerModel,onSuccessCallback, onErrorCall
                     response.on('data', function (data) {
                         // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-offer
                         var offerData = JSON.parse(data);
-                        
-                        if (globalOptions.isDebugMode()) {
-                            console.info("Services/Offer::createoffer(): server sent response data " + data);
-                        }
+
+                        globalOptions.getLogger().info("Services/Offer::createoffer(): server sent response data " + data);
                         
                         var createdOffer = new OfferModel().loadFromSerialized(offerData['offer']);
 
@@ -105,9 +103,7 @@ Offer.prototype.updateOffer = function(offerModel,onSuccessCallback, onErrorCall
                         // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#update-offer
                         var offerData = JSON.parse(data);
 
-                        if (globalOptions.isDebugMode()) {
-                            console.info("Services/Offer::updateOffer(): server sent response data " + data);
-                        }
+                        globalOptions.getLogger().info("Services/Offer::updateOffer(): server sent response data " + data);
 
                         var createdOffer = new OfferModel().loadFromSerialized(offerData['offer']);
 
@@ -224,9 +220,7 @@ Offer.prototype.addImageToOffer = function(externalImage,onSuccessCallback, onEr
                         // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#add-image-to-offer
                         var offerData = JSON.parse(data);
 
-                        if (globalOptions.isDebugMode()) {
-                            console.info("Services/Offer::addImageToOffer(): server sent response data " + data);
-                        }
+                        globalOptions.getLogger().info("Services/Offer::addImageToOffer(): server sent response data " + data);
 
                         var createdOffer = new OfferModel().loadFromSerialized(offerData['offer']);
 
