@@ -66,8 +66,8 @@ Demand.prototype.createDemand = function(demandModel,onSuccessCallback, onErrorC
 
                     _this.onErrorCallback(error);
                 }
-            }, 
-        {
+                },
+            {
             authorizationToken: demandModel.getUser().getAccessToken()
         });
     } catch (e) {

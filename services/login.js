@@ -59,10 +59,8 @@ Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallb
                     var error = new Error();
                     
                     error.setResponse(response);
-                    if (404 == response.statusCode) {
-                        error.addErrorMessage(messages.login_user_not_found);
-                    } else if (401 == response.statusCode) {
-                        error.addErrorMessage(messages.login_wrong_password);
+                    if (404 == response.statusCode || 403 == response.statusCode) {
+                        error.addErrorMessage(messages.login_wrong_credentials);
                     } else {
                         error
                             .addErrorMessage(messages.login_internal_error)
