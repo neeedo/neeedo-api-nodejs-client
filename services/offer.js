@@ -16,6 +16,53 @@ function Offer()
     this.onErrorCallback = undefined;
 }
 
+Offer.prototype.load = function(offerId, user, onSuccessCallback, onErrorCallback)
+{
+    this.onSuccessCallback = onSuccessCallback;
+    this.onErrorCallback = onErrorCallback;
+
+    if ("string" !== typeof(id) ) {
+        throw new Error("Type of offerId must be string.");
+    }
+
+    var getOfferUrl = this.apiEndpoint + "/" + offerId;
+
+    // closure
+    var _this = this;
+    try {
+        http.doGet(getOfferUrl,
+            function(response) {
+                // success on 200 OK
+                if (200 == response.statusCode) {
+                    response.on('data', function (data) {
+                        // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-offer
+                        var offerData = JSON.parse(data);
+
+                        globalOptions.getLogger().info("Services/Offer::load(): server sent response data " + data);
+
+                        var loadedOffer = new OfferModel().loadFromSerialized(offerData['offer']);
+
+                        _this.onSuccessCallback(loadedOffer);
+                    });
+                } else {
+                    var error = new Error();
+
+                    error.setResponse(response)
+                        .addErrorMessage(messages.get_offer_error)
+                        .addLogMessage('Service/Offer::load(): Neeedo API sent response '
+                        + response.statusCode + ' ' + response.statusMessage + "\nRequest JSON was: " + json +"\n\n");
+
+                    _this.onErrorCallback(error);
+                }
+            },
+            {
+                authorizationToken: user.getAccessToken()
+            });
+    } catch (e) {
+        this.onErrorCallback(new Error().addLogMessage(e.message).addErrorMessage(messages.get_offer_internal_error));
+    }
+};
+
 /*
  * Function: createOffer
  * Triggers the creation of a new offer.

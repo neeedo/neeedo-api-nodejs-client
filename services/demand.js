@@ -16,6 +16,54 @@ function Demand()
     this.onErrorCallback = undefined;
 }
 
+
+Demand.prototype.load = function(demandId, user, onSuccessCallback, onErrorCallback)
+{
+    this.onSuccessCallback = onSuccessCallback;
+    this.onErrorCallback = onErrorCallback;
+
+    if ("string" !== typeof(demandId) ) {
+        throw new Error("Type of demandId must be string.");
+    }
+
+    var getDemandIdUrl = this.apiEndpoint + "/" + demandId;
+
+    // closure
+    var _this = this;
+    try {
+        http.doGet(getDemandIdUrl,
+            function(response) {
+                // success on 200 OK
+                if (200 == response.statusCode) {
+                    response.on('data', function (data) {
+                        // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-offer
+                        var demandData = JSON.parse(data);
+
+                        globalOptions.getLogger().info("Services/Demand::load(): server sent response data " + data);
+
+                        var loadedDemand = new DemandModel().loadFromSerialized(demandData['demand']);
+
+                        _this.onSuccessCallback(loadedDemand);
+                    });
+                } else {
+                    var error = new Error();
+
+                    error.setResponse(response)
+                        .addErrorMessage(messages.get_demand_error)
+                        .addLogMessage('Service/Demand::load(): Neeedo API sent response '
+                        + response.statusCode + ' ' + response.statusMessage + "\nRequest JSON was: " + json +"\n\n");
+
+                    _this.onErrorCallback(error);
+                }
+            },
+            {
+                authorizationToken: user.getAccessToken()
+            });
+    } catch (e) {
+        this.onErrorCallback(new Error().addLogMessage(e.message).addErrorMessage(messages.get_demand_internal_error));
+    }
+};
+
 /*
  * Function: createDemand
  * Triggers the creation of a new demand.
