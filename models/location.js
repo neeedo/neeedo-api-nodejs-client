@@ -61,14 +61,20 @@ Location.prototype.loadFromSerialized = function(serializedLocation) {
         throw new Error("Type of serializedLocation must be object.");
     }
 
-    if ("lat" in serializedLocation
-         || "latitude" in serializedLocation) {
+    if ("lat" in serializedLocation) {
         this.setLatitude(serializedLocation["lat"]);
     }
 
-    if ("lon" in serializedLocation
-        || "longitude" in serializedLocation) {
+    if ("latitude" in serializedLocation) {
+        this.setLatitude(serializedLocation["latitude"]);
+    }
+
+    if ("lon" in serializedLocation) {
         this.setLongitude(serializedLocation["lon"]);
+    }
+
+    if ("longitude" in serializedLocation) {
+        this.setLongitude(serializedLocation["longitude"]);
     }
 
     return this;
