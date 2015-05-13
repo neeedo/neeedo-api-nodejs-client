@@ -12,7 +12,7 @@ function Location()
 Location.prototype.setLatitude = function(latitude)
 {
     if (latitude !== parseFloat(latitude)) {
-        throw new Error("Type of latitude must be float.");
+        throw new Error("Type of latitude must be float, value was: " + latitude);
     }
 
     this.latitude = latitude;
@@ -27,7 +27,7 @@ Location.prototype.getLatitude = function()
 Location.prototype.setLongitude = function(longitude)
 {
     if (longitude !== parseFloat(longitude)) {
-        throw new Error("Type of longitude must be float.");
+        throw new Error("Type of longitude must be float, value was: " + longitude);
     }
 
     this.longitude = longitude;
@@ -61,11 +61,13 @@ Location.prototype.loadFromSerialized = function(serializedLocation) {
         throw new Error("Type of serializedLocation must be object.");
     }
 
-    if ("lat" in serializedLocation) {
+    if ("lat" in serializedLocation
+         || "latitude" in serializedLocation) {
         this.setLatitude(serializedLocation["lat"]);
     }
 
-    if ("lon" in serializedLocation) {
+    if ("lon" in serializedLocation
+        || "longitude" in serializedLocation) {
         this.setLongitude(serializedLocation["lon"]);
     }
 
