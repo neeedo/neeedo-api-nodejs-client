@@ -160,7 +160,7 @@ Demand.prototype.deleteDemand = function(demandModel,onSuccessCallback, onErrorC
     // closure
     var _this = this;
     try {
-        http.doDelete(deleteOfferPath, json,
+        http.doDelete(deleteOfferPath,
             function(response) {
                 // success on 200 = OK
                 if (200 == response.statusCode) {
