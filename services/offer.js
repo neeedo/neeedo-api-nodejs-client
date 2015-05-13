@@ -68,7 +68,7 @@ Offer.prototype.createOffer = function(offerModel, onSuccessCallback, onErrorCal
             authorizationToken: offerModel.getUser().getAccessToken()
         });
     } catch (e) {
-        onErrorCallback(e);
+        this.onErrorCallback(new Error().addLogMessage(e.message).addErrorMessage(messages.create_offer_internal_error));
     }
 };
 
@@ -131,7 +131,7 @@ Offer.prototype.updateOffer = function(offerModel,onSuccessCallback, onErrorCall
             authorizationToken: offerModel.getUser().getAccessToken()
         });
     } catch (e) {
-        onErrorCallback(e);
+        this.onErrorCallback(new Error().addLogMessage(e.message).addErrorMessage(messages.update_offer_internal_error));
     }
 };
 
@@ -158,7 +158,7 @@ Offer.prototype.deleteOffer = function(offerModel,onSuccessCallback, onErrorCall
     // closure
     var _this = this;
     try {
-        http.doDelete(deleteOfferPath, json,
+        http.doDelete(deleteOfferPath,
             function(response) {
                 // success on 200 = OK
                 if (200 == response.statusCode) {
@@ -185,7 +185,7 @@ Offer.prototype.deleteOffer = function(offerModel,onSuccessCallback, onErrorCall
                 authorizationToken: offerModel.getUser().getAccessToken()
             });
     } catch (e) {
-        onErrorCallback(e);
+        this.onErrorCallback(new Error().addLogMessage(e.message).addErrorMessage(messages.delete_offer_internal_error));
     }
 };
 
@@ -239,7 +239,7 @@ Offer.prototype.addImageToOffer = function(externalImage,onSuccessCallback, onEr
                 authorizationToken: externalImage.getAssociatedEntity().getUser().getAccessToken()
             });
     } catch (e) {
-        onErrorCallback(e);
+        this.onErrorCallback(new Error().addLogMessage(e.message).addErrorMessage(messages.add_image_to_offer_internal_error));
     }
 };
 

@@ -70,7 +70,7 @@ Demand.prototype.createDemand = function(demandModel,onSuccessCallback, onErrorC
             authorizationToken: demandModel.getUser().getAccessToken()
         });
     } catch (e) {
-        onErrorCallback(e);
+        this.onErrorCallback(new Error().addLogMessage(e.message).addErrorMessage(messages.create_demand_internal_error));
     }
 };
 
@@ -133,7 +133,7 @@ Demand.prototype.updateDemand = function(demandModel,onSuccessCallback, onErrorC
             authorizationToken: demandModel.getUser().getAccessToken()
         });
     } catch (e) {
-        onErrorCallback(e);
+        this.onErrorCallback(new Error().addLogMessage(e.message).addErrorMessage(messages.update_demand_internal_error));
     }
 };
 
@@ -187,7 +187,7 @@ Demand.prototype.deleteDemand = function(demandModel,onSuccessCallback, onErrorC
                 authorizationToken: demandModel.getUser().getAccessToken()
             });
     } catch (e) {
-        onErrorCallback(e);
+        this.onErrorCallback(new Error().addLogMessage(e.message).addErrorMessage(messages.delete_demand_internal_error));
     }
 };
 

@@ -62,7 +62,7 @@ Register.prototype.registerUser = function(registrationModel, onSuccessCallback,
                 }
             }, {});
     } catch (e) {
-        onErrorCallback(e);
+        this.onErrorCallback(new Error().addLogMessage(e.message).addErrorMessage(messages.register_internal_error));
     }
 };
 

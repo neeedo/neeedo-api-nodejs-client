@@ -73,7 +73,7 @@ Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallb
           authorizationToken: loginModel.generateAccessToken()
         });
     } catch (e) {
-        onErrorCallback(e);
+        this.onErrorCallback(new Error().addLogMessage(e.message).addErrorMessage(messages.login_internal_error));
     }
 };
 
