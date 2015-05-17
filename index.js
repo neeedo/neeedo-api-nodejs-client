@@ -6,6 +6,7 @@ var options = require('./client/options'),
     Register = require('./models/register'),
     Login = require('./models/login'),
     Error = require('./models/error'),
+    DemandPrice = require('./models/demand/price'),
     LoginService = require('./services/login'),
     RegisterService = require('./services/register'),
     OfferService = require('./services/offer'),
@@ -31,6 +32,7 @@ module.exports.initClient = function(neeedoApiUrl, allowSelfSignedHttpsCertifica
  */
 module.exports.models = {
     "Demand" : Demand,
+    "DemandPrice" : DemandPrice,
     "Offer": Offer,
     "Location" : Location,
     "User": User,

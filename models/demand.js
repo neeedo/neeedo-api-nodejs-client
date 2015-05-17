@@ -128,7 +128,7 @@ Demand.prototype.getLocation = function()
 Demand.prototype.setDistance = function(distance)
 {
     if (distance !== parseInt(distance)) {
-        throw new Error("Type of distance must be object.");
+        throw new Error("Type of distance must be int.");
 
     }
 

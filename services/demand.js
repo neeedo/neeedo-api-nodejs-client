@@ -41,7 +41,8 @@ Demand.prototype.load = function(demandId, user, onSuccessCallback, onErrorCallb
 
                         globalOptions.getLogger().info("Services/Demand::load(): server sent response data " + data);
 
-                        var loadedDemand = new DemandModel().loadFromSerialized(demandData['demand']);
+                        var loadedDemand = new DemandModel().loadFromSerialized(demandData['demand'])
+                            .setUser(user);
 
                         _this.onSuccessCallback(loadedDemand);
                     });
@@ -51,7 +52,7 @@ Demand.prototype.load = function(demandId, user, onSuccessCallback, onErrorCallb
                     error.setResponse(response)
                         .addErrorMessage(messages.get_demand_error)
                         .addLogMessage('Service/Demand::load(): Neeedo API sent response '
-                        + response.statusCode + ' ' + response.statusMessage + "\nRequest JSON was: " + json +"\n\n");
+                        + response.statusCode + ' ' + response.statusMessage + "\n\n");
 
                     _this.onErrorCallback(error);
                 }
@@ -72,7 +73,7 @@ Demand.prototype.load = function(demandId, user, onSuccessCallback, onErrorCallb
  * - onSuccessCallback: given function will be called with a given /models/offer.js object filled by the API
  * - onErrorCallback: given function will be called with the /models/error.js instance
  */
-Demand.prototype.createDemand = function(demandModel,onSuccessCallback, onErrorCallback)
+Demand.prototype.createDemand = function(demandModel, onSuccessCallback, onErrorCallback)
 {
     this.onSuccessCallback = onSuccessCallback;
     this.onErrorCallback = onErrorCallback;
@@ -130,7 +131,7 @@ Demand.prototype.createDemand = function(demandModel,onSuccessCallback, onErrorC
  * - onSuccessCallback: given function will be called with a given /models/offer.js object filled by the API
  * - onErrorCallback: given function will be called with the /models/error.js instance
  */
-Demand.prototype.updateDemand = function(demandModel,onSuccessCallback, onErrorCallback)
+Demand.prototype.updateDemand = function(demandModel, onSuccessCallback, onErrorCallback)
 {
     this.onSuccessCallback = onSuccessCallback;
     this.onErrorCallback = onErrorCallback;
@@ -147,6 +148,7 @@ Demand.prototype.updateDemand = function(demandModel,onSuccessCallback, onErrorC
     try {
         http.doPut(updateDemandPath, json,
             function(response) {
+
                 // success on 200 = OK
                 if (200 == response.statusCode) {
                     response.on('data', function (data) {
@@ -166,7 +168,7 @@ Demand.prototype.updateDemand = function(demandModel,onSuccessCallback, onErrorC
                     if (404 == response.statusCode) {
                         error.addErrorMessage(messages.demand_not_found);
                     } else if (401 == response.statusCode) {
-                        error.addErrorMessage(messages.login_wrong_password);
+                        error.addErrorMessage(messages.login_wrong_credentials);
                     } else {
                         error
                             .addErrorMessage(messages.update_demand_internal_error)
@@ -220,7 +222,7 @@ Demand.prototype.deleteDemand = function(demandModel,onSuccessCallback, onErrorC
                     if (404 == response.statusCode) {
                         error.addErrorMessage(messages.demand_not_found);
                     } else if (401 == response.statusCode) {
-                        error.addErrorMessage(messages.login_wrong_password);
+                        error.addErrorMessage(messages.login_wrong_credentials);
                     } else {
                         error
                             .addErrorMessage(messages.delete_demand_internal_error)
