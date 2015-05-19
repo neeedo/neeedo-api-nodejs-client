@@ -46,7 +46,7 @@ Register.prototype.registerUser = function(registrationModel, onSuccessCallback,
                         // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-user
                         var userData = JSON.parse(completeData);
 
-                        globalOptions.getLogger().info("Services/Register::registerUser(): server sent response data " + data);
+                        globalOptions.getLogger().info("Services/Register::registerUser(): server sent response data " + completeData);
                         
                         var registeredUser = new User().loadFromSerialized(userData['user']);
 

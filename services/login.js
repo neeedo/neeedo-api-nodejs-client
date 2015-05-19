@@ -44,7 +44,7 @@ Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallb
                     response.on('end', function (data) {
                         var userData = JSON.parse(completeData);
                         
-                        globalOptions.getLogger().info("Services/Login::loginUser(): server sent response data " + data);
+                        globalOptions.getLogger().info("Services/Login::loginUser(): server sent response data " + completeData);
                         
                         var loggedInUser = new User().loadFromSerialized(userData['user']);
                         

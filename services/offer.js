@@ -11,7 +11,7 @@ var http = require('../client/http'),
  */
 function Offer()
 {
-    this.apiEndpoint = '/offers';
+    this.apiEndpoint = '/demands';
 }
 
 Offer.prototype.load = function(offerId, user, onSuccessCallback, onErrorCallback)
@@ -38,7 +38,7 @@ Offer.prototype.load = function(offerId, user, onSuccessCallback, onErrorCallbac
                         // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-offer
                         var offerData = JSON.parse(completeData);
 
-                        globalOptions.getLogger().info("Services/Offer::load(): server sent response data " + data);
+                        globalOptions.getLogger().info("Services/Offer::load(): server sent response data " + completeData);
 
                         var loadedOffer = new OfferModel().loadFromSerialized(offerData['offer']).setUser(user);
 
@@ -68,7 +68,7 @@ Offer.prototype.load = function(offerId, user, onSuccessCallback, onErrorCallbac
 Offer.prototype.createOffer = function(offerModel, onSuccessCallback, onErrorCallback)
 {
     if (offerModel === null || typeof offerModel !== 'object') {
-        throw new Error("Type of registrationModel must be object.");
+        throw new Error("Type of offerModel must be object.");
     }
     
     var createOfferUrlPath = this.apiEndpoint;
@@ -90,7 +90,7 @@ Offer.prototype.createOffer = function(offerModel, onSuccessCallback, onErrorCal
                         // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-offer
                         var offerData = JSON.parse(completeData);
 
-                        globalOptions.getLogger().info("Services/Offer::createoffer(): server sent response data " + data);
+                        globalOptions.getLogger().info("Services/Offer::createoffer(): server sent response data " + completeData);
                         
                         var createdOffer = new OfferModel().loadFromSerialized(offerData['offer']);
 
@@ -143,7 +143,7 @@ Offer.prototype.updateOffer = function(offerModel,onSuccessCallback, onErrorCall
                         // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#update-offer
                         var offerData = JSON.parse(completeData);
 
-                        globalOptions.getLogger().info("Services/Offer::updateOffer(): server sent response data " + data);
+                        globalOptions.getLogger().info("Services/Offer::updateOffer(): server sent response data " + completeData);
 
                         var createdOffer = new OfferModel().loadFromSerialized(offerData['offer']);
 
@@ -239,11 +239,16 @@ Offer.prototype.addImageToOffer = function(externalImage,onSuccessCallback, onEr
             function(response) {
                 // success on 201 = Created
                 if (201 == response.statusCode) {
-                    response.on('data', function (data) {
+                    var completeData = '';
+                    response.on('data', function(chunk) {
+                        completeData += chunk;
+                    });
+                    
+                    response.on('end', function () {
                         // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#add-image-to-offer
-                        var offerData = JSON.parse(data);
+                        var offerData = JSON.parse(completeData);
 
-                        globalOptions.getLogger().info("Services/Offer::addImageToOffer(): server sent response data " + data);
+                        globalOptions.getLogger().info("Services/Offer::addImageToOffer(): server sent response data " + completeData);
 
                         var createdOffer = new OfferModel().loadFromSerialized(offerData['offer']);
 

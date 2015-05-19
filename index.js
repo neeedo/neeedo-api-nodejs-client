@@ -1,6 +1,8 @@
 var options = require('./client/options'), 
     Demand = require('./models/demand'),
+    DemandList = require('./models/demand-list'),
     Offer = require('./models/offer'),
+    OfferList = require('./models/offer-list'),
     Location = require('./models/location'),
     User = require('./models/user'),
     Register = require('./models/register'),
@@ -10,6 +12,8 @@ var options = require('./client/options'),
     LoginService = require('./services/login'),
     RegisterService = require('./services/register'),
     OfferService = require('./services/offer'),
+    OfferListService = require('./services/offer-list'),
+    DemandListService = require('./services/demand-list'),
     DemandService = require('./services/demand')
     ;
 
@@ -32,8 +36,10 @@ module.exports.initClient = function(neeedoApiUrl, allowSelfSignedHttpsCertifica
  */
 module.exports.models = {
     "Demand" : Demand,
+    "DemandList" : DemandList,
     "DemandPrice" : DemandPrice,
     "Offer": Offer,
+    "OfferList": OfferList,
     "Location" : Location,
     "User": User,
     "Register" : Register,
@@ -45,7 +51,9 @@ module.exports.services = {
     "Register": RegisterService,
     "Login": LoginService,
     "Demand": DemandService,
-    "Offer": OfferService
+    "DemandList": DemandListService,
+    "Offer": OfferService,
+    "OfferList": OfferListService
 };
 
 module.exports.options = options;

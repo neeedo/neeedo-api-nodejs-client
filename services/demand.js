@@ -39,7 +39,7 @@ Demand.prototype.load = function(demandId, user, onSuccessCallback, onErrorCallb
                         // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-offer
                         var demandData = JSON.parse(completeData);
 
-                        globalOptions.getLogger().info("Services/Demand::load(): server sent response data " + data);
+                        globalOptions.getLogger().info("Services/Demand::load(): server sent response data " + completeData);
 
                         var loadedDemand = new DemandModel().loadFromSerialized(demandData['demand'])
                             .setUser(user);
@@ -92,7 +92,7 @@ Demand.prototype.createDemand = function(demandModel, onSuccessCallback, onError
                         // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-offer
                         var demandData = JSON.parse(completeData);
 
-                        globalOptions.getLogger().info("Services/Demand::createDemand(): server sent response data " + data);
+                        globalOptions.getLogger().info("Services/Demand::createDemand(): server sent response data " + completeData);
                         
                         var createdDemand = new DemandModel().loadFromSerialized(demandData['demand']);
 
@@ -145,7 +145,7 @@ Demand.prototype.updateDemand = function(demandModel, onSuccessCallback, onError
                         // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#update-offer
                         var demandData = JSON.parse(completeData);
                         
-                        globalOptions.getLogger().info("Services/Demand::updateDemand(): server sent response data " + data);
+                        globalOptions.getLogger().info("Services/Demand::updateDemand(): server sent response data " + completeData);
 
                         var createdDemand = new DemandModel().loadFromSerialized(demandData['demand']);
 

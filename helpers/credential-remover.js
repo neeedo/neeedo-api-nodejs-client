@@ -17,7 +17,7 @@ CredentialRemover.prototype.removeCredential = function(inputStr) {
 };
 
 CredentialRemover.prototype.removePassword = function(inputStr) {
-    return inputStr.replace(/"password":".*?"/i, '"password":"*******"');
+    return inputStr.replace(/"password":".*?"/i, '"password":"' + this.getStarifyStr() + '"');
 };
 
 CredentialRemover.prototype.getStarifyStr = function () {
