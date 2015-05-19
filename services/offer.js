@@ -11,7 +11,7 @@ var http = require('../client/http'),
  */
 function Offer()
 {
-    this.apiEndpoint = '/demands';
+    this.apiEndpoint = '/offers';
 }
 
 Offer.prototype.load = function(offerId, user, onSuccessCallback, onErrorCallback)

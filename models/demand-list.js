@@ -10,12 +10,12 @@ var Demand = require('./demand');
  */
 function DemandList()
 {
-    this.demands = undefined;
+    this.offers = undefined;
 }
 
 DemandList.prototype.getDemands = function()
 {
-    return this.demands;
+    return this.offers;
 };
 
 /*
@@ -35,11 +35,11 @@ DemandList.prototype.loadFromSerialized = function(serializedDemands) {
         throw new Error("Type of serializedDemands must be object.");
     }
     
-   this.demands = [];
+   this.offers = [];
     
    for (var i=0; i < serializedDemands.length; i++) {
      var serializedDemand = serializedDemands[i];
-     this.demands.push(new Demand().loadFromSerialized(serializedDemand));
+     this.offers.push(new Demand().loadFromSerialized(serializedDemand));
    }
 
     return this;

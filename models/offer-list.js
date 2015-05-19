@@ -10,12 +10,12 @@ var Offer = require('./offer');
  */
 function OfferList()
 {
-    this.demands = undefined;
+    this.offers = undefined;
 }
 
-OfferList.prototype.getDemands = function()
+OfferList.prototype.getOffers = function()
 {
-    return this.demands;
+    return this.offers;
 };
 
 /*
@@ -35,11 +35,11 @@ OfferList.prototype.loadFromSerialized = function(serializedOffers) {
         throw new Error("Type of serializedDemand must be object.");
     }
     
-   this.demands = [];
+   this.offers = [];
     
    for (var i=0; i < serializedOffers.length; i++) {
      var serializedOffer = serializedOffers[i];
-     this.demands.push(new Offer().loadFromSerialized(serializedOffer));
+     this.offers.push(new Offer().loadFromSerialized(serializedOffer));
    }
 
     return this;

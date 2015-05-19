@@ -7,7 +7,7 @@ var http = require('../client/http'),
 /*
  * Class: DemandList
  *
- * This class realizes the connectivity to Demand list services (multiple demands).
+ * This class realizes the connectivity to Demand list services (multiple offers).
  */
 function DemandList()
 {
@@ -17,7 +17,7 @@ function DemandList()
 /**
  * Function: loadByUser
  * 
- * Load given user's demands.
+ * Load given user's offers.
  *  
  * @param user
  * @param onSuccessCallback will be called with models/offer-list instance

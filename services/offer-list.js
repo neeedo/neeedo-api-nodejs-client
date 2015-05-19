@@ -17,7 +17,7 @@ function OfferList()
 /**
  * Function: loadByUser
  * 
- * Load given user's demands.
+ * Load given user's offers.
  *  
  * @param user
  * @param onSuccessCallback will be called with models/offer-list instance
