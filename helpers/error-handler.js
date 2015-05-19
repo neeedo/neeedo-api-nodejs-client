@@ -1,4 +1,5 @@
 var Error = require('../models/error'),
+    messages = require('../config/messages.json'),
     credentialRemover = require('../helpers/credential-remover');
 
 function ErrorHandler() {
@@ -46,9 +47,10 @@ ErrorHandler.prototype.newError = function(onCompleteCallback, response, errorMe
         var innerOptions = options;
         innerOptions['responseJson'] = completeData;
 
-        // passthrough neeedo API error messages if given
-        if ('error' in errorData) {
-            innerErrorMessage = errorData['error'];
+        // passthrough neeedo API error messages if given and only if an entry in message.json exist
+        if ('error' in errorData && errorData['error'] in messages) {
+            // use own error message, adapt from neeedo API response {error: "errorMessage"}
+            innerErrorMessage = messages[errorData['error']];
         }
 
         error.addLogMessage(_this.buildLogMessage(innerOptions, response))
