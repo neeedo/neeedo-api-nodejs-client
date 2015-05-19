@@ -54,7 +54,7 @@ OfferList.prototype.loadByUser = function(user, onSuccessCallback, onErrorCallba
                         onSuccessCallback(loadedOfferList);
                     });
                 } else {
-                    errorHandler.newError(onErrorCallback, response, messages.get_offer_error,
+                    errorHandler.newError(onErrorCallback, response, messages.get_offers_error,
                         { "methodPath" : "Service/OfferList::loadByUser()" });
                 }
             },
@@ -62,7 +62,7 @@ OfferList.prototype.loadByUser = function(user, onSuccessCallback, onErrorCallba
                 authorizationToken: user.getAccessToken()
             });
     } catch (e) {
-        errorHandler.newMessageAndLogError(onErrorCallback, messages.get_offer_internal_error, e.message);
+        errorHandler.newMessageAndLogError(onErrorCallback, messages.get_offers_internal_error, e.message);
     }
 };
 

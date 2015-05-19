@@ -53,7 +53,7 @@ DemandList.prototype.loadByUser = function(user, onSuccessCallback, onErrorCallb
                         onSuccessCallback(loadedDemandList);
                     });
                 } else {
-                    errorHandler.newError(onErrorCallback, response, messages.get_offer_error,
+                    errorHandler.newError(onErrorCallback, response, messages.get_demands_error,
                         { "methodPath" : "Service/DemandList::loadByUser()" });
                 }
             },
@@ -61,7 +61,7 @@ DemandList.prototype.loadByUser = function(user, onSuccessCallback, onErrorCallb
                 authorizationToken: user.getAccessToken()
             });
     } catch (e) {
-        errorHandler.newMessageAndLogError(onErrorCallback, messages.get_offer_internal_error, e.message);
+        errorHandler.newMessageAndLogError(onErrorCallback, messages.get_demands_internal_error, e.message);
     }
 };
 

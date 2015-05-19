@@ -10,10 +10,14 @@
     "update_offer_internal_error" : "The offer couldn't be updated. Please contact Neeedo customer care.",
     "delete_offer_internal_error" : "The offer couldn't be deleted. Please contact Neeedo customer care.",
     "add_image_to_offer_internal_error" : "The image couldn't be added to your offer. Please contact Neeedo customer care.",
+    "get_demand_error" : "The demand couldn't be loaded. Please contact Neeedo customer care.",
+    "get_demands_error" : "The demands couldn't be loaded. Please contact Neeedo customer care.",
     "get_offer_error" : "The offer couldn't be loaded. Please contact Neeedo customer care.",
     "get_offer_internal_error" : "The offer couldn't be loaded. Please contact Neeedo customer care.",
-    "get_demand_error" : "The demand couldn't be loaded. Please contact Neeedo customer care.",
+    "get_offers_error" : "The offers couldn't be loaded. Please contact Neeedo customer care.",
+    "get_offers_internal_error" : "The offers couldn't be loaded. Please contact Neeedo customer care.",
     "get_demand_internal_error" : "The demand couldn't be loaded. Please contact Neeedo customer care.",
+    "get_demands_internal_error" : "The demands couldn't be loaded. Please contact Neeedo customer care.",
     "login_wrong_credentials" : "Your login credentials are incorrect.",
     "A user with this email adress already exists" : "A user with this email adress already exists"
 }

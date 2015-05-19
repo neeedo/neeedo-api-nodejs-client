@@ -41,17 +41,20 @@ ErrorHandler.prototype.newError = function(onCompleteCallback, response, errorMe
     
     response.on('end', function () {
         // error data should be returned by neeedo API
-        var errorData = JSON.parse(completeData);
-
         var innerErrorMessage = errorMessage;
+        try {
+            var errorData = JSON.parse(completeData);
+            // passthrough neeedo API error messages if given and only if an entry in message.json exist
+            if ('error' in errorData && errorData['error'] in messages) {
+                // use own error message, adapt from neeedo API response {error: "errorMessage"}
+                innerErrorMessage = messages[errorData['error']];
+            }
+        } catch (e) {
+           // data cannot be parsed
+        }
+
         var innerOptions = options;
         innerOptions['responseJson'] = completeData;
-
-        // passthrough neeedo API error messages if given and only if an entry in message.json exist
-        if ('error' in errorData && errorData['error'] in messages) {
-            // use own error message, adapt from neeedo API response {error: "errorMessage"}
-            innerErrorMessage = messages[errorData['error']];
-        }
 
         error.addLogMessage(_this.buildLogMessage(innerOptions, response))
             .addErrorMessage(innerErrorMessage);

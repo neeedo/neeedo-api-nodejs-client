@@ -42,7 +42,7 @@ OfferList.prototype.loadFromSerialized = function(serializedOffers) {
      this.offers.push(new Offer().loadFromSerialized(serializedOffer));
    }
 
-    return this;
+   return this;
 };
 
 module.exports = OfferList;
