@@ -50,7 +50,7 @@ Demand.prototype.load = function(demandId, user, onSuccessCallback, onErrorCallb
                 authorizationToken: user.getAccessToken()
             });
     } catch (e) {
-        onErrorCallback(errorHandler.newError(messages.get_demand_internal_error, e.message));
+        onErrorCallback(errorHandler.newMessageAndLogError(messages.get_demand_internal_error, e.message));
     }
 };
 
@@ -98,7 +98,7 @@ Demand.prototype.createDemand = function(demandModel, onSuccessCallback, onError
             authorizationToken: demandModel.getUser().getAccessToken()
         });
     } catch (e) {
-        onErrorCallback(errorHandler.newError(messages.create_demand_internal_error, e.message));
+        onErrorCallback(errorHandler.newMessageAndLogError(messages.create_demand_internal_error, e.message));
     }
 };
 
@@ -139,9 +139,9 @@ Demand.prototype.updateDemand = function(demandModel, onSuccessCallback, onError
                     });
                 } else {
                     if (404 == response.statusCode) {
-                        onErrorCallback(errorHandler.newError(messages.demand_not_found));
+                        onErrorCallback(errorHandler.newMessageError(messages.demand_not_found));
                     } else if (401 == response.statusCode) {
-                        onErrorCallback(errorHandler.newError(messages.login_wrong_credentials));
+                        onErrorCallback(errorHandler.newMessageError(messages.login_wrong_credentials));
                     } else {
                         onErrorCallback(errorHandler.newError(response, messages.update_demand_internal_error,
                             { "methodPath" : "Service/Demand::updateDemand()",
@@ -153,7 +153,7 @@ Demand.prototype.updateDemand = function(demandModel, onSuccessCallback, onError
             authorizationToken: demandModel.getUser().getAccessToken()
         });
     } catch (e) {
-        onErrorCallback(errorHandler.newError(messages.update_demand_internal_error, e.message));
+        onErrorCallback(errorHandler.newMessageAndLogError(messages.update_demand_internal_error, e.message));
     }
 };
 
@@ -183,9 +183,9 @@ Demand.prototype.deleteDemand = function(demandModel,onSuccessCallback, onErrorC
                     onSuccessCallback(demandModel);
                 } else {
                     if (404 == response.statusCode) {
-                        onErrorCallback(errorHandler.newError(messages.demand_not_found));
+                        onErrorCallback(errorHandler.newMessageError(messages.demand_not_found));
                     } else if (401 == response.statusCode) {
-                        onErrorCallback(errorHandler.newError(messages.login_wrong_credentials));
+                        onErrorCallback(errorHandler.newMessageError(messages.login_wrong_credentials));
                     } else {
                         onErrorCallback(errorHandler.newError(response, messages.delete_demand_internal_error,
                             { "methodPath" : "Service/Login::loginUser()" }));
@@ -196,7 +196,7 @@ Demand.prototype.deleteDemand = function(demandModel,onSuccessCallback, onErrorC
                 authorizationToken: demandModel.getUser().getAccessToken()
             });
     } catch (e) {
-        onErrorCallback(errorHandler.newError(messages.delete_demand_internal_error, e.message));
+        onErrorCallback(errorHandler.newMessageAndLogError(messages.delete_demand_internal_error, e.message));
     }
 };
 

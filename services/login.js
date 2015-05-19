@@ -50,7 +50,7 @@ Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallb
                     });
                 } else {
                     if (404 == response.statusCode || 403 == response.statusCode) {
-                        onErrorCallback(errorHandler.newError(messages.login_wrong_credentials));
+                        onErrorCallback(errorHandler.newMessageError(messages.login_wrong_credentials));
                     } else {
                         onErrorCallback(errorHandler.newError(response, messages.login_internal_error,
                             { "methodPath" : "Service/Login::loginUser()" }));
@@ -61,7 +61,7 @@ Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallb
           authorizationToken: loginModel.generateAccessToken()
         });
     } catch (e) {
-        onErrorCallback(errorHandler.newError(messages.login_internal_error, e.message));
+        onErrorCallback(errorHandler.newMessageAndLogError(messages.login_internal_error, e.message));
     }
 };
 

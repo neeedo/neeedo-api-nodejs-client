@@ -48,7 +48,7 @@ Offer.prototype.load = function(offerId, user, onSuccessCallback, onErrorCallbac
                 authorizationToken: user.getAccessToken()
             });
     } catch (e) {
-        onErrorCallback(errorHandler.newError(messages.get_offer_internal_error, e.message));
+        onErrorCallback(errorHandler.newMessageAndLogError(messages.get_offer_internal_error, e.message));
     }
 };
 
@@ -96,7 +96,7 @@ Offer.prototype.createOffer = function(offerModel, onSuccessCallback, onErrorCal
             authorizationToken: offerModel.getUser().getAccessToken()
         });
     } catch (e) {
-        onErrorCallback(errorHandler.newError(messages.create_offer_internal_error, e.message));
+        onErrorCallback(errorHandler.newMessageAndLogError(messages.create_offer_internal_error, e.message));
     }
 };
 
@@ -136,9 +136,9 @@ Offer.prototype.updateOffer = function(offerModel,onSuccessCallback, onErrorCall
                     });
                 } else {
                     if (404 == response.statusCode) {
-                        onErrorCallback(errorHandler.newError(messages.offer_not_found));
+                        onErrorCallback(errorHandler.newMessageError(messages.offer_not_found));
                     } else if (401 == response.statusCode) {
-                        onErrorCallback(errorHandler.newError(messages.login_wrong_password));
+                        onErrorCallback(errorHandler.newMessageError(messages.login_wrong_password));
                     } else {
                         onErrorCallback(errorHandler.newError(response, messages.update_offer_internal_error,
                             { "methodPath" : "Service/Offer::updateOffer()",
@@ -150,7 +150,7 @@ Offer.prototype.updateOffer = function(offerModel,onSuccessCallback, onErrorCall
             authorizationToken: offerModel.getUser().getAccessToken()
         });
     } catch (e) {
-        onErrorCallback(errorHandler.newError(messages.update_offer_internal_error, e.message));
+        onErrorCallback(errorHandler.newMessageAndLogError(messages.update_offer_internal_error, e.message));
     }
 };
 
@@ -183,9 +183,9 @@ Offer.prototype.deleteOffer = function(offerModel,onSuccessCallback, onErrorCall
 
                     error.setResponse(response);
                     if (404 == response.statusCode) {
-                        onErrorCallback(errorHandler.newError(messages.offer_not_found));
+                        onErrorCallback(errorHandler.newMessageError(messages.offer_not_found));
                     } else if (401 == response.statusCode) {
-                        onErrorCallback(errorHandler.newError(messages.login_wrong_password));
+                        onErrorCallback(errorHandler.newMessageError(messages.login_wrong_password));
                     } else {
                         onErrorCallback(errorHandler.newError(response, messages.delete_offer_internal_error,
                             { "methodPath" : "Service/Offer::deleteOffer()" }));
@@ -196,7 +196,7 @@ Offer.prototype.deleteOffer = function(offerModel,onSuccessCallback, onErrorCall
                 authorizationToken: offerModel.getUser().getAccessToken()
             });
     } catch (e) {
-        onErrorCallback(errorHandler.newError(messages.delete_offer_internal_error, e.message));
+        onErrorCallback(errorHandler.newMessageAndLogError(messages.delete_offer_internal_error, e.message));
     }
 };
 
@@ -244,7 +244,7 @@ Offer.prototype.addImageToOffer = function(externalImage,onSuccessCallback, onEr
                 authorizationToken: externalImage.getAssociatedEntity().getUser().getAccessToken()
             });
     } catch (e) {
-        onErrorCallback(errorHandler.newError(messages.add_image_to_offer_internal_error, e.message));
+        onErrorCallback(errorHandler.newMessageAndLogError(messages.add_image_to_offer_internal_error, e.message));
     }
 };
 

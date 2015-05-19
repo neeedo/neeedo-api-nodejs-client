@@ -32,7 +32,7 @@ ErrorHandler.prototype.newError = function(response, errorMessage, options) {
     return error;
 };
 
-ErrorHandler.prototype.newError = function(errorMessage) {
+ErrorHandler.prototype.newMessageError = function(errorMessage) {
     var error = new Error();
 
     error.addErrorMessage(errorMessage);
@@ -40,7 +40,7 @@ ErrorHandler.prototype.newError = function(errorMessage) {
     return error;
 };
 
-ErrorHandler.prototype.newError = function(errorMessage, logMessage) {
+ErrorHandler.prototype.newMessageAndLogError = function(errorMessage, logMessage) {
     var error = new Error();
 
     error.addErrorMessage(errorMessage)
