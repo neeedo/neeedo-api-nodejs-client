@@ -1,6 +1,6 @@
 var http = require('../client/http'),
     OfferModel = require('../models/offer'),
-    Error = require('../models/error'),
+    errorHandler = require('../helpers/error-handler'),
     messages = require('../config/messages.json'),
     globalOptions = require('../client/options');
 
@@ -12,15 +12,10 @@ var http = require('../client/http'),
 function Offer()
 {
     this.apiEndpoint = '/offers';
-    this.onSuccessCallback = undefined;
-    this.onErrorCallback = undefined;
 }
 
 Offer.prototype.load = function(offerId, user, onSuccessCallback, onErrorCallback)
 {
-    this.onSuccessCallback = onSuccessCallback;
-    this.onErrorCallback = onErrorCallback;
-
     if ("string" !== typeof(id) ) {
         throw new Error("Type of offerId must be string.");
     }
@@ -42,24 +37,18 @@ Offer.prototype.load = function(offerId, user, onSuccessCallback, onErrorCallbac
 
                         var loadedOffer = new OfferModel().loadFromSerialized(offerData['offer']).setUser(user);
 
-                        _this.onSuccessCallback(loadedOffer);
+                        onSuccessCallback(loadedOffer);
                     });
                 } else {
-                    var error = new Error();
-
-                    error.setResponse(response)
-                        .addErrorMessage(messages.get_offer_error)
-                        .addLogMessage('Service/Offer::load(): Neeedo API sent response '
-                        + response.statusCode + ' ' + response.statusMessage + "\nRequest JSON was: " + json +"\n\n");
-
-                    _this.onErrorCallback(error);
+                    onErrorCallback(errorHandler.newError(response, messages.get_offer_error,
+                        { "methodPath" : "Service/Offer::load()" }));
                 }
             },
             {
                 authorizationToken: user.getAccessToken()
             });
     } catch (e) {
-        this.onErrorCallback(new Error().addLogMessage(e.message).addErrorMessage(messages.get_offer_internal_error));
+        onErrorCallback(errorHandler.newError(messages.get_offer_internal_error, e.message));
     }
 };
 
@@ -73,9 +62,6 @@ Offer.prototype.load = function(offerId, user, onSuccessCallback, onErrorCallbac
  */
 Offer.prototype.createOffer = function(offerModel, onSuccessCallback, onErrorCallback)
 {
-    this.onSuccessCallback = onSuccessCallback;
-    this.onErrorCallback = onErrorCallback;
-    
     if (offerModel === null || typeof offerModel !== 'object') {
         throw new Error("Type of registrationModel must be object.");
     }
@@ -98,24 +84,19 @@ Offer.prototype.createOffer = function(offerModel, onSuccessCallback, onErrorCal
                         
                         var createdOffer = new OfferModel().loadFromSerialized(offerData['offer']);
 
-                        _this.onSuccessCallback(createdOffer);
+                        onSuccessCallback(createdOffer);
                     });
                 } else {
-                    var error = new Error();
-
-                    error.setResponse(response)
-                        .addErrorMessage(messages.create_offer_internal_error)
-                        .addLogMessage('Service/Demand::createOffer(): Neeedo API sent response '
-                        + response.statusCode + ' ' + response.statusMessage + "\nRequest JSON was: " + json +"\n\n");
-
-                    _this.onErrorCallback(error);
+                    onErrorCallback(errorHandler.newError(response, messages.create_offer_internal_error,
+                        { "methodPath" : "Service/Offer::createOffer()",
+                          "requestJson" : json }));
                 }
             }, 
         {
             authorizationToken: offerModel.getUser().getAccessToken()
         });
     } catch (e) {
-        this.onErrorCallback(new Error().addLogMessage(e.message).addErrorMessage(messages.create_offer_internal_error));
+        onErrorCallback(errorHandler.newError(messages.create_offer_internal_error, e.message));
     }
 };
 
@@ -129,9 +110,6 @@ Offer.prototype.createOffer = function(offerModel, onSuccessCallback, onErrorCal
  */
 Offer.prototype.updateOffer = function(offerModel,onSuccessCallback, onErrorCallback)
 {
-    this.onSuccessCallback = onSuccessCallback;
-    this.onErrorCallback = onErrorCallback;
-
     if (offerModel === null || typeof offerModel !== 'object') {
         throw new Error("Type of registrationModel must be object.");
     }
@@ -154,31 +132,25 @@ Offer.prototype.updateOffer = function(offerModel,onSuccessCallback, onErrorCall
 
                         var createdOffer = new OfferModel().loadFromSerialized(offerData['offer']);
 
-                        _this.onSuccessCallback(createdOffer);
+                        onSuccessCallback(createdOffer);
                     });
                 } else {
-                    var error = new Error();
-
-                    error.setResponse(response);
                     if (404 == response.statusCode) {
-                        error.addErrorMessage(messages.offer_not_found);
+                        onErrorCallback(errorHandler.newError(messages.offer_not_found));
                     } else if (401 == response.statusCode) {
-                        error.addErrorMessage(messages.login_wrong_password);
+                        onErrorCallback(errorHandler.newError(messages.login_wrong_password));
                     } else {
-                        error
-                            .addErrorMessage(messages.update_offer_internal_error)
-                            .addLogMessage('Service/Demand::updateOffer(): Neeedo API sent response '
-                            + response.statusCode + ' ' + response.statusMessage + "\nRequest JSON was: " + json +"\n\n");
+                        onErrorCallback(errorHandler.newError(response, messages.update_offer_internal_error,
+                            { "methodPath" : "Service/Offer::updateOffer()",
+                                "requestJson" : json }));
                     }
-
-                    _this.onErrorCallback(error);
                 }
             },
         {
             authorizationToken: offerModel.getUser().getAccessToken()
         });
     } catch (e) {
-        this.onErrorCallback(new Error().addLogMessage(e.message).addErrorMessage(messages.update_offer_internal_error));
+        onErrorCallback(errorHandler.newError(messages.update_offer_internal_error, e.message));
     }
 };
 
@@ -192,15 +164,11 @@ Offer.prototype.updateOffer = function(offerModel,onSuccessCallback, onErrorCall
  */
 Offer.prototype.deleteOffer = function(offerModel,onSuccessCallback, onErrorCallback)
 {
-    this.onSuccessCallback = onSuccessCallback;
-    this.onErrorCallback = onErrorCallback;
-
     if (offerModel === null || typeof offerModel !== 'object') {
         throw new Error("Type of registrationModel must be object.");
     }
 
     var deleteOfferPath = this.apiEndpoint + offerModel.getQueryStringForApi();
-    var json = JSON.stringify(offerModel.serializeForApi());
 
     // closure
     var _this = this;
@@ -215,24 +183,20 @@ Offer.prototype.deleteOffer = function(offerModel,onSuccessCallback, onErrorCall
 
                     error.setResponse(response);
                     if (404 == response.statusCode) {
-                        error.addErrorMessage(messages.offer_not_found);
+                        onErrorCallback(errorHandler.newError(messages.offer_not_found));
                     } else if (401 == response.statusCode) {
-                        error.addErrorMessage(messages.login_wrong_password);
+                        onErrorCallback(errorHandler.newError(messages.login_wrong_password));
                     } else {
-                        error
-                            .addErrorMessage(messages.delete_offer_internal_error)
-                            .addLogMessage('Service/Demand::deleteOffer(): Neeedo API sent response '
-                            + response.statusCode + ' ' + response.statusMessage + "\nRequest JSON was: " + json +"\n\n");
+                        onErrorCallback(errorHandler.newError(response, messages.delete_offer_internal_error,
+                            { "methodPath" : "Service/Offer::deleteOffer()" }));
                     }
-
-                    _this.onErrorCallback(error);
                 }
             },
             {
                 authorizationToken: offerModel.getUser().getAccessToken()
             });
     } catch (e) {
-        this.onErrorCallback(new Error().addLogMessage(e.message).addErrorMessage(messages.delete_offer_internal_error));
+        onErrorCallback(errorHandler.newError(messages.delete_offer_internal_error, e.message));
     }
 };
 
@@ -246,9 +210,6 @@ Offer.prototype.deleteOffer = function(offerModel,onSuccessCallback, onErrorCall
  */
 Offer.prototype.addImageToOffer = function(externalImage,onSuccessCallback, onErrorCallback)
 {
-    this.onSuccessCallback = onSuccessCallback;
-    this.onErrorCallback = onErrorCallback;
-
     if (externalImage === null || typeof externalImage !== 'object') {
         throw new Error("Type of externalImage must be object.");
     }
@@ -271,22 +232,19 @@ Offer.prototype.addImageToOffer = function(externalImage,onSuccessCallback, onEr
 
                         var createdOffer = new OfferModel().loadFromSerialized(offerData['offer']);
 
-                        _this.onSuccessCallback(createdOffer);
+                        onSuccessCallback(createdOffer);
                     });
                 } else {
-                    var error = new Error();
-                    error.setResponse(response).addErrorMessage(messages.add_image_to_offer_internal_error);
-                    error.addLogMessage('Service/Offer::addImageToOffer(): Neeedo API sent response '
-                    + response.statusCode + ' ' + response.statusMessage + "\nRequest JSON was: " + json +"\n\n");
-
-                    _this.onErrorCallback(error);;
+                    onErrorCallback(errorHandler.newError(response, messages.add_image_to_offer_internal_error,
+                        { "methodPath" : "Service/Offer::addImageToOffer()",
+                            "requestJson" : json }));
                 }
             },
             {
                 authorizationToken: externalImage.getAssociatedEntity().getUser().getAccessToken()
             });
     } catch (e) {
-        this.onErrorCallback(new Error().addLogMessage(e.message).addErrorMessage(messages.add_image_to_offer_internal_error));
+        onErrorCallback(errorHandler.newError(messages.add_image_to_offer_internal_error, e.message));
     }
 };
 

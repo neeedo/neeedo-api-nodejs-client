@@ -1,6 +1,6 @@
 var http = require('../client/http'),
     User = require('../models/user'),
-    Error = require('../models/error'),
+    errorHandler = require('../helpers/error-handler'),
     messages = require('../config/messages.json'),
     globalOptions = require('../client/options');
 
@@ -12,8 +12,6 @@ var http = require('../client/http'),
 function Register()
 {
     this.apiEndpoint = '/users';
-    this.onSuccessCallback = undefined;
-    this.onErrorCallback = undefined;
 }
 
 /*
@@ -26,9 +24,6 @@ function Register()
  */
 Register.prototype.registerUser = function(registrationModel, onSuccessCallback, onErrorCallback)
 {
-    this.onSuccessCallback = onSuccessCallback;
-    this.onErrorCallback = onErrorCallback;
-    
     if (registrationModel === null || typeof registrationModel !== 'object') {
         throw new Error("Type of registrationModel must be object.");
     }
@@ -50,19 +45,16 @@ Register.prototype.registerUser = function(registrationModel, onSuccessCallback,
                         
                         var registeredUser = new User().loadFromSerialized(userData['user']);
 
-                        _this.onSuccessCallback(registeredUser);
+                        onSuccessCallback(registeredUser);
                     });
                 } else {
-                        var error = new Error();
-                        error.setResponse(response).addErrorMessage(messages.register_internal_error);
-                        error.addLogMessage('Service/Register::registerUser(): Neeedo API sent response '
-                            + response.statusCode + ' ' + response.statusMessage + "\nRequest JSON was: " + json +"\n\n");
-
-                        _this.onErrorCallback(error);
+                        onErrorCallback(errorHandler.newError(response, messages.register_internal_error,
+                            { "methodPath" : "Service/Register::registerUser()",
+                              "requestJson" : json }));
                 }
             }, {});
     } catch (e) {
-        this.onErrorCallback(new Error().addLogMessage(e.message).addErrorMessage(messages.register_internal_error));
+        onErrorCallback(errorHandler.newError(messages.register_internal_error, e.message));
     }
 };
 

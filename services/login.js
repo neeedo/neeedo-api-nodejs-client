@@ -1,6 +1,6 @@
 var http = require('../client/http'),
     User = require('../models/user'),
-    Error = require('../models/error'),
+    errorHandler = require('../helpers/error-handler'),
     messages = require('../config/messages.json'),
     globalOptions = require('../client/options');
 
@@ -12,8 +12,6 @@ var http = require('../client/http'),
 function Login()
 {
     this.apiEndpoint = '/users';
-    this.onSuccessCallback = undefined;
-    this.onErrorCallback = undefined;
 }
 
 /*
@@ -26,9 +24,6 @@ function Login()
  */
 Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallback)
 {
-    this.onSuccessCallback = onSuccessCallback;
-    this.onErrorCallback = onErrorCallback;
-    
     if (loginModel === null || typeof loginModel !== 'object') {
         throw new Error("Type of loginModel must be object.");
     }
@@ -51,29 +46,22 @@ Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallb
                         // store access token in user model
                         loggedInUser.setAccessToken(loginModel.generateAccessToken());
 
-                        _this.onSuccessCallback(loggedInUser);
+                        onSuccessCallback(loggedInUser);
                     });
                 } else {
-                    var error = new Error();
-                    
-                    error.setResponse(response);
                     if (404 == response.statusCode || 403 == response.statusCode) {
-                        error.addErrorMessage(messages.login_wrong_credentials);
+                        onErrorCallback(errorHandler.newError(messages.login_wrong_credentials));
                     } else {
-                        error
-                            .addErrorMessage(messages.login_internal_error)
-                            .addLogMessage('Service/Login::loginUser(): Neeedo API sent response '
-                            + response.statusCode + ' ' + response.statusMessage + "\n\n");
+                        onErrorCallback(errorHandler.newError(response, messages.login_internal_error,
+                            { "methodPath" : "Service/Login::loginUser()" }));
                     }
-                    
-                    _this.onErrorCallback(error);
                 }
             }, 
         {
           authorizationToken: loginModel.generateAccessToken()
         });
     } catch (e) {
-        this.onErrorCallback(new Error().addLogMessage(e.message).addErrorMessage(messages.login_internal_error));
+        onErrorCallback(errorHandler.newError(messages.login_internal_error, e.message));
     }
 };
 

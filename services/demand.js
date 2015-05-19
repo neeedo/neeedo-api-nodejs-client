@@ -1,6 +1,6 @@
 var http = require('../client/http'),
     DemandModel = require('../models/demand'),
-    Error = require('../models/error'),
+    errorHandler = require('../helpers/error-handler'),
     messages = require('../config/messages.json'),
     globalOptions = require('../client/options');
 
@@ -12,16 +12,11 @@ var http = require('../client/http'),
 function Demand()
 {
     this.apiEndpoint = '/demands';
-    this.onSuccessCallback = undefined;
-    this.onErrorCallback = undefined;
 }
 
 
 Demand.prototype.load = function(demandId, user, onSuccessCallback, onErrorCallback)
 {
-    this.onSuccessCallback = onSuccessCallback;
-    this.onErrorCallback = onErrorCallback;
-
     if ("string" !== typeof(demandId) ) {
         throw new Error("Type of demandId must be string.");
     }
@@ -44,24 +39,18 @@ Demand.prototype.load = function(demandId, user, onSuccessCallback, onErrorCallb
                         var loadedDemand = new DemandModel().loadFromSerialized(demandData['demand'])
                             .setUser(user);
 
-                        _this.onSuccessCallback(loadedDemand);
+                        onSuccessCallback(loadedDemand);
                     });
                 } else {
-                    var error = new Error();
-
-                    error.setResponse(response)
-                        .addErrorMessage(messages.get_demand_error)
-                        .addLogMessage('Service/Demand::load(): Neeedo API sent response '
-                        + response.statusCode + ' ' + response.statusMessage + "\n\n");
-
-                    _this.onErrorCallback(error);
+                    onErrorCallback(errorHandler.newError(response, messages.register_internal_error,
+                        { "methodPath" : "Service/Demand::load()" }));
                 }
             },
             {
                 authorizationToken: user.getAccessToken()
             });
     } catch (e) {
-        this.onErrorCallback(new Error().addLogMessage(e.message).addErrorMessage(messages.get_demand_internal_error));
+        onErrorCallback(errorHandler.newError(messages.get_demand_internal_error, e.message));
     }
 };
 
@@ -75,9 +64,6 @@ Demand.prototype.load = function(demandId, user, onSuccessCallback, onErrorCallb
  */
 Demand.prototype.createDemand = function(demandModel, onSuccessCallback, onErrorCallback)
 {
-    this.onSuccessCallback = onSuccessCallback;
-    this.onErrorCallback = onErrorCallback;
-    
     if (demandModel === null || typeof demandModel !== 'object') {
         throw new Error("Type of demandModel must be object.");
     }
@@ -97,29 +83,22 @@ Demand.prototype.createDemand = function(demandModel, onSuccessCallback, onError
                         var demandData = JSON.parse(data);
 
                         globalOptions.getLogger().info("Services/Demand::createDemand(): server sent response data " + data);
-
                         
                         var createdDemand = new DemandModel().loadFromSerialized(demandData['demand']);
 
-                        _this.onSuccessCallback(createdDemand);
+                        onSuccessCallback(createdDemand);
                     });
                 } else {
-                    var error = new Error();
-
-                    error.setResponse(response)
-                         .addErrorMessage(messages.create_demand_internal_error)
-                         .addLogMessage('Service/Demand::createDemand(): Neeedo API sent response '
-                              + response.statusCode + ' ' + response.statusMessage + "\nRequest JSON was: " + json +"\n\n");
-
-
-                    _this.onErrorCallback(error);
-                }
+                    onErrorCallback(errorHandler.newError(response, messages.register_internal_error,
+                        { "methodPath" : "Service/Demand::createDemand()",
+                            "requestJson" : json }));
+                    }
                 },
             {
             authorizationToken: demandModel.getUser().getAccessToken()
         });
     } catch (e) {
-        this.onErrorCallback(new Error().addLogMessage(e.message).addErrorMessage(messages.create_demand_internal_error));
+        onErrorCallback(errorHandler.newError(messages.create_demand_internal_error, e.message));
     }
 };
 
@@ -133,9 +112,6 @@ Demand.prototype.createDemand = function(demandModel, onSuccessCallback, onError
  */
 Demand.prototype.updateDemand = function(demandModel, onSuccessCallback, onErrorCallback)
 {
-    this.onSuccessCallback = onSuccessCallback;
-    this.onErrorCallback = onErrorCallback;
-
     if (demandModel === null || typeof demandModel !== 'object') {
         throw new Error("Type of registrationModel must be object.");
     }
@@ -159,31 +135,25 @@ Demand.prototype.updateDemand = function(demandModel, onSuccessCallback, onError
 
                         var createdDemand = new DemandModel().loadFromSerialized(demandData['demand']);
 
-                        _this.onSuccessCallback(createdDemand);
+                        onSuccessCallback(createdDemand);
                     });
                 } else {
-                    var error = new Error();
-
-                    error.setResponse(response);
                     if (404 == response.statusCode) {
-                        error.addErrorMessage(messages.demand_not_found);
+                        onErrorCallback(errorHandler.newError(messages.demand_not_found));
                     } else if (401 == response.statusCode) {
-                        error.addErrorMessage(messages.login_wrong_credentials);
+                        onErrorCallback(errorHandler.newError(messages.login_wrong_credentials));
                     } else {
-                        error
-                            .addErrorMessage(messages.update_demand_internal_error)
-                            .addLogMessage('Service/Demand::updateDemand(): Neeedo API sent response '
-                            + response.statusCode + ' ' + response.statusMessage + "\nRequest JSON was: " + json +"\n\n");
+                        onErrorCallback(errorHandler.newError(response, messages.update_demand_internal_error,
+                            { "methodPath" : "Service/Demand::updateDemand()",
+                                "requestJson" : json }));
                     }
-
-                    _this.onErrorCallback(error);
                 }
             },
         {
             authorizationToken: demandModel.getUser().getAccessToken()
         });
     } catch (e) {
-        this.onErrorCallback(new Error().addLogMessage(e.message).addErrorMessage(messages.update_demand_internal_error));
+        onErrorCallback(errorHandler.newError(messages.update_demand_internal_error, e.message));
     }
 };
 
@@ -197,15 +167,11 @@ Demand.prototype.updateDemand = function(demandModel, onSuccessCallback, onError
  */
 Demand.prototype.deleteDemand = function(demandModel,onSuccessCallback, onErrorCallback)
 {
-    this.onSuccessCallback = onSuccessCallback;
-    this.onErrorCallback = onErrorCallback;
-
     if (demandModel === null || typeof demandModel !== 'object') {
         throw new Error("Type of demandModel must be object.");
     }
 
     var deleteOfferPath = this.apiEndpoint + demandModel.getQueryStringForApi();
-    var json = JSON.stringify(demandModel.serializeForApi());
 
     // closure
     var _this = this;
@@ -214,30 +180,23 @@ Demand.prototype.deleteDemand = function(demandModel,onSuccessCallback, onErrorC
             function(response) {
                 // success on 200 = OK
                 if (200 == response.statusCode) {
-                    _this.onSuccessCallback(demandModel);
+                    onSuccessCallback(demandModel);
                 } else {
-                    var error = new Error();
-
-                    error.setResponse(response);
                     if (404 == response.statusCode) {
-                        error.addErrorMessage(messages.demand_not_found);
+                        onErrorCallback(errorHandler.newError(messages.demand_not_found));
                     } else if (401 == response.statusCode) {
-                        error.addErrorMessage(messages.login_wrong_credentials);
+                        onErrorCallback(errorHandler.newError(messages.login_wrong_credentials));
                     } else {
-                        error
-                            .addErrorMessage(messages.delete_demand_internal_error)
-                            .addLogMessage('Service/Demand::deleteDemand(): Neeedo API sent response '
-                            + response.statusCode + ' ' + response.statusMessage + "\nRequest JSON was: " + json +"\n\n");
+                        onErrorCallback(errorHandler.newError(response, messages.delete_demand_internal_error,
+                            { "methodPath" : "Service/Login::loginUser()" }));
                     }
-
-                    _this.onErrorCallback(error);
                 }
             },
             {
                 authorizationToken: demandModel.getUser().getAccessToken()
             });
     } catch (e) {
-        this.onErrorCallback(new Error().addLogMessage(e.message).addErrorMessage(messages.delete_demand_internal_error));
+        onErrorCallback(errorHandler.newError(messages.delete_demand_internal_error, e.message));
     }
 };
 
