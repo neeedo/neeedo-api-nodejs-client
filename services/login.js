@@ -36,8 +36,13 @@ Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallb
         http.doGet(loginUrlPath,
             function(response) {
                 if (200 == response.statusCode) {
-                    response.on('data', function (data) {
-                        var userData = JSON.parse(data);
+                    var completeData = '';
+                    response.on('data', function(chunk) {
+                        completeData += chunk;
+                    });
+                    
+                    response.on('end', function (data) {
+                        var userData = JSON.parse(completeData);
                         
                         globalOptions.getLogger().info("Services/Login::loginUser(): server sent response data " + data);
                         
@@ -50,10 +55,10 @@ Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallb
                     });
                 } else {
                     if (404 == response.statusCode || 403 == response.statusCode) {
-                        onErrorCallback(errorHandler.newMessageError(messages.login_wrong_credentials));
+                        errorHandler.newMessageError(onErrorCallback, messages.login_wrong_credentials);
                     } else {
-                        onErrorCallback(errorHandler.newError(response, messages.login_internal_error,
-                            { "methodPath" : "Service/Login::loginUser()" }));
+                        errorHandler.newError(onErrorCallback, response, messages.login_internal_error,
+                            { "methodPath" : "Service/Login::loginUser()" });
                     }
                 }
             }, 
@@ -61,7 +66,7 @@ Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallb
           authorizationToken: loginModel.generateAccessToken()
         });
     } catch (e) {
-        onErrorCallback(errorHandler.newMessageAndLogError(messages.login_internal_error, e.message));
+        errorHandler.newMessageAndLogError(onErrorCallback, messages.login_internal_error, e.message);
     }
 };
 

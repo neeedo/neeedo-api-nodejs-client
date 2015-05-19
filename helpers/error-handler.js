@@ -16,6 +16,11 @@ function ErrorHandler() {
             + credentialRemover.removeCredential(options['requestJson']);
         }
         
+        if ("responseJson" in options) {
+            logMessage += "\nResponse JSON was: "
+            + credentialRemover.removeCredential(options['responseJson']);
+        }
+        
         logMessage += "\n\n";
         
         return logMessage;
@@ -23,30 +28,51 @@ function ErrorHandler() {
 };
 
 
-ErrorHandler.prototype.newError = function(response, errorMessage, options) {
+ErrorHandler.prototype.newError = function(onCompleteCallback, response, errorMessage, options) {
     var error = new Error();
+
+    var _this = this;
+
+    var completeData = '';
+    response.on('data', function(chunk) {
+        completeData += chunk;
+    });
     
-    error.addLogMessage(this.buildLogMessage(options, response))
-        .addErrorMessage(errorMessage);
-    
-    return error;
+    response.on('end', function () {
+        // error data should be returned by neeedo API
+        var errorData = JSON.parse(completeData);
+
+        var innerErrorMessage = errorMessage;
+        var innerOptions = options;
+        innerOptions['responseJson'] = completeData;
+
+        // passthrough neeedo API error messages if given
+        if ('error' in errorData) {
+            innerErrorMessage = errorData['error'];
+        }
+
+        error.addLogMessage(_this.buildLogMessage(innerOptions, response))
+            .addErrorMessage(innerErrorMessage);
+
+        onCompleteCallback(error);
+    });
 };
 
-ErrorHandler.prototype.newMessageError = function(errorMessage) {
+ErrorHandler.prototype.newMessageError = function(onCompleteCallback, errorMessage) {
     var error = new Error();
 
     error.addErrorMessage(errorMessage);
 
-    return error;
+    onCompleteCallback(error);
 };
 
-ErrorHandler.prototype.newMessageAndLogError = function(errorMessage, logMessage) {
+ErrorHandler.prototype.newMessageAndLogError = function(onCompleteCallback, errorMessage, logMessage) {
     var error = new Error();
 
     error.addErrorMessage(errorMessage)
         .addLogMessage(logMessage);
 
-    return error;
+    onCompleteCallback(error);
 };
 
 var errorHandler = new ErrorHandler();
