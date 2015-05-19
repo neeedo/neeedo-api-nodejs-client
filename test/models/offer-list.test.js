@@ -35,9 +35,9 @@ describe('#OfferList', function() {
 
         // then the object should be loaded correctly...
         offerList.should.be.a.Object;
-        should.equal(offerList.getDemands().length, 2);
+        should.equal(offerList.getOffers().length, 2);
         
-        var firstOffer = offerList.getDemands()[0];
+        var firstOffer = offerList.getOffers()[0];
         
         should.equal(firstOffer.getId(), offerId);
         should.equal(firstOffer.getVersion(), version);
