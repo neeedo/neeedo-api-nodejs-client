@@ -10,12 +10,17 @@ var Offer = require('./offer');
  */
 function OfferList()
 {
-    this.offers = undefined;
+    this.offers = [];
 }
 
 OfferList.prototype.getOffers = function()
 {
     return this.offers;
+};
+
+OfferList.prototype.addOffer = function(offer)
+{
+    this.offers.push(offer);
 };
 
 /*
@@ -39,7 +44,7 @@ OfferList.prototype.loadFromSerialized = function(serializedOffers) {
     
    for (var i=0; i < serializedOffers.length; i++) {
      var serializedOffer = serializedOffers[i];
-     this.offers.push(new Offer().loadFromSerialized(serializedOffer));
+     this.addOffer(new Offer().loadFromSerialized(serializedOffer));
    }
 
    return this;

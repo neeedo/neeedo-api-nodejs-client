@@ -10,12 +10,17 @@ var Demand = require('./demand');
  */
 function DemandList()
 {
-    this.offers = undefined;
+    this.demands = [];
 }
 
 DemandList.prototype.getDemands = function()
 {
-    return this.offers;
+    return this.demands;
+};
+
+DemandList.prototype.addDemand = function(demand)
+{
+    this.demands.push(demand);
 };
 
 /*
@@ -39,7 +44,7 @@ DemandList.prototype.loadFromSerialized = function(serializedDemands) {
     
    for (var i=0; i < serializedDemands.length; i++) {
      var serializedDemand = serializedDemands[i];
-     this.offers.push(new Demand().loadFromSerialized(serializedDemand));
+     this.addDemand(new Demand().loadFromSerialized(serializedDemand));
    }
 
     return this;
