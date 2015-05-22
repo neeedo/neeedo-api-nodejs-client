@@ -40,7 +40,7 @@ Offer.prototype.hasId = function()
     return undefined !== this.getId();
 };
 
-Offer.prototype.addErrorMessage = function(version)
+Offer.prototype.setVersion = function(version)
 {
     if (version !== parseInt(version)) {
         throw new Error("Type of version must be integer.");
@@ -183,7 +183,7 @@ Offer.prototype.loadFromSerialized = function(serializedOffer) {
     }
  
     if ("version" in serializedOffer) {
-        this.addErrorMessage(serializedOffer["version"]);
+        this.setVersion(serializedOffer["version"]);
     }
 
     if ("userId" in serializedOffer) {
