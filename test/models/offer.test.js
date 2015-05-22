@@ -18,6 +18,7 @@ describe('#Offer', function() {
         var lng = 12.37528;
         var location = new Location().setLatitude(lat).setLongitude(lng);
         var price = 25.0;
+        var images = ["image1.jpg"];
 
         var offer = new Offer();
         offer.setId(offerId)
@@ -25,7 +26,8 @@ describe('#Offer', function() {
               .setUser(user)
               .setTags(tags)
               .setLocation(location)
-              .setPrice(price);
+              .setPrice(price)
+              .setImages(images);
 
         // when serializeForApi() is called
         var serializeObj = offer.serializeForApi();
@@ -37,6 +39,7 @@ describe('#Offer', function() {
         should.equal(serializeObj['location']['lat'], lat);
         should.equal(serializeObj['location']['lon'], lng);
         should.equal(serializeObj['price'], price);
+        should.equal(serializeObj['images'], images);
     });
 
     it("is loaded correctly from neeedo API Demand JSON", function() {
@@ -47,6 +50,7 @@ describe('#Offer', function() {
         var lat = 35.92516;
         var lng = 12.37528;
         var price = 25.0;
+        var images = ["image1.jpg"];
 
         // given some JSON returned by the API
         var neeedoOfferJson = {
@@ -58,7 +62,8 @@ describe('#Offer', function() {
                 "lat": lat,
                 "lon": lng
             },
-            "price" : price
+            "price" : price,
+            "images" : images
         };
 
         // when loadFromSerialized is called
@@ -74,5 +79,12 @@ describe('#Offer', function() {
         should.equal(offer.getLocation().getLatitude(), lat);
         should.equal(offer.getLocation().getLongitude(), lng);
         should.equal(offer.getPrice(), price);
+        should.equal(offer.getImages(), images);
+    });
+
+    it("has appropriate default values", function() {
+        var offer = new Offer();
+        
+        offer.getImages().should.be.Array;
     });
 });

@@ -17,6 +17,7 @@ function Offer()
     this.tags = undefined;
     this.location = undefined;
     this.price = undefined;
+    this.images = [];
 }
 
 Offer.prototype.setId = function(id)
@@ -122,6 +123,21 @@ Offer.prototype.getPrice = function()
     return this.price;
 };
 
+Offer.prototype.setImages = function(images)
+{
+    if (Object.prototype.toString.call( images ) !== '[object Array]') {
+        throw new Error("Type of shouldTags must be object.");
+    }
+
+    this.images = images;
+    return this;
+};
+
+Offer.prototype.getImages = function()
+{
+    return this.images;
+};
+
 /**
  * Function: getQueryStringForApi
  * Get the query string to be appended to the neeedo API endpoint URL in order to perform PUT + DELETE operations.
@@ -142,7 +158,8 @@ Offer.prototype.serializeForApi = function() {
        "userId" :       _this.getUser().getId(),
        "tags" :         _this.getTags(),
        "location" :     _this.getLocation().serializeForApi(),
-       "price" :        _this.getPrice()
+       "price" :        _this.getPrice(),
+       "images" :       _this.getImages()
     };
     
     if (this.hasId()) {
@@ -154,7 +171,7 @@ Offer.prototype.serializeForApi = function() {
 
 /*
  * Function: loadFromSerialized
- * Load the demand by the given serialized one.
+ * Load the offer by the given serialized one.
  */
 Offer.prototype.loadFromSerialized = function(serializedOffer) {
     if (serializedOffer === null || typeof serializedOffer !== 'object') {
@@ -183,6 +200,10 @@ Offer.prototype.loadFromSerialized = function(serializedOffer) {
 
     if ("price" in serializedOffer) {
         this.setPrice(serializedOffer["price"]);
+    }
+    
+    if ("images" in serializedOffer) {
+        this.setImages(serializedOffer["images"]);
     }
 
     return this;
