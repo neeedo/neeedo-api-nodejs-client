@@ -171,7 +171,7 @@ Demand.prototype.getQueryStringForApi = function()
 
 /*
  * Function: serializeForApi
- * Returns the serialized simple javascript object that can be send to the neeedo API.
+ * Returns the serialized simple javascript object that can be send to the neeedo API (POST + PUT).
  */
 Demand.prototype.serializeForApi = function() {
     var _this = this;
@@ -184,6 +184,21 @@ Demand.prototype.serializeForApi = function() {
        "distance" :     _this.getDistance(),
        "price" :        _this.getPrice().serializeForApi()
     };
+    
+    return serializedObj;
+};
+
+/**
+ * Function: serializeForMatching
+ * Returns serialized simple javascript object that is used by the matching action in neeedo API.
+ * @returns {*}
+ */
+Demand.prototype.serializeForMatching = function()
+{
+    var serializedObj = this.serializeForApi();
+    
+    serializedObj['id'] = this.getId();
+    serializedObj['version'] = this.getVersion();
     
     return serializedObj;
 };

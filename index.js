@@ -14,6 +14,7 @@ var options = require('./client/options'),
     OfferService = require('./services/offer'),
     OfferListService = require('./services/offer-list'),
     DemandListService = require('./services/demand-list'),
+    MatchingService = require('./services/matching'),
     DemandService = require('./services/demand')
     ;
 
@@ -53,7 +54,8 @@ module.exports.services = {
     "Demand": DemandService,
     "DemandList": DemandListService,
     "Offer": OfferService,
-    "OfferList": OfferListService
+    "OfferList": OfferListService,
+    "Matching": MatchingService
 };
 
 module.exports.options = options;

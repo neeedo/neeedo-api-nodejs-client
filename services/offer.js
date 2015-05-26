@@ -118,7 +118,7 @@ Offer.prototype.createOffer = function(offerModel, onSuccessCallback, onErrorCal
  * - onSuccessCallback: given function will be called with a given /models/offer.js object filled by the API
  * - onErrorCallback: given function will be called with the /models/error.js instance
  */
-Offer.prototype.updateOffer = function(offerModel,onSuccessCallback, onErrorCallback)
+Offer.prototype.updateOffer = function(offerModel, onSuccessCallback, onErrorCallback)
 {
     if (offerModel === null || typeof offerModel !== 'object') {
         throw new Error("Type of registrationModel must be object.");
