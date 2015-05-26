@@ -21,6 +21,8 @@ DemandList.prototype.getDemands = function()
 DemandList.prototype.addDemand = function(demand)
 {
     this.demands.push(demand);
+
+    return this;
 };
 
 /*

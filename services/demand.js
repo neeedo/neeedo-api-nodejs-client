@@ -11,7 +11,7 @@ var http = require('../client/http'),
  */
 function Demand()
 {
-    this.apiEndpoint = '/offers';
+    this.apiEndpoint = '/demands';
 }
 
 

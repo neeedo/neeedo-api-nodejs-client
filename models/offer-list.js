@@ -21,6 +21,8 @@ OfferList.prototype.getOffers = function()
 OfferList.prototype.addOffer = function(offer)
 {
     this.offers.push(offer);
+    
+    return this;
 };
 
 /*
