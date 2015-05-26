@@ -129,7 +129,6 @@ Demand.prototype.setDistance = function(distance)
 {
     if (distance !== parseInt(distance)) {
         throw new Error("Type of distance must be int.");
-
     }
 
     this.distance = distance;

@@ -12,6 +12,10 @@ var http = require('../client/http'),
 function OfferList()
 {
     this.apiEndpoint = '/offers';
+
+    this.buildPaginationQueryString = function(offset, limit) {
+        return "?from=" + offset + "&size=" + limit;
+    }
 }
 
 /**
@@ -20,16 +24,18 @@ function OfferList()
  * Load given user's offers.
  *  
  * @param user
+ * @param offset int
+ * @param limit int
  * @param onSuccessCallback will be called with models/offer-list instance
  * @param onErrorCallback will be called with models/error instance
  */
-OfferList.prototype.loadByUser = function(user, onSuccessCallback, onErrorCallback)
+OfferList.prototype.loadByUser = function(user, offset, limit, onSuccessCallback, onErrorCallback)
 {
     if (user === null || typeof user !== 'object') {
         throw new Error("Type of user must be object.");
     }
 
-    var getOfferByUserUrl = this.apiEndpoint + "/users/" + user.getId();
+    var getOfferByUserUrl = this.apiEndpoint + "/users/" + user.getId()  + this.buildPaginationQueryString(offset, limit);
 
     // closure
     var _this = this;
@@ -63,6 +69,59 @@ OfferList.prototype.loadByUser = function(user, onSuccessCallback, onErrorCallba
             });
     } catch (e) {
         errorHandler.newMessageAndLogError(onErrorCallback, messages.get_offers_internal_error, e.message);
+    }
+};
+
+/**
+ * Function: loadMostRecent
+ *
+ * Load most recent offers (PUBLIC action).
+ *
+ * @param offset int
+ * @param limit int
+ * @param onSuccessCallback will be called with models/offer-list instance
+ * @param onErrorCallback will be called with models/error instance
+ */
+OfferList.prototype.loadMostRecent = function(offset, limit, onSuccessCallback, onErrorCallback)
+{
+    if (offset !== parseInt(offset)) {
+        throw new Error("Type of offset must be int.");
+    }
+
+    if (limit !== parseInt(limit)) {
+        throw new Error("Type of limit must be int.");
+    }
+
+    var getMostRecentOffersUrl = this.apiEndpoint + this.buildPaginationQueryString(offset, limit);
+
+    // closure
+    var _this = this;
+    try {
+        http.doGet(getMostRecentOffersUrl,
+            function(response) {
+                // success on 200 OK
+                if (200 == response.statusCode) {
+                    var completeData = '';
+                    response.on('data', function(chunk) {
+                        completeData += chunk;
+                    });
+
+                    response.on('end', function () {
+                        var offersData = JSON.parse(completeData);
+
+                        globalOptions.getLogger().info("Services/OfferList::loadMostRecent(): server sent response data " + completeData);
+
+                        var loadedOfferList = new OfferListModel().loadFromSerialized(offersData['offers']);
+
+                        onSuccessCallback(loadedOfferList);
+                    });
+                } else {
+                    errorHandler.newError(onErrorCallback, response, messages.get_most_recent_offers_error,
+                        { "methodPath" : "Services/OfferList::loadMostRecent()" });
+                }
+            }, {});
+    } catch (e) {
+        errorHandler.newMessageAndLogError(onErrorCallback, messages.get_most_recent_offers_error, e.message);
     }
 };
 

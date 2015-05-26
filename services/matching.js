@@ -32,6 +32,14 @@ Matching.prototype.matchDemand = function(demandModel, offset, limit, onSuccessC
         throw new Error("Type of demandModel must be object.");
     }
 
+    if (offset !== parseInt(offset)) {
+        throw new Error("Type of offset must be int.");
+    }
+
+    if (limit !== parseInt(limit)) {
+        throw new Error("Type of limit must be int.");
+    }
+
     var matchDemandUrl = this.apiEndpoint + this.buildDemandMatchingQueryString(offset, limit);
     var json = JSON.stringify(demandModel.serializeForMatching());
     
