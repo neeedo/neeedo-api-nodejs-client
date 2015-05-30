@@ -28,14 +28,15 @@ Demand.prototype.load = function(demandId, user, onSuccessCallback, onErrorCallb
     try {
         http.doGet(getDemandIdUrl,
             function(response) {
-                // success on 200 OK
-                if (200 == response.statusCode) {
-                    var completeData = '';
+                var completeData = '';                
+                   
                     response.on('data', function(chunk) {
                         completeData += chunk;
                     });
                     
                     response.on('end', function () {
+                        // success on 200 OK
+                        if (200 == response.statusCode) {
                         // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-offer
                         var demandData = JSON.parse(completeData);
 
@@ -43,13 +44,19 @@ Demand.prototype.load = function(demandId, user, onSuccessCallback, onErrorCallb
 
                         var loadedDemand = new DemandModel().loadFromSerialized(demandData['demand']);
 
-                        onSuccessCallback(loadedDemand);
+                        onSuccessCallback(loadedDemand); }
+                        else {
+                            errorHandler.newError(onErrorCallback, response, messages.register_internal_error,
+                                { "methodPath" : "Service/Demand::load()" });
+                        }
                     });
-                } else {
-                    errorHandler.newError(onErrorCallback, response, messages.register_internal_error,
-                        { "methodPath" : "Service/Demand::load()" });
-                }
+
+                    response.on('error', function(error) {
+                        errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                            {"methodPath": "Services/Demand::load()"});
+                    });
             },
+            onErrorCallback,
             {
                 authorizationToken: user.getAccessToken()
             });
@@ -80,14 +87,15 @@ Demand.prototype.createDemand = function(demandModel, onSuccessCallback, onError
     try {
         http.doPost(createDemandUrlPath, json,
             function(response) {
+                var completeData = '';
                 // success on 201 = Created
-                if (201 == response.statusCode) {
-                    var completeData = '';
+               
                     response.on('data', function(chunk) {
                         completeData += chunk;
                     });
                     
                     response.on('end', function () {
+                        if (201 == response.statusCode) {
                         // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-offer
                         var demandData = JSON.parse(completeData);
 
@@ -96,13 +104,19 @@ Demand.prototype.createDemand = function(demandModel, onSuccessCallback, onError
                         var createdDemand = new DemandModel().loadFromSerialized(demandData['demand']);
 
                         onSuccessCallback(createdDemand);
+                        } else {
+                            errorHandler.newError(onErrorCallback, response, messages.register_internal_error,
+                                { "methodPath" : "Service/Demand::createDemand()",
+                                    "requestJson" : json });
+                        }
                     });
-                } else {
-                    errorHandler.newError(onErrorCallback, response, messages.register_internal_error,
-                        { "methodPath" : "Service/Demand::createDemand()",
-                            "requestJson" : json });
-                    }
+
+                    response.on('error', function(error) {
+                        errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                            { "methodPath" : "Services/Demand::createDemand()" });
+                    });
                 },
+            onErrorCallback,
             {
             authorizationToken: demandModel.getUser().getAccessToken()
         });
@@ -133,35 +147,42 @@ Demand.prototype.updateDemand = function(demandModel, onSuccessCallback, onError
     try {
         http.doPut(updateDemandPath, json,
             function(response) {
-                // success on 200 = OK
-                if (200 == response.statusCode) {
-                    var completeData = '';
+                var completeData = '';
+                 
                     response.on('data', function(chunk) {
                         completeData += chunk;
                     });
                     
                     response.on('end', function () {
-                        // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#update-offer
-                        var demandData = JSON.parse(completeData);
-                        
-                        globalOptions.getLogger().info("Services/Demand::updateDemand(): server sent response data " + completeData);
+                        // success on 200 = OK
+                        if (200 == response.statusCode) {
+                            // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#update-offer
+                            var demandData = JSON.parse(completeData);
 
-                        var createdDemand = new DemandModel().loadFromSerialized(demandData['demand']);
+                            globalOptions.getLogger().info("Services/Demand::updateDemand(): server sent response data " + completeData);
 
-                        onSuccessCallback(createdDemand);
+                            var createdDemand = new DemandModel().loadFromSerialized(demandData['demand']);
+
+                            onSuccessCallback(createdDemand);
+                        } else {
+                            if (404 == response.statusCode) {
+                                errorHandler.newMessageError(onErrorCallback, messages.demand_not_found);
+                            } else if (401 == response.statusCode) {
+                                errorHandler.newMessageError(messages.login_wrong_credentials);
+                            } else {
+                                errorHandler.newError(onErrorCallback, response, messages.update_demand_internal_error,
+                                    { "methodPath" : "Service/Demand::updateDemand()",
+                                        "requestJson" : json });
+                            }
+                        }
                     });
-                } else {
-                    if (404 == response.statusCode) {
-                        errorHandler.newMessageError(onErrorCallback, messages.demand_not_found);
-                    } else if (401 == response.statusCode) {
-                        errorHandler.newMessageError(messages.login_wrong_credentials);
-                    } else {
-                        errorHandler.newError(onErrorCallback, response, messages.update_demand_internal_error,
-                            { "methodPath" : "Service/Demand::updateDemand()",
-                                "requestJson" : json });
-                    }
-                }
+
+                    response.on('error', function(error) {
+                        errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                            { "methodPath" : "Services/Demand::updateDemand()" });
+                    });
             },
+            onErrorCallback,
         {
             authorizationToken: demandModel.getUser().getAccessToken()
         });
@@ -205,6 +226,7 @@ Demand.prototype.deleteDemand = function(demandModel,onSuccessCallback, onErrorC
                     }
                 }
             },
+            onErrorCallback,
             {
                 authorizationToken: demandModel.getUser().getAccessToken()
             });

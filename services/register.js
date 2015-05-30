@@ -36,28 +36,34 @@ Register.prototype.registerUser = function(registrationModel, onSuccessCallback,
     try {
         http.doPost(registerUrlPath, json,
             function(response) {
-                if (201 == response.statusCode) {
-                    var completeData = '';
+                var completeData = '';                
+                         
                     response.on('data', function(chunk) {
                         completeData += chunk;
                     });
                     
                     response.on('end', function () {
-                        // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-user
-                        var userData = JSON.parse(completeData);
+                        if (201 == response.statusCode) {
+                            // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-user
+                            var userData = JSON.parse(completeData);
 
-                        globalOptions.getLogger().info("Services/Register::registerUser(): server sent response data " + completeData);
-                        
-                        var registeredUser = new User().loadFromSerialized(userData['user']);
+                            globalOptions.getLogger().info("Services/Register::registerUser(): server sent response data " + completeData);
 
-                        onSuccessCallback(registeredUser);
+                            var registeredUser = new User().loadFromSerialized(userData['user']);
+
+                            onSuccessCallback(registeredUser);
+                        } else {
+                            errorHandler.newError(onErrorCallback, response, messages.register_internal_error,
+                                { "methodPath" : "Service/Register::registerUser()",
+                                    "requestJson" : json });
+                        }
                     });
-                } else {
-                    errorHandler.newError(onErrorCallback, response, messages.register_internal_error,
-                            { "methodPath" : "Service/Register::registerUser()",
-                              "requestJson" : json });
-                }
-            }, {});
+
+                    response.on('error', function(error) {
+                        errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                            { "methodPath" : "Services/Register::registerUser()" });
+                    });
+            }, onErrorCallback, {});
     } catch (e) {
         errorHandler.newMessageAndLogError(onErrorCallback, messages.register_internal_error, e.message);
     }

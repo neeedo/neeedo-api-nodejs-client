@@ -20,9 +20,9 @@ function OfferList()
 
 /**
  * Function: loadByUser
- * 
+ *
  * Load given user's offers.
- *  
+ *
  * @param user
  * @param offset int
  * @param limit int
@@ -42,14 +42,16 @@ OfferList.prototype.loadByUser = function(user, offset, limit, onSuccessCallback
     try {
         http.doGet(getOfferByUserUrl,
             function(response) {
-                // success on 200 OK
-                if (200 == response.statusCode) {
-                    var completeData = '';
-                    response.on('data', function(chunk) {
-                        completeData += chunk;
-                    });
+                var completeData = '';
 
-                    response.on('end', function () {
+                response.on('data', function(chunk) {
+                    completeData += chunk;
+                });
+
+                response.on('end', function () {
+                    // success on 200 OK
+                    if (200 == response.statusCode) {
+
                         // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-offer
                         var offersData = JSON.parse(completeData);
 
@@ -58,12 +60,18 @@ OfferList.prototype.loadByUser = function(user, offset, limit, onSuccessCallback
                         var loadedOfferList = new OfferListModel().loadFromSerialized(offersData['offers']);
 
                         onSuccessCallback(loadedOfferList);
-                    });
-                } else {
-                    errorHandler.newError(onErrorCallback, response, messages.get_offers_error,
-                        { "methodPath" : "Service/OfferList::loadByUser()" });
-                }
-            },
+                    } else {
+                        errorHandler.newError(onErrorCallback, response, messages.get_offers_error,
+                            { "methodPath" : "Service/OfferList::loadByUser()" });
+                    }
+                });
+
+                response.on('error', function(error) {
+                    // API not reachable
+                    errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                        {"methodPath": "Services/OfferList::loadByUser()"});
+                });
+            }, onErrorCallback,
             {
                 authorizationToken: user.getAccessToken()
             });
@@ -99,14 +107,14 @@ OfferList.prototype.loadMostRecent = function(offset, limit, onSuccessCallback, 
     try {
         http.doGet(getMostRecentOffersUrl,
             function(response) {
-                // success on 200 OK
-                if (200 == response.statusCode) {
-                    var completeData = '';
-                    response.on('data', function(chunk) {
-                        completeData += chunk;
-                    });
+                var completeData = '';
+                response.on('data', function(chunk) {
+                    completeData += chunk;
+                });
 
-                    response.on('end', function () {
+                response.on('end', function () {
+                    // success on 200 OK
+                    if (200 == response.statusCode) {
                         var offersData = JSON.parse(completeData);
 
                         globalOptions.getLogger().info("Services/OfferList::loadMostRecent(): server sent response data " + completeData);
@@ -114,12 +122,17 @@ OfferList.prototype.loadMostRecent = function(offset, limit, onSuccessCallback, 
                         var loadedOfferList = new OfferListModel().loadFromSerialized(offersData['offers']);
 
                         onSuccessCallback(loadedOfferList);
-                    });
-                } else {
-                    errorHandler.newError(onErrorCallback, response, messages.get_most_recent_offers_error,
+                    } else {
+                        errorHandler.newError(onErrorCallback, response, messages.get_most_recent_offers_error,
+                            { "methodPath" : "Services/OfferList::loadMostRecent()" });
+                    }
+                });
+
+                response.on('error', function(error) {
+                    errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
                         { "methodPath" : "Services/OfferList::loadMostRecent()" });
-                }
-            }, {});
+                });
+            }, onErrorCallback, {});
     } catch (e) {
         errorHandler.newMessageAndLogError(onErrorCallback, messages.get_most_recent_offers_error, e.message);
     }

@@ -20,9 +20,9 @@ function DemandList()
 
 /**
  * Function: loadByUser
- * 
+ *
  * Load given user's demands.
- *  
+ *
  * @param user
  * @param offset int
  * @param limit int
@@ -42,14 +42,15 @@ DemandList.prototype.loadByUser = function(user, offset, limit, onSuccessCallbac
     try {
         http.doGet(getDemandByUserUrl,
             function(response) {
-                // success on 200 OK
-                if (200 == response.statusCode) {
-                    var completeData = '';
-                    response.on('data', function(chunk) {
-                        completeData += chunk;
-                    });
+                var completeData = '';
 
-                    response.on('end', function () {
+                response.on('data', function(chunk) {
+                    completeData += chunk;
+                });
+
+                response.on('end', function () {
+                    // success on 200 OK
+                    if (200 == response.statusCode) {
                         var demandsData = JSON.parse(completeData);
 
                         globalOptions.getLogger().info("Services/DemandList::loadByUser(): server sent response data " + completeData);
@@ -57,12 +58,17 @@ DemandList.prototype.loadByUser = function(user, offset, limit, onSuccessCallbac
                         var loadedDemandList = new DemandListModel().loadFromSerialized(demandsData['demands']);
 
                         onSuccessCallback(loadedDemandList);
-                    });
-                } else {
-                    errorHandler.newError(onErrorCallback, response, messages.get_demands_error,
-                        { "methodPath" : "Service/DemandList::loadByUser()" });
-                }
-            },
+                    } else {
+                        errorHandler.newError(onErrorCallback, response, messages.get_demands_error,
+                            { "methodPath" : "Service/DemandList::loadByUser()" });
+                    }
+                });
+
+                response.on('error', function(error) {
+                    errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                        { "methodPath" : "Services/DemandList::loadByUser()" });
+                });
+            }, onErrorCallback,
             {
                 authorizationToken: user.getAccessToken()
             });
@@ -86,7 +92,7 @@ DemandList.prototype.loadMostRecent = function(offset, limit, onSuccessCallback,
     if (offset !== parseInt(offset)) {
         throw new Error("Type of offset must be int.");
     }
-    
+
     if (limit !== parseInt(limit)) {
         throw new Error("Type of limit must be int.");
     }
@@ -98,14 +104,15 @@ DemandList.prototype.loadMostRecent = function(offset, limit, onSuccessCallback,
     try {
         http.doGet(getMostRecentDemandsUrl,
             function(response) {
+                var completeData = '';
                 // success on 200 OK
-                if (200 == response.statusCode) {
-                    var completeData = '';
-                    response.on('data', function(chunk) {
-                        completeData += chunk;
-                    });
 
-                    response.on('end', function () {
+                response.on('data', function(chunk) {
+                    completeData += chunk;
+                });
+
+                response.on('end', function () {
+                    if (200 == response.statusCode) {
                         var demandsData = JSON.parse(completeData);
 
                         globalOptions.getLogger().info("Services/DemandList::loadMostRecent(): server sent response data " + completeData);
@@ -113,12 +120,17 @@ DemandList.prototype.loadMostRecent = function(offset, limit, onSuccessCallback,
                         var loadedDemandList = new DemandListModel().loadFromSerialized(demandsData['demands']);
 
                         onSuccessCallback(loadedDemandList);
-                    });
-                } else {
-                    errorHandler.newError(onErrorCallback, response, messages.get_most_recent_demands_error,
-                        { "methodPath" : "Service/DemandList::loadMostRecent()" });
-                }
-            }, {});
+                    }else {
+                        errorHandler.newError(onErrorCallback, response, messages.get_most_recent_demands_error,
+                            { "methodPath" : "Service/DemandList::loadMostRecent()" });
+                    }
+                });
+
+                response.on('error', function(error) {
+                    errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                        { "methodPath" : "Services/DemandList::loadMostRecent()" });
+                });
+            }, onErrorCallback, {});
     } catch (e) {
         errorHandler.newMessageAndLogError(onErrorCallback, messages.get_most_recent_demands_error, e.message);
     }

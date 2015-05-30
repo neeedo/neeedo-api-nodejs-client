@@ -27,28 +27,35 @@ Offer.prototype.load = function(offerId, user, onSuccessCallback, onErrorCallbac
     try {
         http.doGet(getOfferUrl,
             function(response) {
-                // success on 200 OK
-                if (200 == response.statusCode) {
-                    var completeData = '';
+                var completeData = '';               
+                   
                     response.on('data', function(chunk) {
                         completeData += chunk;
                     });
                     
                     response.on('end', function () {
-                        // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-offer
-                        var offerData = JSON.parse(completeData);
+                        // success on 200 OK
+                        if (200 == response.statusCode) {
+                            // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-offer
+                            var offerData = JSON.parse(completeData);
 
-                        globalOptions.getLogger().info("Services/Offer::load(): server sent response data " + completeData);
+                            globalOptions.getLogger().info("Services/Offer::load(): server sent response data " + completeData);
 
-                        var loadedOffer = new OfferModel().loadFromSerialized(offerData['offer']);
+                            var loadedOffer = new OfferModel().loadFromSerialized(offerData['offer']);
 
-                        onSuccessCallback(loadedOffer);
+                            onSuccessCallback(loadedOffer);
+                        } else {
+                            errorHandler.newError(onErrorCallback, response, messages.get_offer_error,
+                                { "methodPath" : "Service/Offer::load()" });
+                        }
                     });
-                } else {
-                    errorHandler.newError(onErrorCallback, response, messages.get_offer_error,
-                        { "methodPath" : "Service/Offer::load()" });
-                }
+
+                    response.on('error', function(error) {
+                        errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                            { "methodPath" : "Services/Offer::load()" });
+                    });
             },
+            onErrorCallback,
             {
                 authorizationToken: user.getAccessToken()
             });
@@ -79,29 +86,36 @@ Offer.prototype.createOffer = function(offerModel, onSuccessCallback, onErrorCal
     try {
         http.doPost(createOfferUrlPath, json,
             function(response) {
-                // success on 201 = Created
-                if (201 == response.statusCode) {
-                    var completeData = '';
+                var completeData = '';              
                     response.on('data', function(chunk) {
                         completeData += chunk;
                     });
                     
                     response.on('end', function () {
-                        // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-offer
-                        var offerData = JSON.parse(completeData);
+                        // success on 201 = Created
+                        if (201 == response.statusCode) {
 
-                        globalOptions.getLogger().info("Services/Offer::createoffer(): server sent response data " + completeData);
-                        
-                        var createdOffer = new OfferModel().loadFromSerialized(offerData['offer']);
+                            // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-offer
+                            var offerData = JSON.parse(completeData);
 
-                        onSuccessCallback(createdOffer);
+                            globalOptions.getLogger().info("Services/Offer::createoffer(): server sent response data " + completeData);
+
+                            var createdOffer = new OfferModel().loadFromSerialized(offerData['offer']);
+
+                            onSuccessCallback(createdOffer);
+                        } else {
+                            errorHandler.newError(onErrorCallback, response, messages.create_offer_internal_error,
+                                { "methodPath" : "Service/Offer::createOffer()",
+                                    "requestJson" : json });
+                        }
                     });
-                } else {
-                    errorHandler.newError(onErrorCallback, response, messages.create_offer_internal_error,
-                        { "methodPath" : "Service/Offer::createOffer()",
-                          "requestJson" : json });
-                }
-            }, 
+
+                    response.on('error', function(error) {
+                        errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                            { "methodPath" : "Services/Offer::createOffer()" });
+                    });
+            },
+            onErrorCallback,
         {
             authorizationToken: offerModel.getUser().getAccessToken()
         });
@@ -132,35 +146,42 @@ Offer.prototype.updateOffer = function(offerModel, onSuccessCallback, onErrorCal
     try {
         http.doPut(updateOfferPath, json,
             function(response) {
-                // success on 200 = OK
-                if (200 == response.statusCode) {
-                    var completeData = '';
+                var completeData = '';                
+                  
                     response.on('data', function(chunk) {
                         completeData += chunk;
                     });
                     
                     response.on('end', function () {
-                        // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#update-offer
-                        var offerData = JSON.parse(completeData);
+                        // success on 200 = OK
+                        if (200 == response.statusCode) {
+                            // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#update-offer
+                            var offerData = JSON.parse(completeData);
 
-                        globalOptions.getLogger().info("Services/Offer::updateOffer(): server sent response data " + completeData);
+                            globalOptions.getLogger().info("Services/Offer::updateOffer(): server sent response data " + completeData);
 
-                        var createdOffer = new OfferModel().loadFromSerialized(offerData['offer']);
+                            var createdOffer = new OfferModel().loadFromSerialized(offerData['offer']);
 
-                        onSuccessCallback(createdOffer);
+                            onSuccessCallback(createdOffer);
+                        } else {
+                            if (404 == response.statusCode) {
+                                errorHandler.newMessageError(onErrorCallback, messages.offer_not_found);
+                            } else if (401 == response.statusCode) {
+                                errorHandler.newMessageError(onErrorCallback, messages.login_wrong_password);
+                            } else {
+                                errorHandler.newError(onErrorCallback, response, messages.update_offer_internal_error,
+                                    { "methodPath" : "Service/Offer::updateOffer()",
+                                        "requestJson" : json });
+                            }
+                        }
                     });
-                } else {
-                    if (404 == response.statusCode) {
-                        errorHandler.newMessageError(onErrorCallback, messages.offer_not_found);
-                    } else if (401 == response.statusCode) {
-                        errorHandler.newMessageError(onErrorCallback, messages.login_wrong_password);
-                    } else {
-                        errorHandler.newError(onErrorCallback, response, messages.update_offer_internal_error,
-                            { "methodPath" : "Service/Offer::updateOffer()",
-                                "requestJson" : json });
-                    }
-                }
+
+                    response.on('error', function(error) {
+                        errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                            { "methodPath" : "Services/Offer::updateOffer()" });
+                    });
             },
+            onErrorCallback,
         {
             authorizationToken: offerModel.getUser().getAccessToken()
         });
@@ -207,6 +228,7 @@ Offer.prototype.deleteOffer = function(offerModel,onSuccessCallback, onErrorCall
                     }
                 }
             },
+            onErrorCallback,
             {
                 authorizationToken: offerModel.getUser().getAccessToken()
             });
@@ -237,14 +259,15 @@ Offer.prototype.addImageToOffer = function(externalImage,onSuccessCallback, onEr
     try {
         http.doPost(addImagePath, json,
             function(response) {
-                // success on 201 = Created
-                if (201 == response.statusCode) {
-                    var completeData = '';
+                var completeData = '';                
+             
                     response.on('data', function(chunk) {
                         completeData += chunk;
                     });
                     
                     response.on('end', function () {
+                        // success on 201 = Created
+                        if (201 == response.statusCode) {
                         // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#add-image-to-offer
                         var offerData = JSON.parse(completeData);
 
@@ -252,14 +275,20 @@ Offer.prototype.addImageToOffer = function(externalImage,onSuccessCallback, onEr
 
                         var createdOffer = new OfferModel().loadFromSerialized(offerData['offer']);
 
-                        onSuccessCallback(createdOffer);
+                        onSuccessCallback(createdOffer); 
+                        } else {
+                            errorHandler.newError(onErrorCallback, response, messages.add_image_to_offer_internal_error,
+                                { "methodPath" : "Service/Offer::addImageToOffer()",
+                                    "requestJson" : json });
+                        }
                     });
-                } else {
-                    errorHandler.newError(onErrorCallback, response, messages.add_image_to_offer_internal_error,
-                        { "methodPath" : "Service/Offer::addImageToOffer()",
-                            "requestJson" : json });
-                }
+
+                    response.on('error', function(error) {
+                        errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                            { "methodPath" : "Services/Offer::addImageToOffer()" });
+                    });
             },
+            onErrorCallback,
             {
                 authorizationToken: externalImage.getAssociatedEntity().getUser().getAccessToken()
             });

@@ -35,33 +35,40 @@ Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallb
     try {
         http.doGet(loginUrlPath,
             function(response) {
-                if (200 == response.statusCode) {
-                    var completeData = '';
+                var completeData = '';                
+                
                     response.on('data', function(chunk) {
                         completeData += chunk;
                     });
                     
                     response.on('end', function (data) {
-                        var userData = JSON.parse(completeData);
-                        
-                        globalOptions.getLogger().info("Services/Login::loginUser(): server sent response data " + completeData);
-                        
-                        var loggedInUser = new User().loadFromSerialized(userData['user']);
-                        
-                        // store access token in user model
-                        loggedInUser.setAccessToken(loginModel.generateAccessToken());
+                        if (200 == response.statusCode) {
+                            var userData = JSON.parse(completeData);
 
-                        onSuccessCallback(loggedInUser);
+                            globalOptions.getLogger().info("Services/Login::loginUser(): server sent response data " + completeData);
+
+                            var loggedInUser = new User().loadFromSerialized(userData['user']);
+
+                            // store access token in user model
+                            loggedInUser.setAccessToken(loginModel.generateAccessToken());
+
+                            onSuccessCallback(loggedInUser);
+                        } else {
+                            if (404 == response.statusCode || 403 == response.statusCode) {
+                                errorHandler.newMessageError(onErrorCallback, messages.login_wrong_credentials);
+                            } else {
+                                errorHandler.newError(onErrorCallback, response, messages.login_internal_error,
+                                    { "methodPath" : "Service/Login::loginUser()" });
+                            }
+                        }
                     });
-                } else {
-                    if (404 == response.statusCode || 403 == response.statusCode) {
-                        errorHandler.newMessageError(onErrorCallback, messages.login_wrong_credentials);
-                    } else {
-                        errorHandler.newError(onErrorCallback, response, messages.login_internal_error,
-                            { "methodPath" : "Service/Login::loginUser()" });
-                    }
-                }
-            }, 
+
+                    response.on('error', function(error) {
+                        errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                            { "methodPath" : "Services/Login::loginUser()" });
+                    });
+            },
+            onErrorCallback,
         {
           authorizationToken: loginModel.generateAccessToken()
         });

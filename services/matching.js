@@ -48,27 +48,34 @@ Matching.prototype.matchDemand = function(demandModel, offset, limit, onSuccessC
     try {
         http.doPost(matchDemandUrl, json,
             function(response) {
-                // success on 200 OK
-                if (200 == response.statusCode) {
-                    var completeData = '';
+                   var completeData = '';
+       
                     response.on('data', function(chunk) {
                         completeData += chunk;
                     });
 
                     response.on('end', function () {
-                        // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-offer
-                        var offerData = JSON.parse(completeData);
+                        // success on 200 OK
+                        if (200 == response.statusCode) {
+                            // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-offer
+                            var offerData = JSON.parse(completeData);
 
-                        globalOptions.getLogger().info("Services/Matching::matchDemand(): server sent response data " + completeData);
+                            globalOptions.getLogger().info("Services/Matching::matchDemand(): server sent response data " + completeData);
 
-                        var matchedOffers = new OfferListModel().loadFromSerialized(offerData);
-                        onSuccessCallback(matchedOffers);
+                            var matchedOffers = new OfferListModel().loadFromSerialized(offerData);
+                            onSuccessCallback(matchedOffers);
+                        } else {
+                            errorHandler.newError(onErrorCallback, response, messages.matching_demands_internal_error,
+                                { "methodPath" : "Services/Matching::matchDemand()" });
+                        }
                     });
-                } else {
-                    errorHandler.newError(onErrorCallback, response, messages.matching_demands_internal_error,
-                        { "methodPath" : "Services/Matching::matchDemand()" });
-                }
+
+                    response.on('error', function(error) {
+                        errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                            { "methodPath" : "Services/Matching::matchDemand()" });
+                    });
             },
+            onErrorCallback,
             {
                 authorizationToken: demandModel.getUser().getAccessToken()
             });
