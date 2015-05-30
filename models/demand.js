@@ -223,6 +223,10 @@ Demand.prototype.loadFromSerialized = function(serializedDemand) {
         this.getUser().setId(serializedDemand["userId"]);
     }
 
+    if ("user" in serializedDemand) {
+        this.setUser(new User().loadFromSerialized(serializedDemand["user"]));
+    }
+
     if ("mustTags" in serializedDemand) {
         this.setMustTags(serializedDemand["mustTags"]);
     }

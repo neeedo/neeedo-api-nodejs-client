@@ -190,6 +190,10 @@ Offer.prototype.loadFromSerialized = function(serializedOffer) {
         this.getUser().setId(serializedOffer["userId"]);
     }
 
+    if ("user" in serializedOffer) {
+        this.setUser(new User().loadFromSerialized(serializedOffer["user"]));
+    }
+
     if ("tags" in serializedOffer) {
         this.setTags(serializedOffer["tags"]);
     }
