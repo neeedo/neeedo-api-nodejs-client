@@ -215,9 +215,6 @@ Offer.prototype.deleteOffer = function(offerModel,onSuccessCallback, onErrorCall
                 if (200 == response.statusCode) {
                     _this.onSuccessCallback(offerModel);
                 } else {
-                    var error = new Error();
-
-                    error.setResponse(response);
                     if (404 == response.statusCode) {
                         errorHandler.newMessageError(onErrorCallback, messages.offer_not_found);
                     } else if (401 == response.statusCode) {

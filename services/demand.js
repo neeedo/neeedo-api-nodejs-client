@@ -199,7 +199,7 @@ Demand.prototype.updateDemand = function(demandModel, onSuccessCallback, onError
  * - onSuccessCallback: given function will be called with the originally given offerModel on success
  * - onErrorCallback: given function will be called with the /models/error.js instance
  */
-Demand.prototype.deleteDemand = function(demandModel,onSuccessCallback, onErrorCallback)
+Demand.prototype.deleteDemand = function(demandModel, onSuccessCallback, onErrorCallback)
 {
     if (demandModel === null || typeof demandModel !== 'object') {
         throw new Error("Type of demandModel must be object.");
