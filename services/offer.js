@@ -16,7 +16,7 @@ function Offer()
 
 Offer.prototype.load = function(offerId, user, onSuccessCallback, onErrorCallback)
 {
-    if ("string" !== typeof(id) ) {
+    if ("string" !== typeof(offerId) ) {
         throw new Error("Type of offerId must be string.");
     }
 
