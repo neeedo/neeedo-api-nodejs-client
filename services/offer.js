@@ -167,7 +167,7 @@ Offer.prototype.updateOffer = function(offerModel, onSuccessCallback, onErrorCal
                             if (404 == response.statusCode) {
                                 errorHandler.newMessageError(onErrorCallback, messages.offer_not_found);
                             } else if (401 == response.statusCode) {
-                                errorHandler.newMessageError(onErrorCallback, messages.login_wrong_password);
+                                errorHandler.newMessageError(onErrorCallback, messages.login_wrong_credentials);
                             } else {
                                 errorHandler.newError(onErrorCallback, response, messages.update_offer_internal_error,
                                     { "methodPath" : "Service/Offer::updateOffer()",
@@ -218,7 +218,7 @@ Offer.prototype.deleteOffer = function(offerModel,onSuccessCallback, onErrorCall
                     if (404 == response.statusCode) {
                         errorHandler.newMessageError(onErrorCallback, messages.offer_not_found);
                     } else if (401 == response.statusCode) {
-                        errorHandler.newMessageError(onErrorCallback, messages.login_wrong_password);
+                        errorHandler.newMessageError(onErrorCallback, messages.login_wrong_credentials);
                     } else {
                         errorHandler.newError(onErrorCallback, response, messages.delete_offer_internal_error,
                             { "methodPath" : "Service/Offer::deleteOffer()" });

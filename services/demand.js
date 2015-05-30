@@ -168,7 +168,7 @@ Demand.prototype.updateDemand = function(demandModel, onSuccessCallback, onError
                             if (404 == response.statusCode) {
                                 errorHandler.newMessageError(onErrorCallback, messages.demand_not_found);
                             } else if (401 == response.statusCode) {
-                                errorHandler.newMessageError(messages.login_wrong_credentials);
+                                errorHandler.newMessageError(onErrorCallback, messages.login_wrong_credentials);
                             } else {
                                 errorHandler.newError(onErrorCallback, response, messages.update_demand_internal_error,
                                     { "methodPath" : "Service/Demand::updateDemand()",
