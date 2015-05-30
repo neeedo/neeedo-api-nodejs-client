@@ -41,8 +41,7 @@ Demand.prototype.load = function(demandId, user, onSuccessCallback, onErrorCallb
 
                         globalOptions.getLogger().info("Services/Demand::load(): server sent response data " + completeData);
 
-                        var loadedDemand = new DemandModel().loadFromSerialized(demandData['demand'])
-                            .setUser(user);
+                        var loadedDemand = new DemandModel().loadFromSerialized(demandData['demand']);
 
                         onSuccessCallback(loadedDemand);
                     });

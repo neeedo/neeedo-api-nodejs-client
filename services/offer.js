@@ -40,7 +40,7 @@ Offer.prototype.load = function(offerId, user, onSuccessCallback, onErrorCallbac
 
                         globalOptions.getLogger().info("Services/Offer::load(): server sent response data " + completeData);
 
-                        var loadedOffer = new OfferModel().loadFromSerialized(offerData['offer']).setUser(user);
+                        var loadedOffer = new OfferModel().loadFromSerialized(offerData['offer']);
 
                         onSuccessCallback(loadedOffer);
                     });
