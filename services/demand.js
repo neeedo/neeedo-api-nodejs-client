@@ -23,8 +23,6 @@ Demand.prototype.load = function(demandId, user, onSuccessCallback, onErrorCallb
 
     var getDemandIdUrl = this.apiEndpoint + "/" + demandId;
 
-    // closure
-    var _this = this;
     try {
         http.doGet(getDemandIdUrl,
             function(response) {
@@ -81,9 +79,7 @@ Demand.prototype.createDemand = function(demandModel, onSuccessCallback, onError
     
     var createDemandUrlPath = this.apiEndpoint;
     var json = JSON.stringify(demandModel.serializeForApi());
-    
-    // closure
-    var _this = this;
+
     try {
         http.doPost(createDemandUrlPath, json,
             function(response) {
@@ -142,8 +138,6 @@ Demand.prototype.updateDemand = function(demandModel, onSuccessCallback, onError
     var updateDemandPath = this.apiEndpoint + demandModel.getQueryStringForApi();
     var json = JSON.stringify(demandModel.serializeForApi());
 
-    // closure
-    var _this = this;
     try {
         http.doPut(updateDemandPath, json,
             function(response) {
@@ -207,8 +201,6 @@ Demand.prototype.deleteDemand = function(demandModel, onSuccessCallback, onError
 
     var deleteOfferPath = this.apiEndpoint + demandModel.getQueryStringForApi();
 
-    // closure
-    var _this = this;
     try {
         http.doDelete(deleteOfferPath,
             function(response) {

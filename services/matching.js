@@ -42,9 +42,7 @@ Matching.prototype.matchDemand = function(demandModel, offset, limit, onSuccessC
 
     var matchDemandUrl = this.apiEndpoint + this.buildDemandMatchingQueryString(offset, limit);
     var json = JSON.stringify(demandModel.serializeForMatching());
-    
-    // closure
-    var _this = this;
+
     try {
         http.doPost(matchDemandUrl, json,
             function(response) {

@@ -37,8 +37,6 @@ OfferList.prototype.loadByUser = function(user, offset, limit, onSuccessCallback
 
     var getOfferByUserUrl = this.apiEndpoint + "/users/" + user.getId()  + this.buildPaginationQueryString(offset, limit);
 
-    // closure
-    var _this = this;
     try {
         http.doGet(getOfferByUserUrl,
             function(response) {
@@ -102,8 +100,6 @@ OfferList.prototype.loadMostRecent = function(offset, limit, onSuccessCallback, 
 
     var getMostRecentOffersUrl = this.apiEndpoint + this.buildPaginationQueryString(offset, limit);
 
-    // closure
-    var _this = this;
     try {
         http.doGet(getMostRecentOffersUrl,
             function(response) {

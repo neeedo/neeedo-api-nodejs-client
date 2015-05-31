@@ -22,8 +22,6 @@ Offer.prototype.load = function(offerId, user, onSuccessCallback, onErrorCallbac
 
     var getOfferUrl = this.apiEndpoint + "/" + offerId;
 
-    // closure
-    var _this = this;
     try {
         http.doGet(getOfferUrl,
             function(response) {
@@ -80,9 +78,7 @@ Offer.prototype.createOffer = function(offerModel, onSuccessCallback, onErrorCal
     
     var createOfferUrlPath = this.apiEndpoint;
     var json = JSON.stringify(offerModel.serializeForApi());
-    
-    // closure
-    var _this = this;
+
     try {
         http.doPost(createOfferUrlPath, json,
             function(response) {
@@ -141,8 +137,6 @@ Offer.prototype.updateOffer = function(offerModel, onSuccessCallback, onErrorCal
     var updateOfferPath = this.apiEndpoint + offerModel.getQueryStringForApi();
     var json = JSON.stringify(offerModel.serializeForApi());
 
-    // closure
-    var _this = this;
     try {
         http.doPut(updateOfferPath, json,
             function(response) {
@@ -198,7 +192,7 @@ Offer.prototype.updateOffer = function(offerModel, onSuccessCallback, onErrorCal
  * - onSuccessCallback: given function will be called with the originally given offerModel on success
  * - onErrorCallback: given function will be called with the /models/error.js instance
  */
-Offer.prototype.deleteOffer = function(offerModel,onSuccessCallback, onErrorCallback)
+Offer.prototype.deleteOffer = function(offerModel, onSuccessCallback, onErrorCallback)
 {
     if (offerModel === null || typeof offerModel !== 'object') {
         throw new Error("Type of registrationModel must be object.");
@@ -206,14 +200,12 @@ Offer.prototype.deleteOffer = function(offerModel,onSuccessCallback, onErrorCall
 
     var deleteOfferPath = this.apiEndpoint + offerModel.getQueryStringForApi();
 
-    // closure
-    var _this = this;
     try {
         http.doDelete(deleteOfferPath,
             function(response) {
                 // success on 200 = OK
                 if (200 == response.statusCode) {
-                    _this.onSuccessCallback(offerModel);
+                   onSuccessCallback(offerModel);
                 } else {
                     if (404 == response.statusCode) {
                         errorHandler.newMessageError(onErrorCallback, messages.offer_not_found);
@@ -251,8 +243,6 @@ Offer.prototype.addImageToOffer = function(externalImage,onSuccessCallback, onEr
     var addImagePath = this.apiEndpoint + externalImage.getQueryStringForApi();
     var json = JSON.stringify(externalImage.serializeForApi());
 
-    // closure
-    var _this = this;
     try {
         http.doPost(addImagePath, json,
             function(response) {

@@ -29,9 +29,7 @@ Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallb
     }
     
     var loginUrlPath = this.apiEndpoint + loginModel.getQueryStringForApi();
-    
-    // closure
-    var _this = this;
+
     try {
         http.doGet(loginUrlPath,
             function(response) {

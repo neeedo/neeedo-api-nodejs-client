@@ -37,8 +37,6 @@ DemandList.prototype.loadByUser = function(user, offset, limit, onSuccessCallbac
 
     var getDemandByUserUrl = this.apiEndpoint + "/users/" + user.getId() + this.buildPaginationQueryString(offset, limit);
 
-    // closure
-    var _this = this;
     try {
         http.doGet(getDemandByUserUrl,
             function(response) {
@@ -99,8 +97,6 @@ DemandList.prototype.loadMostRecent = function(offset, limit, onSuccessCallback,
 
     var getMostRecentDemandsUrl = this.apiEndpoint + this.buildPaginationQueryString(offset, limit);
 
-    // closure
-    var _this = this;
     try {
         http.doGet(getMostRecentDemandsUrl,
             function(response) {

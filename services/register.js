@@ -30,9 +30,7 @@ Register.prototype.registerUser = function(registrationModel, onSuccessCallback,
     
     var registerUrlPath = this.apiEndpoint;
     var json = JSON.stringify(registrationModel.serializeForApi());
-    
-    // closure
-    var _this = this;
+
     try {
         http.doPost(registerUrlPath, json,
             function(response) {
