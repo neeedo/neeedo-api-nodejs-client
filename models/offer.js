@@ -2,7 +2,11 @@
  * dependencies
  */
 var Location = require('./location'),
-    User = require('./user');
+    User = require('./user'),
+    ImageService = require('../services/image')
+    ;
+
+var imageService = new ImageService();
 
 /*
  * Class: Offer
@@ -17,7 +21,7 @@ function Offer()
     this.tags = undefined;
     this.location = undefined;
     this.price = undefined;
-    this.images = [];
+    this.imageList = imageService.newImageList();
 }
 
 Offer.prototype.setId = function(id)
@@ -123,19 +127,24 @@ Offer.prototype.getPrice = function()
     return this.price;
 };
 
-Offer.prototype.setImages = function(images)
+Offer.prototype.setImageList = function(imageList)
 {
-    if (Object.prototype.toString.call( images ) !== '[object Array]') {
-        throw new Error("Type of shouldTags must be object.");
+    if (imageList === null || typeof imageList !== 'object') {
+        throw new Error("Type of imageList must be object.");
     }
 
-    this.images = images;
+    this.imageList = imageList;
     return this;
 };
 
 Offer.prototype.getImages = function()
 {
-    return this.images;
+    return this.imageList.getImages();
+};
+
+Offer.prototype.getImageList = function()
+{
+    return this.imageList;
 };
 
 /**
@@ -159,7 +168,7 @@ Offer.prototype.serializeForApi = function() {
        "tags" :         _this.getTags(),
        "location" :     _this.getLocation().serializeForApi(),
        "price" :        _this.getPrice(),
-       "images" :       _this.getImages()
+       "images" :       _this.getImageList().serializeForApi()
     };
     
     if (this.hasId()) {
@@ -207,7 +216,11 @@ Offer.prototype.loadFromSerialized = function(serializedOffer) {
     }
     
     if ("images" in serializedOffer) {
-        this.setImages(serializedOffer["images"]);
+        this.setImageList(imageService.newImageList().loadFromSerialized(serializedOffer["images"]));
+    }
+
+    if ("imageList" in serializedOffer && "images " in serializedOffer["imageList"]) {
+        this.setImageList(imageService.newImageList().loadFromSerialized(serializedOffer["imageList"]["images"]));
     }
 
     return this;

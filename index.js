@@ -8,6 +8,8 @@ var options = require('./client/options'),
     Register = require('./models/register'),
     Login = require('./models/login'),
     Error = require('./models/error'),
+    Image = require('./models/image'),
+    ImageList = require('./models/image-list'),
     DemandPrice = require('./models/demand/price'),
     LoginService = require('./services/login'),
     RegisterService = require('./services/register'),
@@ -15,7 +17,8 @@ var options = require('./client/options'),
     OfferListService = require('./services/offer-list'),
     DemandListService = require('./services/demand-list'),
     MatchingService = require('./services/matching'),
-    DemandService = require('./services/demand')
+    DemandService = require('./services/demand'),
+    ImageService = require('./services/image')
     ;
 
 module.exports.initClient = function(neeedoApiUrl, allowSelfSignedHttpsCertificates, logger)
@@ -30,7 +33,7 @@ module.exports.initClient = function(neeedoApiUrl, allowSelfSignedHttpsCertifica
     }   
     
     options.setLogger(logger);
-}
+};
 
 /**
  * Constructor functions that are exported.
@@ -45,7 +48,9 @@ module.exports.models = {
     "User": User,
     "Register" : Register,
     "Login": Login,
-    "Error": Error
+    "Error": Error,
+    "Image": Image,
+    "ImageList": ImageList
 };
 
 module.exports.services = {
@@ -55,7 +60,8 @@ module.exports.services = {
     "DemandList": DemandListService,
     "Offer": OfferService,
     "OfferList": OfferListService,
-    "Matching": MatchingService
+    "Matching": MatchingService,
+    "Image": ImageService
 };
 
 module.exports.options = options;

@@ -4,7 +4,10 @@
 var Offer    = require('../../models/offer.js'),
     User      = require('../../models/user.js'),
     Location  = require('../../models/location.js'),
+    ImageService = require('../../services/image'),
     should    = require('should');
+
+var imageService = new ImageService();
 
 describe('#Offer', function() {
     it("generates the expected serialization object to be sent to neeedo API", function() {
@@ -27,7 +30,7 @@ describe('#Offer', function() {
               .setTags(tags)
               .setLocation(location)
               .setPrice(price)
-              .setImages(images);
+              .setImageList(imageService.newImageList().loadFromSerialized(images));
 
         // when serializeForApi() is called
         var serializeObj = offer.serializeForApi();
@@ -39,7 +42,7 @@ describe('#Offer', function() {
         should.equal(serializeObj['location']['lat'], lat);
         should.equal(serializeObj['location']['lon'], lng);
         should.equal(serializeObj['price'], price);
-        should.equal(serializeObj['images'], images);
+        should.equal(JSON.stringify(serializeObj['images']), JSON.stringify(images));
     });
 
     it("is loaded correctly from neeedo API Demand JSON", function() {
@@ -79,12 +82,12 @@ describe('#Offer', function() {
         should.equal(offer.getLocation().getLatitude(), lat);
         should.equal(offer.getLocation().getLongitude(), lng);
         should.equal(offer.getPrice(), price);
-        should.equal(offer.getImages(), images);
+        should.equal(JSON.stringify(offer.getImageList().serializeForApi()), JSON.stringify(images));
     });
 
     it("has appropriate default values", function() {
         var offer = new Offer();
-        
+
         offer.getImages().should.be.Array;
     });
 });
