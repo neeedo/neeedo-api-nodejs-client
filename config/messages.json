@@ -26,7 +26,8 @@
     "no_api_connection" : "Could not connect to the Neeedo service hub. Please try again later.",
     "image_not_found" : "The given image could not be found.",
     "image_wrong_credentials" : "Your login credentials are incorrect",
-    "delete_image_internal_error" : "The image couldn't be deleted."
+    "delete_image_internal_error" : "The image couldn't be deleted.",
+    "upload_image_internal_error" : "Could not upload the given image. Please contact Neeedo customer care"
 }
         
 

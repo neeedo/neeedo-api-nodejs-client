@@ -4,6 +4,7 @@
 var globalOptions = require('./options'),
     http = require('http'),
     https = require('https'),
+    request = require('request'),
     url = require('url'),
     errorHandler = require('../helpers/error-handler'),
     messages = require('../config/messages.json'),
@@ -204,6 +205,27 @@ HttpAdapter.prototype.doDelete = function (path, callback, onErrorCallback, opti
 HttpAdapter.prototype.sendFile = function(path, fileName, filePath, fileType, callback, onErrorCallback, options) {
     var method = "POST";
 
+    var authToken = options.authorizationToken || undefined;
+    var fieldName = options.fieldName;
+    
+    globalOptions.getLogger().info('auth token ' + authToken);
+
+    var req = request.post(
+        { url: globalOptions.getApiUrl() + path,
+            rejectUnauthorized : false,
+            headers: {'Authorization' : 'Basic ' + authToken}},
+        function (err, resp, body) {
+            if (err) {
+                errorHandler.newMessageAndLogError(onErrorCallback, messages.no_api_connection, "Error: " + err);
+            } else {
+                callback(resp, body);
+            }
+        });
+
+    var form = req.form();
+    form.append(fieldName, fs.createReadStream(filePath));
+    
+    /*
     var httpOptions = this.getHttpOptions(path);
     httpOptions['method'] = method;
 
@@ -253,13 +275,14 @@ HttpAdapter.prototype.sendFile = function(path, fileName, filePath, fileType, ca
      })
      ;*/
 
+    /*
     req.on('error', function(error) {
         errorHandler.newMessageAndLogError(onErrorCallback, messages.no_api_connection, "Could not sent file.");
     });
 
     globalOptions.getLogger().info("HttpAdapter: Sending File request..."
         + "\n" + util.inspect(httpOptions, {showHidden: false, depth: 3})
-    );
+    );*/
 
 };
 

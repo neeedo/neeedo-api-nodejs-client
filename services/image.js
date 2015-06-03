@@ -53,36 +53,23 @@ Image.prototype.uploadImage = function(imageName, imagePath, mimeType, user, onS
             imageName,
             imagePath,
             mimeType,
-            function(response) {
-                var completeData = '';
+            function(response, completeData) {
+                globalOptions.getLogger().info('in callback with data ' + util.inspect(completeData));
+                if (201 == response.statusCode) {
+                    var imageData = JSON.parse(completeData);
+                    var imageModel = _this.newImage().loadFromSerialized(imageData['image']);
 
-                response.on('data', function(chunk) {
-                    completeData += chunk;
-                });
+                    onSuccessCallback(imageModel);
+                } else {
+                    errorHandler.newMessageAndLogError(onErrorCallback, messages.upload_image_internal_error, 
+                        'Got response: ' + response.statusCode + " " + response.statusMessage + " - data "+ completeData);
+                }
 
-                response.on('end', function () {
-                    // success on 200 = OK
-                    if (200 == response.statusCode) {
-                        var imageData = JSON.parse(completeData);
-
-                        var imageModel = _this.newImage().loadFromSerialized(imageData['image']);
-
-                        onSuccessCallback(imageModel);
-                    } else {
-                        //errorHandler.newMessageAndLogError(onErrorCallback, 'Pech gehabt', 'Got response: ' + util.inspect(completeData));
-                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, 'pech',
-                            {"methodPath": "Service/Image::uploadImage()"});
-                    }
-                });
-
-                response.on('error', function(error) {
-                    errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
-                        { "methodPath" : "Services/Offer::load()" });
-                });
             },
             onErrorCallback,
             {
-                authorizationToken: user.getAccessToken()
+                authorizationToken: user.getAccessToken(),
+                fieldName: 'image'
             });
     } catch (e) {
         errorHandler.newMessageAndLogError(onErrorCallback, messages.upload_image_internal_error, e.message);
