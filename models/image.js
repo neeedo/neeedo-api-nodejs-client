@@ -91,13 +91,15 @@ Image.prototype.serializeForApi = function() {
  * Load the object by the given serialized one.
  */
 Image.prototype.loadFromSerialized = function(serializedImage) {
-    if ("string" !== typeof(serializedImage)) {
-        throw new Error("Type of serializedImage must be string, but was " + (typeof (serializedImage)));
+    var fileName = serializedImage;
+
+    if ("string" !== typeof(serializedImage) && "fileName" in serializedImage) {
+        fileName = serializedImage["fileName"];
     }
-    
+
     // input is a simple string containing the file name
-    this.setFileName(serializedImage);
-    
+    this.setFileName(fileName);
+
     return this;
 };
 

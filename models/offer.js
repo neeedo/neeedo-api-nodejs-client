@@ -219,7 +219,7 @@ Offer.prototype.loadFromSerialized = function(serializedOffer) {
         this.setImageList(imageService.newImageList().loadFromSerialized(serializedOffer["images"]));
     }
 
-    if ("imageList" in serializedOffer && "images " in serializedOffer["imageList"]) {
+    if ("imageList" in serializedOffer && "images" in serializedOffer["imageList"]) {
         this.setImageList(imageService.newImageList().loadFromSerialized(serializedOffer["imageList"]["images"]));
     }
 

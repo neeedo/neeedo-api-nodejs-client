@@ -57,7 +57,7 @@ function HttpAdapter()
         }
 
         // append Content type if given
-        if (undefined !== authorizationToken) {
+        if (undefined !== contentType) {
             httpOptions['headers']['Content-Type'] = contentType;
         }
 
