@@ -27,6 +27,68 @@ Image.prototype.newImage = function() {
 Image.prototype.newImageList = function() {
     return new ImageListModel(this.getBaseUrl());
 };
+
+/*
+ * Function: uploadImage
+ * Triggers the upload of an image.
+ *
+ * - imageName: file name
+ * - imagePath: absolute path to the image file to be uploaded - make sure that it exists on the server!
+ * - onSuccessCallback: given function will be called with /models/image.js instance on success
+ * - onErrorCallback: given function will be called with the /models/error.js instance
+ */
+Image.prototype.uploadImage = function(imageName, imagePath, mimeType, user, onSuccessCallback, onErrorCallback)
+{
+    if ("string" !== typeof(imagePath) ) {
+        throw new Error("Type of imagePath must be string.");
+    }
+
+    globalOptions.getLogger().info('Sending ' + imageName + '...');
+
+    var uploadImageUrl = this.apiEndpoint;
+
+    var _this = this;
+    try {
+        http.sendFile(uploadImageUrl,
+            imageName,
+            imagePath,
+            mimeType,
+            function(response) {
+                var completeData = '';
+
+                response.on('data', function(chunk) {
+                    completeData += chunk;
+                });
+
+                response.on('end', function () {
+                    // success on 200 = OK
+                    if (200 == response.statusCode) {
+                        var imageData = JSON.parse(completeData);
+
+                        var imageModel = _this.newImage().loadFromSerialized(imageData['image']);
+
+                        onSuccessCallback(imageModel);
+                    } else {
+                        //errorHandler.newMessageAndLogError(onErrorCallback, 'Pech gehabt', 'Got response: ' + util.inspect(completeData));
+                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, 'pech',
+                            {"methodPath": "Service/Image::uploadImage()"});
+                    }
+                });
+
+                response.on('error', function(error) {
+                    errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                        { "methodPath" : "Services/Offer::load()" });
+                });
+            },
+            onErrorCallback,
+            {
+                authorizationToken: user.getAccessToken()
+            });
+    } catch (e) {
+        errorHandler.newMessageAndLogError(onErrorCallback, messages.upload_image_internal_error, e.message);
+    }
+};
+
 /*
  * Function: deleteImage
  * Triggers the deletion of an image.

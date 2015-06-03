@@ -7,7 +7,8 @@ var globalOptions = require('./options'),
     url = require('url'),
     errorHandler = require('../helpers/error-handler'),
     messages = require('../config/messages.json'),
-    util = require('util');
+    util = require('util'),
+    fs = require('fs');
 
 /*
  * Class: HttpAdapter
@@ -43,6 +44,7 @@ function HttpAdapter()
     };
     this.extendByAdditionalOptions = function(httpOptions, additionalOptions) {
         var authorizationToken = additionalOptions.authorizationToken || undefined;
+        var contentType = additionalOptions.contentType || undefined;
 
         if (!('headers' in httpOptions)) {
             httpOptions['headers'] = {};
@@ -51,6 +53,11 @@ function HttpAdapter()
         // append Basic authorization token if given
         if (undefined !== authorizationToken) {
             httpOptions['headers']['Authorization'] = 'Basic ' + authorizationToken;
+        }
+
+        // append Content type if given
+        if (undefined !== authorizationToken) {
+            httpOptions['headers']['Content-Type'] = contentType;
         }
 
         return httpOptions;
@@ -192,6 +199,68 @@ HttpAdapter.prototype.doDelete = function (path, callback, onErrorCallback, opti
     globalOptions.getLogger().info("HttpAdapter: Sending DELETE request..."
         + "\n" + util.inspect(httpOptions, {showHidden: false, depth: 3})
     );
+};
+
+HttpAdapter.prototype.sendFile = function(path, fileName, filePath, fileType, callback, onErrorCallback, options) {
+    var method = "POST";
+
+    var httpOptions = this.getHttpOptions(path);
+    httpOptions['method'] = method;
+
+    var boundaryKey = Math.random().toString(16); // random string
+    options['contentType'] =  'multipart/form-data; boundary="'+boundaryKey+'"';
+    httpOptions = this.extendByAdditionalOptions(httpOptions, options);
+
+    var req = this.getAdapter().request(httpOptions, callback);
+    req.setHeader('Content-Type', 'multipart/form-data; boundary="'+boundaryKey+'"');
+    req.setHeader('Authorization', 'Basic "' + options['authorizationToken'] +'"');
+
+    // the header for the one and only part (need to use CRLF here)
+    req.write(
+        '--' + boundaryKey + '\r\n'
+            // use your file's mime type here, if known
+        + 'Content-Type: application/octet-stream\r\n'
+            // "name" is the name of the form field
+            // "filename" is the name of the original file
+        + 'Content-Disposition: form-data; name="'+ fileName +'"; filename="'+ fileName +'\n"\r\n'
+        + 'Content-Transfer-Encoding: binary\r\n\r\n'
+    );
+
+    fs.readFile(filePath, function(err, data) {
+        if (err) {
+            errorHandler.newMessageAndLogError(onErrorCallback, messages.no_api_connection, "Could not read file: " + err);
+        } else {
+            globalOptions.getLogger().info('Sending... ');
+            req.write(data);
+            req.end('--' + boundaryKey + '--');
+        }
+    });
+
+    req.on('error', function(error) {
+        errorHandler.newMessageAndLogError(onErrorCallback, messages.no_api_connection, "Could not connect to API.");
+    });
+    /*
+     fs.createReadStream(filePath, { bufferSize: 4 * 1024 })
+     // set "end" to false in the options so .end() isnt called on the request
+     .pipe(req, { end: false }) // maybe write directly to the socket here?
+     .on('end', function() {
+     globalOptions.getLogger().info("in end..");
+     // mark the end of the one and only part
+     req.end('--' + boundaryKey + '--');
+     })
+     .on('error', function() {
+     errorHandler.newMessageAndLogError(onErrorCallback, messages.no_api_connection, "Could not sent file.");
+     })
+     ;*/
+
+    req.on('error', function(error) {
+        errorHandler.newMessageAndLogError(onErrorCallback, messages.no_api_connection, "Could not sent file.");
+    });
+
+    globalOptions.getLogger().info("HttpAdapter: Sending File request..."
+        + "\n" + util.inspect(httpOptions, {showHidden: false, depth: 3})
+    );
+
 };
 
 var httpAdapter = new HttpAdapter();
