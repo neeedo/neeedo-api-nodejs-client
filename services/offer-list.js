@@ -2,7 +2,8 @@ var http = require('../client/http'),
     OfferListModel = require('../models/offer-list'),
     errorHandler = require('../helpers/error-handler'),
     messages = require('../config/messages.json'),
-    globalOptions = require('../client/options');
+    globalOptions = require('../client/options'),
+    _ = require('underscore');
 
 /*
  * Class: DemandList
@@ -13,8 +14,8 @@ function OfferList()
 {
     this.apiEndpoint = '/offers';
 
-    this.buildPaginationQueryString = function(offset, limit) {
-        return "?from=" + offset + "&size=" + limit;
+    this.buildPaginationQueryString = function(offerQuery) {
+        return offerQuery.buildQueryString();
     }
 }
 
@@ -24,18 +25,21 @@ function OfferList()
  * Load given user's offers.
  *
  * @param user
- * @param offset int
- * @param limit int
+ * @param offerQueryModel see models/offer-query
  * @param onSuccessCallback will be called with models/offer-list instance
  * @param onErrorCallback will be called with models/error instance
  */
-OfferList.prototype.loadByUser = function(user, offset, limit, onSuccessCallback, onErrorCallback)
+OfferList.prototype.loadByUser = function(user, offerQueryModel, onSuccessCallback, onErrorCallback)
 {
     if (user === null || typeof user !== 'object') {
         throw new Error("Type of user must be object.");
     }
 
-    var getOfferByUserUrl = this.apiEndpoint + "/users/" + user.getId()  + this.buildPaginationQueryString(offset, limit);
+    if (!_.isObject(offerQueryModel)) {
+        throw new Error("Type of offerQueryModel must be object.");
+    }
+
+    var getOfferByUserUrl = this.apiEndpoint + "/users/" + user.getId()  + this.buildPaginationQueryString(offerQueryModel);
 
     try {
         http.doGet(getOfferByUserUrl,
@@ -83,22 +87,17 @@ OfferList.prototype.loadByUser = function(user, offset, limit, onSuccessCallback
  *
  * Load most recent offers (PUBLIC action).
  *
- * @param offset int
- * @param limit int
+ * @param offerQueryModel see models/offer-query
  * @param onSuccessCallback will be called with models/offer-list instance
  * @param onErrorCallback will be called with models/error instance
  */
-OfferList.prototype.loadMostRecent = function(offset, limit, onSuccessCallback, onErrorCallback)
+OfferList.prototype.loadMostRecent = function(offerQueryModel, onSuccessCallback, onErrorCallback)
 {
-    if (offset !== parseInt(offset)) {
-        throw new Error("Type of offset must be int.");
+    if (!_.isObject(offerQueryModel)) {
+        throw new Error("Type of offerQueryModel must be object.");
     }
 
-    if (limit !== parseInt(limit)) {
-        throw new Error("Type of limit must be int.");
-    }
-
-    var getMostRecentOffersUrl = this.apiEndpoint + this.buildPaginationQueryString(offset, limit);
+    var getMostRecentOffersUrl = this.apiEndpoint + this.buildPaginationQueryString(offerQueryModel);
 
     try {
         http.doGet(getMostRecentOffersUrl,

@@ -1,6 +1,6 @@
 {
   "name": "neeedo-api-nodejs-client",
-  "version": "2.0.12",
+  "version": "2.0.13",
   "description": "Client to be used to interact with neeedo HTTP API. ",
   "main": "index.js",
   "scripts": {
@@ -24,6 +24,7 @@
     "should": "^6.0.1"
   },
   "dependencies": {
-    "request": "^2.57.0"
+    "request": "^2.57.0",
+    "underscore": "^1.8.3"
   }
 }

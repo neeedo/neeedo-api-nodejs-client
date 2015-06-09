@@ -2,7 +2,8 @@ var http = require('../client/http'),
     DemandListModel = require('../models/demand-list'),
     errorHandler = require('../helpers/error-handler'),
     messages = require('../config/messages.json'),
-    globalOptions = require('../client/options');
+    globalOptions = require('../client/options'),
+    _ = require('underscore');
 
 /*
  * Class: DemandList
@@ -13,8 +14,8 @@ function DemandList()
 {
     this.apiEndpoint = '/demands';
 
-    this.buildPaginationQueryString = function(offset, limit) {
-        return "?from=" + offset + "&size=" + limit;
+    this.buildQueryString = function(demandQueryModel) {
+        return demandQueryModel.buildQueryString();
     }
 }
 
@@ -24,18 +25,21 @@ function DemandList()
  * Load given user's demands.
  *
  * @param user
- * @param offset int
- * @param limit int
+ * @param demandQueryModel see models/demand-query
  * @param onSuccessCallback will be called with models/demand-list instance
  * @param onErrorCallback will be called with models/error instance
  */
-DemandList.prototype.loadByUser = function(user, offset, limit, onSuccessCallback, onErrorCallback)
+DemandList.prototype.loadByUser = function(user, demandQueryModel, onSuccessCallback, onErrorCallback)
 {
     if (user === null || typeof user !== 'object') {
         throw new Error("Type of user must be object.");
     }
 
-    var getDemandByUserUrl = this.apiEndpoint + "/users/" + user.getId() + this.buildPaginationQueryString(offset, limit);
+    if (!_.isObject(demandQueryModel)) {
+        throw new Error("Type of demandQueryModel must be object.");
+    }
+
+    var getDemandByUserUrl = this.apiEndpoint + "/users/" + user.getId() + this.buildQueryString(demandQueryModel);
 
     try {
         http.doGet(getDemandByUserUrl,
@@ -80,22 +84,17 @@ DemandList.prototype.loadByUser = function(user, offset, limit, onSuccessCallbac
  *
  * Load most recent demands (PUBLIC action).
  *
- * @param offset int
- * @param limit int
+ * @param demandQueryModel see models/demand-query
  * @param onSuccessCallback will be called with models/demand-list instance
  * @param onErrorCallback will be called with models/error instance
  */
-DemandList.prototype.loadMostRecent = function(offset, limit, onSuccessCallback, onErrorCallback)
+DemandList.prototype.loadMostRecent = function(demandQueryModel, onSuccessCallback, onErrorCallback)
 {
-    if (offset !== parseInt(offset)) {
-        throw new Error("Type of offset must be int.");
+    if (!_.isObject(demandQueryModel)) {
+        throw new Error("Type of demandQueryModel must be object.");
     }
 
-    if (limit !== parseInt(limit)) {
-        throw new Error("Type of limit must be int.");
-    }
-
-    var getMostRecentDemandsUrl = this.apiEndpoint + this.buildPaginationQueryString(offset, limit);
+    var getMostRecentDemandsUrl = this.apiEndpoint + this.buildQueryString(demandQueryModel);
 
     try {
         http.doGet(getMostRecentDemandsUrl,
