@@ -28,7 +28,13 @@ function ErrorHandler() {
     }
 };
 
-
+/**
+ * @deprecated please use newErrorWithData since the response object lifecycle was already triggerd in the client method
+ * @param onCompleteCallback
+ * @param response
+ * @param errorMessage
+ * @param options
+ */
 ErrorHandler.prototype.newError = function(onCompleteCallback, response, errorMessage, options) {
     var error = new Error();
 
@@ -55,7 +61,7 @@ ErrorHandler.prototype.newErrorWithData = function(onCompleteCallback, response,
     var innerOptions = options;
     innerOptions['responseJson'] = completeData;
 
-    var innerErrorMessage;
+    var innerErrorMessage = errorMessage;
     try {
         var errorData = JSON.parse(completeData);
         // passthrough neeedo API error messages if given and only if an entry in message.json exist

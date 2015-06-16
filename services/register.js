@@ -51,14 +51,14 @@ Register.prototype.registerUser = function(registrationModel, onSuccessCallback,
 
                             onSuccessCallback(registeredUser);
                         } else {
-                            errorHandler.newError(onErrorCallback, response, messages.register_internal_error,
+                            errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.register_internal_error,
                                 { "methodPath" : "Service/Register::registerUser()",
                                     "requestJson" : json });
                         }
                     });
 
                     response.on('error', function(error) {
-                        errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
                             { "methodPath" : "Services/Register::registerUser()" });
                     });
             }, onErrorCallback, {});

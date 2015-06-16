@@ -63,14 +63,14 @@ OfferList.prototype.loadByUser = function(user, offerQueryModel, onSuccessCallba
 
                         onSuccessCallback(loadedOfferList);
                     } else {
-                        errorHandler.newError(onErrorCallback, response, messages.get_offers_error,
+                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.get_offers_error,
                             { "methodPath" : "Service/OfferList::loadByUser()" });
                     }
                 });
 
                 response.on('error', function(error) {
                     // API not reachable
-                    errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                    errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
                         {"methodPath": "Services/OfferList::loadByUser()"});
                 });
             }, onErrorCallback,
@@ -118,13 +118,13 @@ OfferList.prototype.loadMostRecent = function(offerQueryModel, onSuccessCallback
 
                         onSuccessCallback(loadedOfferList);
                     } else {
-                        errorHandler.newError(onErrorCallback, response, messages.get_most_recent_offers_error,
+                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.get_most_recent_offers_error,
                             { "methodPath" : "Services/OfferList::loadMostRecent()" });
                     }
                 });
 
                 response.on('error', function(error) {
-                    errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                    errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
                         { "methodPath" : "Services/OfferList::loadMostRecent()" });
                 });
             }, onErrorCallback, {});

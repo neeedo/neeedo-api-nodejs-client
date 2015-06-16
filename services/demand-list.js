@@ -61,13 +61,13 @@ DemandList.prototype.loadByUser = function(user, demandQueryModel, onSuccessCall
 
                         onSuccessCallback(loadedDemandList);
                     } else {
-                        errorHandler.newError(onErrorCallback, response, messages.get_demands_error,
+                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.get_demands_error,
                             { "methodPath" : "Service/DemandList::loadByUser()" });
                     }
                 });
 
                 response.on('error', function(error) {
-                    errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                    errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
                         { "methodPath" : "Services/DemandList::loadByUser()" });
                 });
             }, onErrorCallback,
@@ -116,13 +116,13 @@ DemandList.prototype.loadMostRecent = function(demandQueryModel, onSuccessCallba
 
                         onSuccessCallback(loadedDemandList);
                     }else {
-                        errorHandler.newError(onErrorCallback, response, messages.get_most_recent_demands_error,
+                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.get_most_recent_demands_error,
                             { "methodPath" : "Service/DemandList::loadMostRecent()" });
                     }
                 });
 
                 response.on('error', function(error) {
-                    errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                    errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
                         { "methodPath" : "Services/DemandList::loadMostRecent()" });
                 });
             }, onErrorCallback, {});

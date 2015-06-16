@@ -44,13 +44,13 @@ Demand.prototype.load = function(demandId, user, onSuccessCallback, onErrorCallb
 
                         onSuccessCallback(loadedDemand); }
                         else {
-                            errorHandler.newError(onErrorCallback, response, messages.register_internal_error,
+                            errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.register_internal_error,
                                 { "methodPath" : "Service/Demand::load()" });
                         }
                     });
 
                     response.on('error', function(error) {
-                        errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
                             {"methodPath": "Services/Demand::load()"});
                     });
             },
@@ -101,14 +101,14 @@ Demand.prototype.createDemand = function(demandModel, onSuccessCallback, onError
 
                         onSuccessCallback(createdDemand);
                         } else {
-                            errorHandler.newError(onErrorCallback, response, messages.register_internal_error,
+                            errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.register_internal_error,
                                 { "methodPath" : "Service/Demand::createDemand()",
                                     "requestJson" : json });
                         }
                     });
 
                     response.on('error', function(error) {
-                        errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
                             { "methodPath" : "Services/Demand::createDemand()" });
                     });
                 },
@@ -164,7 +164,7 @@ Demand.prototype.updateDemand = function(demandModel, onSuccessCallback, onError
                             } else if (401 == response.statusCode) {
                                 errorHandler.newMessageError(onErrorCallback, messages.login_wrong_credentials);
                             } else {
-                                errorHandler.newError(onErrorCallback, response, messages.update_demand_internal_error,
+                                errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.update_demand_internal_error,
                                     { "methodPath" : "Service/Demand::updateDemand()",
                                         "requestJson" : json });
                             }
@@ -172,7 +172,7 @@ Demand.prototype.updateDemand = function(demandModel, onSuccessCallback, onError
                     });
 
                     response.on('error', function(error) {
-                        errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
                             { "methodPath" : "Services/Demand::updateDemand()" });
                     });
             },

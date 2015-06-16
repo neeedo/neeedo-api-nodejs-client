@@ -55,14 +55,14 @@ Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallb
                             if (404 == response.statusCode || 403 == response.statusCode) {
                                 errorHandler.newMessageError(onErrorCallback, messages.login_wrong_credentials);
                             } else {
-                                errorHandler.newError(onErrorCallback, response, messages.login_internal_error,
+                                errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.login_internal_error,
                                     { "methodPath" : "Service/Login::loginUser()" });
                             }
                         }
                     });
 
                     response.on('error', function(error) {
-                        errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
                             { "methodPath" : "Services/Login::loginUser()" });
                     });
             },

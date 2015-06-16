@@ -63,13 +63,13 @@ Matching.prototype.matchDemand = function(demandModel, offset, limit, onSuccessC
                             var matchedOffers = new OfferListModel().loadFromSerialized(offerData);
                             onSuccessCallback(matchedOffers);
                         } else {
-                            errorHandler.newError(onErrorCallback, response, messages.matching_demands_internal_error,
+                            errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.matching_demands_internal_error,
                                 { "methodPath" : "Services/Matching::matchDemand()" });
                         }
                     });
 
                     response.on('error', function(error) {
-                        errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
                             { "methodPath" : "Services/Matching::matchDemand()" });
                     });
             },

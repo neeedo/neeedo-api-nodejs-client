@@ -43,13 +43,13 @@ Offer.prototype.load = function(offerId, user, onSuccessCallback, onErrorCallbac
 
                             onSuccessCallback(loadedOffer);
                         } else {
-                            errorHandler.newError(onErrorCallback, response, messages.get_offer_error,
+                            errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.get_offer_error,
                                 { "methodPath" : "Service/Offer::load()" });
                         }
                     });
 
                     response.on('error', function(error) {
-                        errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
                             { "methodPath" : "Services/Offer::load()" });
                     });
             },
@@ -100,14 +100,14 @@ Offer.prototype.createOffer = function(offerModel, onSuccessCallback, onErrorCal
 
                             onSuccessCallback(createdOffer);
                         } else {
-                            errorHandler.newError(onErrorCallback, response, messages.create_offer_internal_error,
+                            errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.create_offer_internal_error,
                                 { "methodPath" : "Service/Offer::createOffer()",
                                     "requestJson" : json });
                         }
                     });
 
                     response.on('error', function(error) {
-                        errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
                             { "methodPath" : "Services/Offer::createOffer()" });
                     });
             },
@@ -163,7 +163,7 @@ Offer.prototype.updateOffer = function(offerModel, onSuccessCallback, onErrorCal
                             } else if (401 == response.statusCode) {
                                 errorHandler.newMessageError(onErrorCallback, messages.login_wrong_credentials);
                             } else {
-                                errorHandler.newError(onErrorCallback, response, messages.update_offer_internal_error,
+                                errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.update_offer_internal_error,
                                     { "methodPath" : "Service/Offer::updateOffer()",
                                         "requestJson" : json });
                             }
@@ -171,7 +171,7 @@ Offer.prototype.updateOffer = function(offerModel, onSuccessCallback, onErrorCal
                     });
 
                     response.on('error', function(error) {
-                        errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
                             { "methodPath" : "Services/Offer::updateOffer()" });
                     });
             },
@@ -264,14 +264,14 @@ Offer.prototype.addImageToOffer = function(externalImage,onSuccessCallback, onEr
 
                         onSuccessCallback(createdOffer); 
                         } else {
-                            errorHandler.newError(onErrorCallback, response, messages.add_image_to_offer_internal_error,
+                            errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.add_image_to_offer_internal_error,
                                 { "methodPath" : "Service/Offer::addImageToOffer()",
                                     "requestJson" : json });
                         }
                     });
 
                     response.on('error', function(error) {
-                        errorHandler.newError(onErrorCallback, response, messages.no_api_connection,
+                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
                             { "methodPath" : "Services/Offer::addImageToOffer()" });
                     });
             },
