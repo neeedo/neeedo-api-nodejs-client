@@ -16,12 +16,16 @@ describe('#DemandList', function() {
         var distance = 30;
         var min = 25.0;
         var max = 77.0;
+        var username = "maxmuster";
 
         // given some JSON returned by the API
         var neeedoDemandJson = {
             "id": demandId,
             "version": version,
-            "userId": userId,
+            "user": {
+                "id" : userId,
+                "name" : username
+            },
             "mustTags": mustTags,
             "shouldTags": shouldTags,
             "location": {
@@ -50,6 +54,7 @@ describe('#DemandList', function() {
         should.equal(firstDemand.getId(), demandId);
         should.equal(firstDemand.getVersion(), version);
         should.equal(firstDemand.getUser().getId(), userId);
+        should.equal(firstDemand.getUser().getUsername(), username);
         should.equal(firstDemand.getMustTags(), mustTags);
         should.equal(firstDemand.getShouldTags(), shouldTags);
         should.equal(firstDemand.getLocation().getLatitude(), lat);

@@ -137,6 +137,10 @@ User.prototype.loadFromSerialized = function(serializedUser) {
         this.setUsername(serializedUser["username"]);
     }
     
+    if ("name" in serializedUser) {
+        this.setUsername(serializedUser["name"]);
+    }
+
     if ("email" in serializedUser) {
         this.setEMail(serializedUser["email"]);
     }

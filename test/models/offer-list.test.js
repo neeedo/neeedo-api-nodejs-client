@@ -13,12 +13,16 @@ describe('#OfferList', function() {
         var lat = 35.92516;
         var lng = 12.37528;
         var price = 25.0;
+        var username = "maxmuster";
         
         // given some JSON returned by the API
         var neeedoOfferJson = {
             "id": offerId,
             "version": version,
-            "userId": userId,
+            "user": {
+                "id" : userId,
+                "name" : username
+            },
             "tags": tags,
             "location": {
                 "lat": lat,
@@ -42,6 +46,7 @@ describe('#OfferList', function() {
         should.equal(firstOffer.getId(), offerId);
         should.equal(firstOffer.getVersion(), version);
         should.equal(firstOffer.getUser().getId(), userId);
+        should.equal(firstOffer.getUser().getUsername(), username);
         should.equal(firstOffer.getTags(), tags);
         should.equal(firstOffer.getLocation().getLatitude(), lat);
         should.equal(firstOffer.getLocation().getLongitude(), lng);
