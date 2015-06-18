@@ -3,6 +3,7 @@ var http = require('../client/http'),
     errorHandler = require('../helpers/error-handler'),
     messages = require('../config/messages.json'),
     globalOptions = require('../client/options'),
+    _ = require('underscore'),
     OptionBuilder = require('../helpers/option-builder');
 
 /**
@@ -12,36 +13,31 @@ var http = require('../client/http'),
 function Matching() 
 {
     this.apiEndpoint = '/matching';
-    
-    this.buildDemandMatchingQueryString = function(offset, limit) {
-        return "/demand/" + offset + "/" + limit;
-    } 
+
+    this.buildQueryString = function(demandQueryModel) {
+        return demandQueryModel.buildQueryString();
+    }
 }
 
 /**
  * Match the given demand. Neeedo API will return matching offers that are given to the onSuccessCallback.
  *
  * @param demandModel see models/demand.js
- * @param offset int 
- * @param limit int
+ * @param demandQueryModel see models/demand-query.js
  * @param onSuccessCallback will be called with a models/demand-list.js instance
  * @param onErrorCallback will be called with a models/error.js model
  */
-Matching.prototype.matchDemand = function(demandModel, offset, limit, onSuccessCallback, onErrorCallback)
+Matching.prototype.matchDemand = function(demandModel, demandQueryModel, onSuccessCallback, onErrorCallback)
 {
     if (demandModel === null || typeof demandModel !== 'object') {
         throw new Error("Type of demandModel must be object.");
     }
 
-    if (offset !== parseInt(offset)) {
-        throw new Error("Type of offset must be int.");
+    if (!_.isObject(demandQueryModel)) {
+        throw new Error("Type of demandQueryModel must be object.");
     }
 
-    if (limit !== parseInt(limit)) {
-        throw new Error("Type of limit must be int.");
-    }
-
-    var matchDemandUrl = this.apiEndpoint + this.buildDemandMatchingQueryString(offset, limit);
+    var matchDemandUrl = this.apiEndpoint + this.buildQueryString(demandQueryModel);
     var json = JSON.stringify(demandModel.serializeForMatching());
 
     try {
