@@ -13,7 +13,7 @@ describe('#OfferQuery', function() {
             .setLimit(10)
             .setOffset(1);
 
-        should.equal('?offset=1&limit=10&latitude=55.5123&longitude=10.1234', offerQuery.buildQueryString());
+        should.equal('?offset=1&limit=10&lat=55.5123&lon=10.1234', offerQuery.buildQueryString());
     });
     
     it("builds expected query string for partly criteria", function() {
