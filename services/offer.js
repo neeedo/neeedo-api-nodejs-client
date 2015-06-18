@@ -55,7 +55,7 @@ Offer.prototype.load = function(offerId, user, onSuccessCallback, onErrorCallbac
                     });
             },
             onErrorCallback,
-            new OptionBuilder().addAuthorizationToken(offerModel.getUser()).getOptions());
+            new OptionBuilder().addAuthorizationToken(user).getOptions());
     } catch (e) {
         errorHandler.newMessageAndLogError(onErrorCallback, messages.get_offer_internal_error, e.message);
     }
