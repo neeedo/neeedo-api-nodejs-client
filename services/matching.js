@@ -37,7 +37,7 @@ Matching.prototype.matchDemand = function(demandModel, demandQueryModel, onSucce
         throw new Error("Type of demandQueryModel must be object.");
     }
 
-    var matchDemandUrl = this.apiEndpoint + this.buildQueryString(demandQueryModel);
+    var matchDemandUrl = this.apiEndpoint + '/demand' + this.buildQueryString(demandQueryModel);
     var json = JSON.stringify(demandModel.serializeForMatching());
 
     try {
