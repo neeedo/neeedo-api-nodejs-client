@@ -2,7 +2,8 @@ var http = require('../client/http'),
     OfferListModel = require('../models/offer-list'),
     errorHandler = require('../helpers/error-handler'),
     messages = require('../config/messages.json'),
-    globalOptions = require('../client/options');
+    globalOptions = require('../client/options'),
+    OptionBuilder = require('../helpers/option-builder');
 
 /**
  * Matching service: match a user's demands by recieving offers from neeedo API.

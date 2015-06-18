@@ -3,7 +3,8 @@ var http = require('../client/http'),
     errorHandler = require('../helpers/error-handler'),
     messages = require('../config/messages.json'),
     globalOptions = require('../client/options'),
-    _ = require('underscore');
+    _ = require('underscore'),
+    OptionBuilder = require('../helpers/option-builder');
 
 /*
  * Class: DemandList

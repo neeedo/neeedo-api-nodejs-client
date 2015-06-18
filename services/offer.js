@@ -2,7 +2,8 @@ var http = require('../client/http'),
     OfferModel = require('../models/offer'),
     errorHandler = require('../helpers/error-handler'),
     messages = require('../config/messages.json'),
-    globalOptions = require('../client/options');
+    globalOptions = require('../client/options'),
+    OptionBuilder = require('../helpers/option-builder');
 
 /*
  * Class: Offer

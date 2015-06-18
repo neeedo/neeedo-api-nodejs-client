@@ -3,7 +3,8 @@ var http = require('../client/http'),
     ImageListModel = require('../models/image-list'),
     errorHandler = require('../helpers/error-handler'),
     messages = require('../config/messages.json'),
-    globalOptions = require('../client/options');
+    globalOptions = require('../client/options'),
+    OptionBuilder = require('../helpers/option-builder');
 
 /*
  * Class: Image
