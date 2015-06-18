@@ -8,15 +8,16 @@ var Demand = require('./demand'),
  * Class: DemandQuery
  * 
  * This class is a simple object to keep demand-list query parameters.
+ * 
+ * It encapsulates parameter names that will be sent to the neeedo API endpoints.
  */
 function DemandQuery()
 {
     this.offsetParameterName = 'offset';
     this.limitParameterName = 'limit';
     
-    // TODO: those parameter names might be changed by API later
-    this.latitudeParameterName = 'latitude';
-    this.longitudeParameterName = 'longitude';
+    this.latitudeParameterName = 'lat';
+    this.longitudeParameterName = 'lon';
     
     this.offset = undefined;
     this.limit = undefined;

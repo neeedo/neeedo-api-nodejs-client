@@ -8,15 +8,16 @@ var Demand = require('./demand'),
  * Class: OfferQuery
  * 
  * This class is a simple object to keep offer-list query parameters.
+ * 
+ * It encapsulates parameter names that will be sent to the neeedo API endpoints.
  */
 function OfferQuery()
 {
     this.offsetParameterName = 'offset';
     this.limitParameterName = 'limit';
-    
-    // TODO: those parameter names might be changed by API later
-    this.latitudeParameterName = 'latitude';
-    this.longitudeParameterName = 'longitude';
+
+    this.latitudeParameterName = 'lat';
+    this.longitudeParameterName = 'lon';
     
     this.offset = undefined;
     this.limit = undefined;
