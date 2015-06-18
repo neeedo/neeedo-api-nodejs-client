@@ -71,9 +71,7 @@ DemandList.prototype.loadByUser = function(user, demandQueryModel, onSuccessCall
                         { "methodPath" : "Services/DemandList::loadByUser()" });
                 });
             }, onErrorCallback,
-            {
-                authorizationToken: user.getAccessToken()
-            });
+            new OptionBuilder().addAuthorizationToken(user).getOptions());
     } catch (e) {
         errorHandler.newMessageAndLogError(onErrorCallback, messages.get_demands_internal_error, e.message);
     }

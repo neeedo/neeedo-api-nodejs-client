@@ -67,9 +67,7 @@ Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallb
                     });
             },
             onErrorCallback,
-        {
-          authorizationToken: loginModel.generateAccessToken()
-        });
+            new OptionBuilder().add('authorizationToken', loginModel.generateAccessToken()).getOptions());
     } catch (e) {
         errorHandler.newMessageAndLogError(onErrorCallback, messages.login_internal_error, e.message);
     }

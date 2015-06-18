@@ -67,10 +67,7 @@ Image.prototype.uploadImage = function(imageName, imagePath, mimeType, user, onS
 
             },
             onErrorCallback,
-            {
-                authorizationToken: user.getAccessToken(),
-                fieldName: 'image'
-            });
+            new OptionBuilder().addAuthorizationToken(user).add('fieldName', 'image').getOptions());
     } catch (e) {
         errorHandler.newMessageAndLogError(onErrorCallback, messages.upload_image_internal_error, e.message);
     }

@@ -74,9 +74,7 @@ Matching.prototype.matchDemand = function(demandModel, offset, limit, onSuccessC
                     });
             },
             onErrorCallback,
-            {
-                authorizationToken: demandModel.getUser().getAccessToken()
-            });
+            new OptionBuilder().addAuthorizationToken(demandModel.getUser()).getOptions());
     } catch (e) {
         errorHandler.newMessageAndLogError(onErrorCallback, messages.matching_demands_internal_error, e.message);
     }

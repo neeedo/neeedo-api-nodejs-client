@@ -2,7 +2,8 @@ var http = require('../client/http'),
     DemandModel = require('../models/demand'),
     errorHandler = require('../helpers/error-handler'),
     messages = require('../config/messages.json'),
-    globalOptions = require('../client/options');
+    globalOptions = require('../client/options'),
+    OptionBuilder = require('../helpers/option-builder');
 
 /*
  * Class: Demand
@@ -20,7 +21,7 @@ Demand.prototype.load = function(demandId, user, onSuccessCallback, onErrorCallb
     if ("string" !== typeof(demandId) ) {
         throw new Error("Type of demandId must be string.");
     }
-
+    
     var getDemandIdUrl = this.apiEndpoint + "/" + demandId;
 
     try {
@@ -55,9 +56,8 @@ Demand.prototype.load = function(demandId, user, onSuccessCallback, onErrorCallb
                     });
             },
             onErrorCallback,
-            {
-                authorizationToken: user.getAccessToken()
-            });
+            new OptionBuilder().addAuthorizationToken(user).getOptions()
+        );
     } catch (e) {
         errorHandler.newMessageAndLogError(onErrorCallback, messages.get_demand_internal_error, e.message);
     }
@@ -113,9 +113,7 @@ Demand.prototype.createDemand = function(demandModel, onSuccessCallback, onError
                     });
                 },
             onErrorCallback,
-            {
-            authorizationToken: demandModel.getUser().getAccessToken()
-        });
+            new OptionBuilder().addAuthorizationToken(demandModel.getUser()).getOptions());
     } catch (e) {
         errorHandler.newMessageAndLogError(onErrorCallback, messages.create_demand_internal_error, e.message);
     }
@@ -177,9 +175,7 @@ Demand.prototype.updateDemand = function(demandModel, onSuccessCallback, onError
                     });
             },
             onErrorCallback,
-        {
-            authorizationToken: demandModel.getUser().getAccessToken()
-        });
+            new OptionBuilder().addAuthorizationToken(demandModel.getUser()).getOptions());
     } catch (e) {
         errorHandler.newMessageAndLogError(onErrorCallback, messages.update_demand_internal_error, e.message);
     }
@@ -219,9 +215,7 @@ Demand.prototype.deleteDemand = function(demandModel, onSuccessCallback, onError
                 }
             },
             onErrorCallback,
-            {
-                authorizationToken: demandModel.getUser().getAccessToken()
-            });
+            new OptionBuilder().addAuthorizationToken(demandModel.getUser()).getOptions());
     } catch (e) {
         errorHandler.newMessageAndLogError(onErrorCallback, messages.delete_demand_internal_error, e.message);
     }

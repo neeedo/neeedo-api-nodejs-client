@@ -74,9 +74,7 @@ OfferList.prototype.loadByUser = function(user, offerQueryModel, onSuccessCallba
                         {"methodPath": "Services/OfferList::loadByUser()"});
                 });
             }, onErrorCallback,
-            {
-                authorizationToken: user.getAccessToken()
-            });
+            new OptionBuilder().addAuthorizationToken(user).getOptions());
     } catch (e) {
         errorHandler.newMessageAndLogError(onErrorCallback, messages.get_offers_internal_error, e.message);
     }
