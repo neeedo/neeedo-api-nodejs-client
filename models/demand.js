@@ -199,6 +199,8 @@ Demand.prototype.serializeForMatching = function()
     serializedObj['id'] = this.getId();
     serializedObj['version'] = this.getVersion();
     
+    serializedObj['user'] = this.getUser().serializeForMatching();
+    
     return serializedObj;
 };
 

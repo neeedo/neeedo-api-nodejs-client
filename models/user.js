@@ -116,6 +116,12 @@ User.prototype.serializeForApi = function() {
     return serializedObj;
 };
 
+User.prototype.serializeForMatching = function() {
+  return {
+        "id" : this.getId(),
+        "name" : this.getUsername()
+  };
+};
 /*
  * Function: loadFromSerialized
  * Load the object by the given serialized one.
