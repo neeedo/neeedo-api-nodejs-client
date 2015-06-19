@@ -24,7 +24,7 @@ function Matching()
  *
  * @param demandModel see models/demand.js
  * @param demandQueryModel see models/demand-query.js
- * @param onSuccessCallback will be called with a models/demand-list.js instance
+ * @param onSuccessCallback will be called with a models/demand-list.js instance and the input models/demand.js model
  * @param onErrorCallback will be called with a models/error.js model
  */
 Matching.prototype.matchDemand = function(demandModel, demandQueryModel, onSuccessCallback, onErrorCallback)
@@ -58,7 +58,7 @@ Matching.prototype.matchDemand = function(demandModel, demandQueryModel, onSucce
                             globalOptions.getLogger().info("Services/Matching::matchDemand(): server sent response data " + completeData);
 
                             var matchedOffers = new OfferListModel().loadFromSerialized(offerData);
-                            onSuccessCallback(matchedOffers);
+                            onSuccessCallback(matchedOffers, demandModel);
                         } else {
                             errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.matching_demands_internal_error,
                                 { "methodPath" : "Services/Matching::matchDemand()" });
