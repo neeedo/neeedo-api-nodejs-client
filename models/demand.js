@@ -195,6 +195,10 @@ Demand.prototype.serializeForApi = function() {
 Demand.prototype.serializeForMatching = function()
 {
     var serializedObj = this.serializeForApi();
+
+    if ("userId" in serializedObj) {
+        delete serializedObj["userId"];
+    }
     
     serializedObj['id'] = this.getId();
     serializedObj['version'] = this.getVersion();
