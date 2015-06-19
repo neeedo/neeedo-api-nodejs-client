@@ -204,6 +204,21 @@ Demand.prototype.serializeForMatching = function()
     serializedObj['version'] = this.getVersion();
     
     serializedObj['user'] = this.getUser().serializeForMatching();
+
+    // lower case tags TODO remove if not neccessary anymore
+    var mustTags = [];
+    for (var i = 0; i < this.getMustTags().length; i++ ) {
+        mustTags.push(this.getMustTags()[i].toLowerCase());
+    }
+
+    serializedObj['mustTags'] = mustTags;
+
+    var shouldTags = [];
+    for (var i = 0; i < this.getShouldTags().length; i++ ) {
+        shouldTags.push(this.getShouldTags()[i].toLowerCase());
+    }
+
+    serializedObj['shouldTags'] = shouldTags;
     
     return serializedObj;
 };
