@@ -21,7 +21,7 @@ describe('#User', function() {
 
         // a plain javascript object with the following fields should be returned...
         serializeObj.should.be.a.Object;
-        should.equal(serializeObj['username'], username);
+        should.equal(serializeObj['name'], username);
         should.equal(serializeObj['email'], email);
     });
 
@@ -35,7 +35,7 @@ describe('#User', function() {
         var neeedoUserJson = {
             "id": userId,
             "version": version,
-            "username": username,
+            "name": username,
             "email" : email
         };
 
@@ -62,7 +62,7 @@ describe('#User', function() {
         var userSessionDate = {
             "id": userId,
             "version": version,
-            "username": username,
+            "name": username,
             "email" : email,
             "accessToken" : accessToken
         };

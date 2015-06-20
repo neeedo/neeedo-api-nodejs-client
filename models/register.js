@@ -63,7 +63,7 @@ Register.prototype.serializeForApi = function() {
     var _this = this;
 
     return {
-        "username": _this.getUsername(),
+        "name": _this.getUsername(),
         "email" : _this.getEMail(),
         "password" : _this.getPassword()
     };

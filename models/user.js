@@ -109,7 +109,7 @@ User.prototype.serializeForApi = function() {
     var _this = this;
 
     serializedObj = {
-        "username" : _this.getUsername(),
+        "name" : _this.getUsername(),
         "email" : _this.getEMail()
     };
 
