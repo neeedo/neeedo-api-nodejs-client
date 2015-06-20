@@ -57,7 +57,7 @@ Matching.prototype.matchDemand = function(demandModel, demandQueryModel, onSucce
 
                             globalOptions.getLogger().info("Services/Matching::matchDemand(): server sent response data " + completeData);
 
-                            var matchedOffers = new OfferListModel().loadFromSerialized(offerData);
+                            var matchedOffers = new OfferListModel().loadFromSerialized(offerData['offers']);
                             onSuccessCallback(matchedOffers, demandModel);
                         } else {
                             errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.matching_demands_internal_error,
