@@ -131,27 +131,33 @@ User.prototype.loadFromSerialized = function(serializedUser) {
         throw new Error("Type of serializedUser must be object.");
     }
 
-    if ("id" in serializedUser) {
+    if ("id" in serializedUser
+        && undefined !== serializedUser['id']) {
         this.setId(serializedUser["id"]);
     }
     
-    if ("version" in serializedUser) {
+    if ("version" in serializedUser
+        && undefined !== serializedUser['version']) {
         this.setVersion(serializedUser["version"]);
     }
     
-    if ("username" in serializedUser) {
+    if ("username" in serializedUser
+        && undefined !== serializedUser['username']) {
         this.setUsername(serializedUser["username"]);
     }
     
-    if ("name" in serializedUser) {
+    if ("name" in serializedUser
+        && undefined !== serializedUser['name']) {
         this.setUsername(serializedUser["name"]);
     }
 
-    if ("email" in serializedUser) {
+    if ("email" in serializedUser
+        && undefined !== serializedUser['email']) {
         this.setEMail(serializedUser["email"]);
     }
     
-    if ("accessToken" in serializedUser) {
+    if ("accessToken" in serializedUser
+        && undefined !== serializedUser['accessToken']) {
         this.setAccessToken(serializedUser['accessToken']);
     }
 
