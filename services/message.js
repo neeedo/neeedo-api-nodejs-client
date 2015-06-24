@@ -81,7 +81,7 @@ Message.prototype.create = function(message, onSuccessCallback, onErrorCallback)
     
     // URL to mark messages as read
     var createMessageUrl = this.apiEndpoint
-    var messageJson = message.serializeForApi();
+    var messageJson = JSON.stringify(message.serializeForApi());
 
     try {
         http.doPost(createMessageUrl,
