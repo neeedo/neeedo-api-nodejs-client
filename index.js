@@ -13,6 +13,11 @@ var options = require('./client/options'),
     DemandQuery = require('./models/demand-query'),
     OfferQuery = require('./models/offer-query'),
     DemandPrice = require('./models/demand/price'),
+    Message = require('./models/message'),
+    MessageList = require('./models/message-list'),
+    Conversation = require('./models/conversation'),
+    ConversationList = require('./models/conversation-list'),
+    ConversationQuery = require('./models/conversation-query'),
     LoginService = require('./services/login'),
     RegisterService = require('./services/register'),
     OfferService = require('./services/offer'),
@@ -20,7 +25,10 @@ var options = require('./client/options'),
     DemandListService = require('./services/demand-list'),
     MatchingService = require('./services/matching'),
     DemandService = require('./services/demand'),
-    ImageService = require('./services/image')
+    ImageService = require('./services/image'),
+    MessageService = require('./services/message'),
+    MessageListService = require('./services/message-list'),
+    ConversationListService = require('./services/conversation-list')
     ;
 
 module.exports.initClient = function(neeedoApiUrl, allowSelfSignedHttpsCertificates, logger)
@@ -54,7 +62,12 @@ module.exports.models = {
     "Login": Login,
     "Error": Error,
     "Image": Image,
-    "ImageList": ImageList
+    "ImageList": ImageList,
+    "Message": Message,
+    "MessageList": MessageList,
+    "ConversationList": ConversationList,
+    "ConversationQuery": ConversationQuery,
+    "Conversation": Conversation
 };
 
 module.exports.services = {
@@ -65,7 +78,10 @@ module.exports.services = {
     "Offer": OfferService,
     "OfferList": OfferListService,
     "Matching": MatchingService,
-    "Image": ImageService
+    "Image": ImageService,
+    "Message": MessageService,
+    "MessageList": MessageListService,
+    "ConversationList": ConversationListService
 };
 
 module.exports.options = options;
