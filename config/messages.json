@@ -27,7 +27,11 @@
     "image_not_found" : "The given image could not be found.",
     "image_wrong_credentials" : "Your login credentials are incorrect.",
     "delete_image_internal_error" : "The image couldn't be deleted.",
-    "upload_image_internal_error" : "Could not upload the given image. Please contact Neeedo customer care"
+    "upload_image_internal_error" : "Could not upload the given image. Please contact Neeedo customer care",
+    "get_conversations_error" : "Could not load the conversations. Please contact Neeedo customer care.",
+    "mark_message_read_error" : "Could not mark the message as read / unread. Please contact Neeedo customer care.",
+    "get_messages_error" : "Could not load the messages of the given conversation. Please contact Neeedo customer care.",
+    "create_message_error" : "Could not create the message. Please contact Neeedo customer care."
 }
-        
+
 
