@@ -1,7 +1,8 @@
 /*
  * dependencies
  */
-var User = require('./user')
+var User = require('./user'),
+    Conversation = require('./conversation'),
     _ = require('underscore');
 
 /*
@@ -115,6 +116,17 @@ Message.prototype.setRead = function(readFlag)
 Message.prototype.wasRead = function()
 {
     return this.read;
+};
+
+Message.prototype.getConversation = function()
+{
+    var conversation = new Conversation();
+    
+    conversation
+        .setSender(this.getSender())
+        .setRecipient(this.getRecipient());
+    
+    return conversation;
 };
 
 /**
