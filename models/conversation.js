@@ -63,7 +63,7 @@ Conversation.prototype.loadFromSerialized = function(serializedConversation) {
     }
 
     // currently, we only delegate to the user object - a conversation does not have any other fields yet
-    this.setRecipient(new User().loadFromSerialized(serializedConversation));
+    this.setSender(new User().loadFromSerialized(serializedConversation));
 
     return this;
 };

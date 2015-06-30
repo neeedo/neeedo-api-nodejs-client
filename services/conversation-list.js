@@ -56,7 +56,9 @@ ConversationList.prototype.loadBySender = function(user, conversationQuery, onSu
 
                             globalOptions.getLogger().info("Services/ConversationList::loadBySender(): server sent response data " + completeData);
 
-                            var loadedConversationList = new ConversationListModel().loadFromSerialized(conversationsData['users']);
+                            var loadedConversationList = new ConversationListModel()
+                                .setRecipient(user)
+                                .loadFromSerialized(conversationsData['users']);
 
                             onSuccessCallback(loadedConversationList);
                         } else {

@@ -14,6 +14,7 @@ function ConversationList()
 {
     this.conversations = [];
     this.sender = undefined;
+    this.recipient = undefined;
 }
 
 ConversationList.prototype.getConversations = function()
@@ -43,6 +44,20 @@ ConversationList.prototype.getSender = function()
     return this.sender;
 };
 
+ConversationList.prototype.setRecipient = function(recipient)
+{
+    if (!_.isObject(recipient) ) {
+        throw new Error("Type of recipient must be object.");
+    }
+
+    this.recipient = recipient;
+    return this;
+};
+
+ConversationList.prototype.getRecipient = function()
+{
+    return this.recipient;
+};
 
 /*
  * Function: serializeForApi
@@ -69,6 +84,9 @@ ConversationList.prototype.loadFromSerialized = function(serializedConversations
         
         if (undefined !== this.getSender()) {
             conversation.setSender(this.getSender());
+        }
+        if (undefined !== this.getRecipient()) {
+            conversation.setRecipient(this.getRecipient());
         }
 
         this.addConversation(conversation);
