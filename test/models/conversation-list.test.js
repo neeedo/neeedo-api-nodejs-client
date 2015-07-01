@@ -43,12 +43,12 @@ describe('#ConversationList', function() {
         
         var firstConversation = conversationList.getConversations()[0];
         
-        should.equal(firstConversation.getRecipient().getId(), userId1);
-        should.equal(firstConversation.getRecipient().getUsername(), userName1);
+        should.equal(firstConversation.getSender().getId(), userId1);
+        should.equal(firstConversation.getSender().getUsername(), userName1);
         
         var secondConversation = conversationList.getConversations()[1];
         
-        should.equal(secondConversation.getRecipient().getId(), userId2);
-        should.equal(secondConversation.getRecipient().getUsername(), userName2);
+        should.equal(secondConversation.getSender().getId(), userId2);
+        should.equal(secondConversation.getSender().getUsername(), userName2);
     });
 });

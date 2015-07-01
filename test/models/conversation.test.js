@@ -30,7 +30,7 @@ describe('#Conversation', function() {
 
         // then the object should be loaded correctly...
         conversation.should.be.a.Object;
-        should.equal(conversation.getRecipient().getId(), userId);
-        should.equal(conversation.getRecipient().getUsername(), username);
+        should.equal(conversation.getSender().getId(), userId);
+        should.equal(conversation.getSender().getUsername(), username);
     });
 });
