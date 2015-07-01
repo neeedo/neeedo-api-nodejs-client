@@ -62,7 +62,7 @@ MessageList.prototype.loadByConversation = function(conversation, onSuccessCallb
                     }
                 )
             }, onErrorCallback,
-            new OptionBuilder().addAuthorizationToken(conversation.getSender()).getOptions());
+            new OptionBuilder().addAuthorizationToken(conversation.getRecipient()).getOptions());
     } catch (e) {
         errorHandler.newMessageAndLogError(onErrorCallback, messages.get_conversations_error, e.message);
     }

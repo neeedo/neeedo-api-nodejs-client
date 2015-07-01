@@ -34,10 +34,10 @@ Message.prototype.toggleRead = function(message, onSuccessCallback, onErrorCallb
     // TODO toggle the read state - ask API team to support wasRead parameter
     
     // URL to mark messages as read
-    var markMessageReadUrl = this.apiEndpoint + "/" + message.getQueryStringForApi();
+    var markMessageReadUrl = this.apiEndpoint + message.getQueryStringForApi();
 
     try {
-        http.doGet(markMessageReadUrl,
+        http.doPut(markMessageReadUrl, "{}",
             function (response) {
                 var responseHandler = new ResponseHandler();
                 

@@ -62,8 +62,21 @@ Conversation.prototype.loadFromSerialized = function(serializedConversation) {
         throw new Error("Type of serializedConversation must be object.");
     }
 
-    // currently, we only delegate to the user object - a conversation does not have any other fields yet
-    this.setSender(new User().loadFromSerialized(serializedConversation));
+    var expectedStructureGiven = false;
+    if ("recipient" in serializedConversation) {
+        this.setRecipient(new User().loadFromSerialized(serializedConversation["recipient"]));
+        expectedStructureGiven = true;
+    }
+    
+    if ("sender" in serializedConversation) {
+        this.setSender(new User().loadFromSerialized(serializedConversation["sender"]));
+        expectedStructureGiven = true;
+    }
+    
+    if (!expectedStructureGiven) {
+        // currently, we only delegate to the user object - a conversation does not have any other fields yet
+        this.setSender(new User().loadFromSerialized(serializedConversation));
+    }
 
     return this;
 };
