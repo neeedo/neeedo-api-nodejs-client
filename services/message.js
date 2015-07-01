@@ -22,11 +22,12 @@ function Message()
  *
  * Toggles the read flag state (was message read or not?). If previous set to 'true', it will be set to 'false' and vice versa.
  *
+ * @param user see models/user the current user
  * @param message see models/message
  * @param onSuccessCallback will be called with models/demand-list instance
  * @param onErrorCallback will be called with models/error instance
  */
-Message.prototype.toggleRead = function(message, onSuccessCallback, onErrorCallback) {
+Message.prototype.toggleRead = function(user, message, onSuccessCallback, onErrorCallback) {
     if (!_.isObject(message)) {
         throw new Error("Type of message must be object.");
     }
@@ -58,7 +59,7 @@ Message.prototype.toggleRead = function(message, onSuccessCallback, onErrorCallb
                     }
                 )
             }, onErrorCallback,
-            new OptionBuilder().addAuthorizationToken(message.getSender()).getOptions());
+            new OptionBuilder().addAuthorizationToken(user).getOptions());
     } catch (e) {
         errorHandler.newMessageAndLogError(onErrorCallback, messages.mark_message_read_error, e.message);
     }
