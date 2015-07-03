@@ -13,6 +13,18 @@ function User()
     this.email = undefined;
     this.accessToken = undefined;
     this.favoriteOffers = undefined;
+    
+    this.findInFavoriteOffers = function(offerId) {
+        for (var i=0; i < this.favoriteOffers.getOffers().length; i++) {
+            var offer = this.favoriteOffers.getOffers()[i];
+            
+            if (offer.getId() == offerId) {
+                return true;
+            }
+        }
+        
+        return false;
+    };
 }
 
 User.prototype.setId = function(id)
@@ -118,6 +130,11 @@ User.prototype.setFavoriteOfferList = function(favoriteOfferList)
 User.prototype.getFavoriteOfferList = function()
 {
     return this.favoriteOffers;
+};
+
+User.prototype.isFavoriteOffer = function(offer)
+{
+    return undefined !== this.getFavoriteOfferList() && this.findInFavoriteOffers(offer.getId());
 };
 
 User.prototype.hasAccessToken = function()

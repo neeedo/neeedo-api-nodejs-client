@@ -37,7 +37,7 @@ function Favorite()
                         function(completeData) {
                             // success on 200 OK
                             if (200 == response.statusCode) {
-                                onSuccessCallback(message);
+                                onSuccessCallback(favoriteModel);
                             } else {
                                 errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.add_favorite_error,
                                     {"methodPath": "Service/Message::toggleRead()"});
@@ -107,15 +107,15 @@ function Favorite()
  * Toggles the favorite state of the given offer - user pair.
  *
  * @param favorite see models/favorite the favorite object
- * @param onSuccessCallback will be called with models/demand-list instance
+ * @param onSuccessCallback will be called with models/favorite instance
  * @param onErrorCallback will be called with models/error instance
  */
-Favorite.prototype.toggleRead = function(favorite, onSuccessCallback, onErrorCallback) {
+Favorite.prototype.toggleOfferFavorite = function(favorite, onSuccessCallback, onErrorCallback) {
     if (!_.isObject(favorite)) {
         throw new Error("Type of favorite must be object.");
     }
 
-    if (favorite.getUser().isFavorite(offer)) {
+    if (favorite.getUser().isFavoriteOffer(offer)) {
         this.removeFavoriteOffer(favorite, onSuccessCallback, onErrorCallback);
     } else {
         this.addFavoriteOffer(favorite, onSuccessCallback, onErrorCallback);
