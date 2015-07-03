@@ -123,7 +123,7 @@ Favorite.prototype.toggleOfferFavorite = function(favorite, onSuccessCallback, o
         throw new Error("Type of favorite must be object.");
     }
 
-    if (favorite.getUser().isFavoriteOffer(offer)) {
+    if (favorite.getUser().isFavoriteOffer(favorite.getOffer())) {
         this.removeFavoriteOffer(favorite, onSuccessCallback, onErrorCallback);
     } else {
         this.addFavoriteOffer(favorite, onSuccessCallback, onErrorCallback);
