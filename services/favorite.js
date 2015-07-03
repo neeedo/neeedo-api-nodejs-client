@@ -29,7 +29,7 @@ function Favorite()
         // URL to mark messages as read
         var markMessageReadUrl = this.apiEndpoint;
         
-        var json = favoriteModel.getQueryStringForApi();
+        var json = JSON.stringify(favoriteModel.serializeForApi());
         
         var _this = this;
         try {
@@ -41,18 +41,18 @@ function Favorite()
                     responseHandler.handle(
                         response,
                         function(completeData) {
-                            // success on 200 OK
-                            if (200 == response.statusCode) {
+                            // success on 200 Created
+                            if (201 == response.statusCode) {
                                 _this.wasAdded = true;
                                 onSuccessCallback(favoriteModel);
                             } else {
                                 errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.add_favorite_error,
-                                    {"methodPath": "Service/Message::toggleRead()"});
+                                    {"methodPath": "Service/Favorite::toggleRead()"});
                             }
                         },
                         function(error) {
                             errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
-                                {"methodPath": "Service/Message::toggleRead()"});
+                                {"methodPath": "Service/Favorite::toggleRead()"});
                         }
                     )
                 }, onErrorCallback,
@@ -78,8 +78,9 @@ function Favorite()
         }
 
         var deleteOfferPath = this.apiEndpoint;
-        var json = favoriteModel.getQueryStringForApi();
-        
+        var json = JSON.stringify(favoriteModel.serializeForApi());
+
+        var _this = this;
         try {
             http.doDelete(deleteOfferPath,
                 function(response) {

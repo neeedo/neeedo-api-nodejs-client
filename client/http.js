@@ -178,6 +178,10 @@ HttpAdapter.prototype.doPut = function (path, json, callback, onErrorCallback, o
 HttpAdapter.prototype.doDelete = function (path, callback, onErrorCallback, options) {
     var httpOptions = this.getHttpOptions(path, "DELETE", options);
 
+    if ("deleteJson" in options) {
+        httpOptions = this.extendJsonParameters(httpOptions);
+    }
+    
     var req = this.getAdapter().request(httpOptions, callback);
 
     this.handleNoApiConnectionError(req, onErrorCallback);

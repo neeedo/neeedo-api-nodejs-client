@@ -58,21 +58,21 @@ FavoriteList.prototype.loadFavoritesOfUser = function(user, offerQueryModel, onS
                         // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-offer
                         var offersData = JSON.parse(completeData);
 
-                        globalOptions.getLogger().info("Services/OfferList::loadByUser(): server sent response data " + completeData);
+                        globalOptions.getLogger().info("Services/FavoriteList::loadFavoritesOfUser(): server sent response data " + completeData);
 
                         var loadedOfferList = new OfferListModel().loadFromSerialized(offersData['favorites']);
 
                         onSuccessCallback(loadedOfferList);
                     } else {
                         errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.get_favorite_offers_error,
-                            { "methodPath" : "Service/OfferList::loadByUser()" });
+                            { "methodPath" : "Service/FavoriteList::loadFavoritesOfUser()" });
                     }
                 });
 
                 response.on('error', function(error) {
                     // API not reachable
                     errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
-                        {"methodPath": "Services/OfferList::loadByUser()"});
+                        {"methodPath": "Services/FavoriteList::loadFavoritesOfUser()"});
                 });
             }, onErrorCallback,
             new OptionBuilder().addAuthorizationToken(user).getOptions());

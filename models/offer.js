@@ -184,7 +184,7 @@ Offer.prototype.serializeForApi = function() {
  */
 Offer.prototype.loadFromSerialized = function(serializedOffer) {
     if (serializedOffer === null || typeof serializedOffer !== 'object') {
-        throw new Error("Type of serializedDemand must be object.");
+        throw new Error("Type of serializedOffer must be object.");
     }
     
     if ("id" in serializedOffer) {

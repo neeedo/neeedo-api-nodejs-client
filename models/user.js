@@ -202,8 +202,12 @@ User.prototype.loadFromSerialized = function(serializedUser) {
     }
 
     if ("favoriteOffers" in serializedUser
-        && undefined !== serializedUser['favoriteOffers']) {
-        this.setFavoriteOfferList(new this.offerListConstructor.loadFromSerialized(serializedUser['favoriteOffers']));
+        && undefined !== serializedUser['favoriteOffers']
+        && "offers" in serializedUser['favoriteOffers']
+        && undefined !== serializedUser['favoriteOffers']['offers']
+        && undefined !== this.offerListConstructor
+    ) {
+        this.setFavoriteOfferList((new this.offerListConstructor()).loadFromSerialized(serializedUser['favoriteOffers']['offers']));
     }
 
     return this;
