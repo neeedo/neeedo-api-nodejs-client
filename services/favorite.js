@@ -14,6 +14,11 @@ var http = require('../client/http'),
  */
 function Favorite()
 {
+    // whether the favorite was removed on toggle action
+    this.wasRemoved = false;
+    // whether the favorite was added on toggle action
+    this.wasAdded = false;
+    
     this.apiEndpoint = '/favorites';
     
     this.addFavoriteOffer = function(favoriteModel, onSuccessCallback, onErrorCallback) {
@@ -25,7 +30,8 @@ function Favorite()
         var markMessageReadUrl = this.apiEndpoint;
         
         var json = favoriteModel.getQueryStringForApi();
-
+        
+        var _this = this;
         try {
             http.doPost(markMessageReadUrl, 
                 json,
@@ -37,6 +43,7 @@ function Favorite()
                         function(completeData) {
                             // success on 200 OK
                             if (200 == response.statusCode) {
+                                _this.wasAdded = true;
                                 onSuccessCallback(favoriteModel);
                             } else {
                                 errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.add_favorite_error,
@@ -78,6 +85,7 @@ function Favorite()
                 function(response) {
                     // success on 200 = OK
                     if (200 == response.statusCode) {
+                        _this.wasRemoved = true;
                         onSuccessCallback(favoriteModel);
                     } else {
                         if (404 == response.statusCode) {
