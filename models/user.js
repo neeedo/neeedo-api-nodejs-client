@@ -3,6 +3,9 @@
  *
  * This class models a Neeedo user.
  */
+
+var OfferList = require('./offer-list');
+
 function User()
 {
     this.id = undefined;
@@ -180,6 +183,11 @@ User.prototype.loadFromSerialized = function(serializedUser) {
     if ("accessToken" in serializedUser
         && undefined !== serializedUser['accessToken']) {
         this.setAccessToken(serializedUser['accessToken']);
+    }
+
+    if ("favoriteOffers" in serializedUser
+        && undefined !== serializedUser['favoriteOffers']) {
+        this.setFavoriteOfferList(new OfferList().loadFromSerialized(serializedUser['favoriteOffers']));
     }
 
     return this;
