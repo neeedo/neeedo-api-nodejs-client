@@ -31,7 +31,14 @@
     "get_conversations_error" : "Could not load the conversations. Please contact Neeedo customer care.",
     "mark_message_read_error" : "Could not mark the message as read / unread. Please contact Neeedo customer care.",
     "get_messages_error" : "Could not load the messages of the given conversation. Please contact Neeedo customer care.",
-    "create_message_error" : "Could not create the message. Please contact Neeedo customer care."
+    "create_message_error" : "Could not create the message. Please contact Neeedo customer care.",
+    "get_favorite_offers_error" : "Could not load the favorite offers. Please contact Neeedo customer care.",
+    "get_favorite_offers_internal_error" : "Could not load the favorite offers. Please contact Neeedo customer care.",
+    "favorite_not_found" : "Could not find the favorite offers. Please contact Neeedo customer care.",
+    "delete_favorite_error" : "Could not delete the favorite offers. Please contact Neeedo customer care.",
+    "delete_favorite_internal_error" : "Could not delete the favorite offers. Please contact Neeedo customer care.",
+    "add_favorite_error" : "Could not delete the favorite offers. Please contact Neeedo customer care.",
+    "add_favorite_internal_error" : "Could not delete the favorite offers. Please contact Neeedo customer care."
 }
 
 

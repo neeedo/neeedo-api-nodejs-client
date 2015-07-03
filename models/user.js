@@ -9,6 +9,7 @@ function User()
     this.username = undefined;
     this.email = undefined;
     this.accessToken = undefined;
+    this.favoriteOffers = undefined;
 }
 
 User.prototype.setId = function(id)
@@ -94,6 +95,26 @@ User.prototype.setAccessToken = function(accessToken)
 User.prototype.getAccessToken = function()
 {
     return this.accessToken;
+};
+
+/**
+ * Set user's favorite offers list.
+ * @param favoriteOfferList see models/offer-list.js
+ * @returns {User}
+ */
+User.prototype.setFavoriteOfferList = function(favoriteOfferList)
+{
+    if (!_.isObject(favoriteOfferList)) {
+        throw new Error("Type of favoriteOfferList must be object.");
+    }
+
+    this.favoriteOffers = favoriteOfferList;
+    return this;
+};
+
+User.prototype.getFavoriteOfferList = function()
+{
+    return this.favoriteOffers;
 };
 
 User.prototype.hasAccessToken = function()

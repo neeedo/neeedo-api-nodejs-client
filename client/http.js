@@ -181,7 +181,11 @@ HttpAdapter.prototype.doDelete = function (path, callback, onErrorCallback, opti
     var req = this.getAdapter().request(httpOptions, callback);
 
     this.handleNoApiConnectionError(req, onErrorCallback);
-    
+
+    if ("deleteJson" in options) {
+        req.write(options["deleteJson"]);
+    }
+
     req.end();
 
     globalOptions.getLogger().info("HttpAdapter: Sending DELETE request..."
