@@ -15,6 +15,7 @@ var options = require('./client/options'),
     DemandPrice = require('./models/demand/price'),
     Message = require('./models/message'),
     MessageList = require('./models/message-list'),
+    Favorite = require('./models/favorite'),
     Conversation = require('./models/conversation'),
     ConversationList = require('./models/conversation-list'),
     ConversationQuery = require('./models/conversation-query'),
@@ -28,6 +29,8 @@ var options = require('./client/options'),
     ImageService = require('./services/image'),
     MessageService = require('./services/message'),
     MessageListService = require('./services/message-list'),
+    FavoriteService = require('./services/favorite'),
+    FavoriteListService = require('./services/favorite-list'),
     ConversationListService = require('./services/conversation-list')
     ;
 
@@ -63,6 +66,7 @@ module.exports.models = {
     "Error": Error,
     "Image": Image,
     "ImageList": ImageList,
+    "Favorite": Favorite,
     "Message": Message,
     "MessageList": MessageList,
     "ConversationList": ConversationList,
@@ -81,6 +85,8 @@ module.exports.services = {
     "Image": ImageService,
     "Message": MessageService,
     "MessageList": MessageListService,
+    "Favorite": FavoriteService,
+    "FavoriteList": FavoriteListService,
     "ConversationList": ConversationListService
 };
 
