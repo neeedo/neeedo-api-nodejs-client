@@ -41,6 +41,8 @@ function Favorite()
                     responseHandler.handle(
                         response,
                         function(completeData) {
+                            globalOptions.getLogger().info("Services/Favorite::addFavoriteOffer(): server sent response data " + completeData);
+                            
                             // success on 200 Created
                             if (201 == response.statusCode) {
                                 _this.wasAdded = true;
@@ -51,7 +53,7 @@ function Favorite()
                             }
                         },
                         function(error) {
-                            errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
+                            errorHandler.newErrorWithData(onErrorCallback, response, error, messages.no_api_connection,
                                 {"methodPath": "Service/Favorite::toggleRead()"});
                         }
                     )
@@ -84,20 +86,33 @@ function Favorite()
         try {
             http.doDelete(deleteOfferPath,
                 function(response) {
-                    // success on 200 = OK
-                    if (200 == response.statusCode) {
-                        _this.wasRemoved = true;
-                        onSuccessCallback(favoriteModel);
-                    } else {
-                        if (404 == response.statusCode) {
-                            errorHandler.newMessageError(onErrorCallback, messages.favorite_not_found);
-                        } else if (401 == response.statusCode) {
-                            errorHandler.newMessageError(onErrorCallback, messages.login_wrong_credentials);
-                        } else {
-                            errorHandler.newErrorWithData(onErrorCallback, response, "{}", messages.delete_favorite_error,
-                                { "methodPath" : "Service/Favorite::removeFavoriteOffer()" });
+                    var responseHandler = new ResponseHandler();
+
+                    responseHandler.handle(
+                        response,
+                        function(completeData) {
+                            globalOptions.getLogger().info("Services/Favorite::removeFavoriteOffer(): server sent response data " + completeData);
+                            
+                            // success on 200 OK
+                            if (200 == response.statusCode) {
+                                _this.wasRemoved = true;
+                                onSuccessCallback(favoriteModel);
+                            } else {
+                                if (404 == response.statusCode) {
+                                    errorHandler.newMessageError(onErrorCallback, messages.favorite_not_found);
+                                } else if (401 == response.statusCode) {
+                                    errorHandler.newMessageError(onErrorCallback, messages.login_wrong_credentials);
+                                } else {
+                                    errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.delete_favorite_error,
+                                        { "methodPath" : "Service/Favorite::removeFavoriteOffer()" });
+                                }
+                            }
+                        },
+                        function(error) {
+                            errorHandler.newErrorWithData(onErrorCallback, response, error, messages.no_api_connection,
+                                {"methodPath": "Service/Favorite::Favorite()"});
                         }
-                    }
+                    )
                 },
                 onErrorCallback,
                 new OptionBuilder()

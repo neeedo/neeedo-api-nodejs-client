@@ -43,7 +43,7 @@ function HttpAdapter()
             httpOptions['headers'] = {};
         }
 
-        httpOptions['headers']['Content-Type'] = 'application/json';
+        httpOptions['headers']['Content-Type'] = 'application/json; charset=utf-8';
 
         return httpOptions;
     };
@@ -194,8 +194,8 @@ HttpAdapter.prototype.doDelete = function (path, callback, onErrorCallback, opti
         req.write(options["deleteJson"]);
         
         globalOptions.getLogger().info(
-        + "\n" + "Request JSON:"
-        + "\n" + json);
+        "\n" + "Request JSON:"
+        + "\n" + options["deleteJson"]);
     }
 
     req.end();
