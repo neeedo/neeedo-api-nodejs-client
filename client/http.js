@@ -139,6 +139,8 @@ HttpAdapter.prototype.doPost = function (path, json, callback, onErrorCallback, 
 
     globalOptions.getLogger().info("HttpAdapter: Sending POST request..."
         + "\n" + util.inspect(httpOptions, {showHidden: false, depth: 3})
+        + "\n" + "Request JSON:"
+        + "\n" + json
     );
 };
 
@@ -164,6 +166,8 @@ HttpAdapter.prototype.doPut = function (path, json, callback, onErrorCallback, o
 
     globalOptions.getLogger().info("HttpAdapter: Sending PUT request..."
         + "\n" + util.inspect(httpOptions, {showHidden: false, depth: 3})
+        + "\n" + "Request JSON:"
+        + "\n" + json
     );
 };
 
@@ -188,6 +192,10 @@ HttpAdapter.prototype.doDelete = function (path, callback, onErrorCallback, opti
 
     if ("deleteJson" in options) {
         req.write(options["deleteJson"]);
+        
+        globalOptions.getLogger().info(
+        + "\n" + "Request JSON:"
+        + "\n" + json);
     }
 
     req.end();
