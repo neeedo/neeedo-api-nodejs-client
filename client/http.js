@@ -23,6 +23,7 @@ function HttpAdapter()
         var urlParts = url.parse(globalOptions.getApiUrl());
 
         var httpOptions = {
+            "url" : globalOptions.getApiUrl() + path,
             "hostname": urlParts.hostname,
             "port": urlParts.port,
             "path": path,
@@ -107,14 +108,12 @@ HttpAdapter.prototype.getAdapter = function()
 HttpAdapter.prototype.doGet = function (path, callback, onErrorCallback, options) {
     var httpOptions = this.getHttpOptions(path, "GET", options);
 
-    var req = this.getAdapter().request(httpOptions, callback);
-
-    this.handleNoApiConnectionError(req, onErrorCallback);
-    
-    req.end();
-
     globalOptions.getLogger().info("HttpAdapter: Sending GET request..."
     + "\n" + util.inspect(httpOptions, {showHidden: false, depth: 3}));
+    
+    var req = this.getAdapter().request(httpOptions, callback);
+    this.handleNoApiConnectionError(req, onErrorCallback);
+    req.end();
 };
 
 /**
@@ -130,18 +129,16 @@ HttpAdapter.prototype.doPost = function (path, json, callback, onErrorCallback, 
     var httpOptions = this.getHttpOptions(path, "POST", options);
     httpOptions = this.extendJsonParameters(httpOptions);
 
-    var req = this.getAdapter().request(httpOptions, callback);
-    req.write(json);
-
-    this.handleNoApiConnectionError(req, onErrorCallback);
-    
-    req.end();
-
     globalOptions.getLogger().info("HttpAdapter: Sending POST request..."
         + "\n" + util.inspect(httpOptions, {showHidden: false, depth: 3})
         + "\n" + "Request JSON:"
         + "\n" + json
     );
+    
+    var req = this.getAdapter().request(httpOptions, callback);
+    req.write(json);
+    this.handleNoApiConnectionError(req, onErrorCallback);
+    req.end();  
 };
 
 /**
@@ -156,19 +153,17 @@ HttpAdapter.prototype.doPost = function (path, json, callback, onErrorCallback, 
 HttpAdapter.prototype.doPut = function (path, json, callback, onErrorCallback, options) {
     var httpOptions = this.getHttpOptions(path, "PUT", options);
     httpOptions = this.extendJsonParameters(httpOptions);
-
-    var req = this.getAdapter().request(httpOptions, callback);
-    req.write(json);
-
-    this.handleNoApiConnectionError(req, onErrorCallback);
     
-    req.end();
-
     globalOptions.getLogger().info("HttpAdapter: Sending PUT request..."
         + "\n" + util.inspect(httpOptions, {showHidden: false, depth: 3})
         + "\n" + "Request JSON:"
         + "\n" + json
     );
+    
+    var req = this.getAdapter().request(httpOptions, callback);
+    req.write(json);
+    this.handleNoApiConnectionError(req, onErrorCallback);
+    req.end();  
 };
 
 /**
@@ -185,11 +180,14 @@ HttpAdapter.prototype.doDelete = function (path, callback, onErrorCallback, opti
     if ("deleteJson" in options) {
         httpOptions = this.extendJsonParameters(httpOptions);
     }
+
+    globalOptions.getLogger().info("HttpAdapter: Sending DELETE request..."
+        + "\n" + util.inspect(httpOptions, {showHidden: false, depth: 3})
+    );
     
     var req = this.getAdapter().request(httpOptions, callback);
-
     this.handleNoApiConnectionError(req, onErrorCallback);
-
+    
     if ("deleteJson" in options) {
         req.write(options["deleteJson"]);
         
@@ -197,24 +195,21 @@ HttpAdapter.prototype.doDelete = function (path, callback, onErrorCallback, opti
         "\n" + "Request JSON:"
         + "\n" + options["deleteJson"]);
     }
-
+    
     req.end();
-
-    globalOptions.getLogger().info("HttpAdapter: Sending DELETE request..."
-        + "\n" + util.inspect(httpOptions, {showHidden: false, depth: 3})
-    );
 };
 
 HttpAdapter.prototype.sendFile = function(path, fileName, filePath, fileType, callback, onErrorCallback, options) {
-    var authToken = options.authorizationToken || undefined;
     var fieldName = options.fieldName;
-    
-    globalOptions.getLogger().info('auth token ' + authToken);
+
+    var httpOptions = this.getHttpOptions(path, "POST", options);
+
+    globalOptions.getLogger().info("HttpAdapter: Sending multipart-form-data request..."
+        + "\n" + util.inspect(httpOptions, {showHidden: false, depth: 3})
+    );
 
     var req = request.post(
-        { url: globalOptions.getApiUrl() + path,
-            rejectUnauthorized : false,
-            headers: {'Authorization' : 'Basic ' + authToken}},
+        httpOptions,
         function (err, resp, body) {
             if (err) {
                 errorHandler.newMessageAndLogError(onErrorCallback, messages.no_api_connection, "Error: " + err);
