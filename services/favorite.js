@@ -79,11 +79,11 @@ function Favorite()
             throw new Error("Type of favoriteModel must be object.");
         }
 
-        var deleteOfferPath = this.apiEndpoint + favoriteModel.getQueryStringForApi;
+        var deleteFavoritePath = this.apiEndpoint + favoriteModel.getQueryStringForApi();
 
         var _this = this;
         try {
-            http.doDelete(deleteOfferPath,
+            http.doDelete(deleteFavoritePath,
                 function(response) {
                     var responseHandler = new ResponseHandler();
 
