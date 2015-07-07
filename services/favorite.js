@@ -79,8 +79,7 @@ function Favorite()
             throw new Error("Type of favoriteModel must be object.");
         }
 
-        var deleteOfferPath = this.apiEndpoint;
-        var json = JSON.stringify(favoriteModel.serializeForApi());
+        var deleteOfferPath = this.apiEndpoint + favoriteModel.getQueryStringForApi;
 
         var _this = this;
         try {
@@ -117,7 +116,6 @@ function Favorite()
                 onErrorCallback,
                 new OptionBuilder()
                     .addAuthorizationToken(favoriteModel.getUser())
-                    .add('deleteJson', json)
                     .getOptions());
         } catch (e) {
             errorHandler.newMessageAndLogError(onErrorCallback, messages.delete_favorite_internal_error, e.message);

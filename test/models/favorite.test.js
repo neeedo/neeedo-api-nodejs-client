@@ -34,12 +34,19 @@ describe('#Message', function() {
         ).should.throw();
     });
     
-    it("throws exception when getQueryStringForApi is called", function() {
+    it("getQueryStringForApi returns correct query string", function() {
+        // given certain's user's favorite
+        var userId = "abcd1234";
+        var offerId = "offer1234";
+
         var favorite = new Favorite();
-        // wrap function to be called because it will be called later within should.throw()
-        (function() {
-            favorite.getQueryStringForApi();
-        }
-        ).should.throw();
+        favorite.setOffer(new Offer().setId(offerId))
+            .setUser(new User().setId(userId));
+
+        // when getQueryStringForApi() is called
+        var queryString = favorite.getQueryStringForApi();
+
+        // a plain javascript object with the following fields should be returned...
+        should.equal("/" + userId + "/" + offerId, queryString);
     });
 });

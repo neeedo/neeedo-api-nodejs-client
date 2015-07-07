@@ -60,7 +60,7 @@ Favorite.prototype.getOffer = function()
  */
 Favorite.prototype.getQueryStringForApi = function()
 {
-    throw new Error("This method is not supported.");
+    return "/" + this.getUser().getId() + "/" + this.getOffer().getId();
 };
 
 /*
