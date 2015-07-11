@@ -1,6 +1,7 @@
 var http = require('../client/http'),
     DemandListModel = require('../models/demand-list'),
     errorHandler = require('../helpers/error-handler'),
+    ResponseHandler = require('../helpers/response-handler'),
     messages = require('../config/messages.json'),
     globalOptions = require('../client/options'),
     _ = require('underscore'),
@@ -45,32 +46,28 @@ DemandList.prototype.loadByUser = function(user, demandQueryModel, onSuccessCall
     try {
         http.doGet(getDemandByUserUrl,
             function(response) {
-                var completeData = '';
+                var responseHandler = new ResponseHandler();
 
-                response.on('data', function(chunk) {
-                    completeData += chunk;
-                });
+                responseHandler.handle(
+                    response,
+                    function(completeData) {
+                        // success on 200 OK
+                        if (200 == response.statusCode) {
+                            var demandsData = JSON.parse(completeData);
 
-                response.on('end', function () {
-                    // success on 200 OK
-                    if (200 == response.statusCode) {
-                        var demandsData = JSON.parse(completeData);
+                            var loadedDemandList = new DemandListModel().loadFromSerialized(demandsData['demands']);
 
-                        globalOptions.getLogger().info("Services/DemandList::loadByUser(): server sent response data " + completeData);
-
-                        var loadedDemandList = new DemandListModel().loadFromSerialized(demandsData['demands']);
-
-                        onSuccessCallback(loadedDemandList);
-                    } else {
-                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.get_demands_error,
+                            onSuccessCallback(loadedDemandList);
+                        } else {
+                            errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.get_demands_error,
+                                { "methodPath" : "Service/DemandList::loadByUser()" });
+                        }
+                    },
+                    function(error) {
+                        errorHandler.newErrorWithData(onErrorCallback, response, error, messages.get_demands_error,
                             { "methodPath" : "Service/DemandList::loadByUser()" });
                     }
-                });
-
-                response.on('error', function(error) {
-                    errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
-                        { "methodPath" : "Services/DemandList::loadByUser()" });
-                });
+                )
             }, onErrorCallback,
             new OptionBuilder().addAuthorizationToken(user).getOptions());
     } catch (e) {
@@ -98,32 +95,27 @@ DemandList.prototype.loadMostRecent = function(demandQueryModel, onSuccessCallba
     try {
         http.doGet(getMostRecentDemandsUrl,
             function(response) {
-                var completeData = '';
-                // success on 200 OK
+                var responseHandler = new ResponseHandler();
 
-                response.on('data', function(chunk) {
-                    completeData += chunk;
-                });
+                responseHandler.handle(
+                    response,
+                    function(completeData) {
+                        if (200 == response.statusCode) {
+                            var demandsData = JSON.parse(completeData);
 
-                response.on('end', function () {
-                    if (200 == response.statusCode) {
-                        var demandsData = JSON.parse(completeData);
+                            var loadedDemandList = new DemandListModel().loadFromSerialized(demandsData['demands']);
 
-                        globalOptions.getLogger().info("Services/DemandList::loadMostRecent(): server sent response data " + completeData);
-
-                        var loadedDemandList = new DemandListModel().loadFromSerialized(demandsData['demands']);
-
-                        onSuccessCallback(loadedDemandList);
-                    }else {
-                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.get_most_recent_demands_error,
-                            { "methodPath" : "Service/DemandList::loadMostRecent()" });
+                            onSuccessCallback(loadedDemandList);
+                        }else {
+                            errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.get_most_recent_demands_error,
+                                { "methodPath" : "Service/DemandList::loadMostRecent()" });
+                        }
+                    },
+                    function(error) {
+                        errorHandler.newErrorWithData(onErrorCallback, response, error, messages.no_api_connection,
+                            { "methodPath" : "Services/DemandList::loadMostRecent()" });
                     }
-                });
-
-                response.on('error', function(error) {
-                    errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
-                        { "methodPath" : "Services/DemandList::loadMostRecent()" });
-                });
+                )
             }, onErrorCallback, {});
     } catch (e) {
         errorHandler.newMessageAndLogError(onErrorCallback, messages.get_most_recent_demands_error, e.message);
