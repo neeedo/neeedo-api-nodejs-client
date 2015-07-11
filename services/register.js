@@ -50,7 +50,13 @@ Register.prototype.registerUser = function(registrationModel, onSuccessCallback,
                             var registeredUser = new User().loadFromSerialized(userData['user']);
 
                             onSuccessCallback(registeredUser);
-                        } else {
+                        } else if (409 == response.statusCode) {
+                            // 209 Conflict (already exists)
+                            errorHandler.newMessageAndLogError(onErrorCallback, 
+                                messages.user_already_exists, 
+                                "A user with mail already exists");
+                        }
+                        else {
                             errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.register_internal_error,
                                 { "methodPath" : "Service/Register::registerUser()",
                                     "requestJson" : json });
