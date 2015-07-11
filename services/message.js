@@ -47,6 +47,7 @@ Message.prototype.toggleRead = function(user, message, onSuccessCallback, onErro
                     function(completeData) {
                         // success on 200 OK
                         if (200 == response.statusCode) {
+                            message.setRead(true);
                             onSuccessCallback(message);
                         } else {
                             errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.mark_message_read_error,

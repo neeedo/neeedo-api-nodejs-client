@@ -1,6 +1,6 @@
 {
   "name": "neeedo-api-nodejs-client",
-  "version": "3.0.25",
+  "version": "3.0.26",
   "description": "Client to be used to interact with neeedo HTTP API. ",
   "main": "index.js",
   "scripts": {
