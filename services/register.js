@@ -1,6 +1,7 @@
 var http = require('../client/http'),
     User = require('../models/user'),
     errorHandler = require('../helpers/error-handler'),
+    ResponseHandler = require('../helpers/response-handler'),
     messages = require('../config/messages.json'),
     globalOptions = require('../client/options'),
     OptionBuilder = require('../helpers/option-builder');
@@ -35,13 +36,11 @@ Register.prototype.registerUser = function(registrationModel, onSuccessCallback,
     try {
         http.doPost(registerUrlPath, json,
             function(response) {
-                var completeData = '';                
-                         
-                    response.on('data', function(chunk) {
-                        completeData += chunk;
-                    });
-                    
-                    response.on('end', function () {
+                var responseHandler = new ResponseHandler();
+
+                responseHandler.handle(
+                    response,
+                    function(completeData) {
                         if (201 == response.statusCode) {
                             // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-user
                             var userData = JSON.parse(completeData);
@@ -56,12 +55,12 @@ Register.prototype.registerUser = function(registrationModel, onSuccessCallback,
                                 { "methodPath" : "Service/Register::registerUser()",
                                     "requestJson" : json });
                         }
-                    });
-
-                    response.on('error', function(error) {
-                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
+                    },
+                    function(error) {
+                        errorHandler.newErrorWithData(onErrorCallback, response, error, messages.no_api_connection,
                             { "methodPath" : "Services/Register::registerUser()" });
-                    });
+                    }
+                )
             }, onErrorCallback, {});
     } catch (e) {
         errorHandler.newMessageAndLogError(onErrorCallback, messages.register_internal_error, e.message);

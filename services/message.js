@@ -54,7 +54,7 @@ Message.prototype.toggleRead = function(user, message, onSuccessCallback, onErro
                         }
                     },
                     function(error) {
-                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
+                        errorHandler.newErrorWithData(onErrorCallback, response, error, messages.no_api_connection,
                             {"methodPath": "Service/Message::toggleRead()"});
                     }
                 )
@@ -97,8 +97,6 @@ Message.prototype.create = function(message, onSuccessCallback, onErrorCallback)
                         if (200 == response.statusCode || 201 == response.statusCode) {
                             var messageData = JSON.parse(completeData);
 
-                            globalOptions.getLogger().info("Services/Message::create(): server sent response data " + completeData);
-
                             var createdMessage = new MessageListModel().loadFromSerialized(messageData['message']);
 
                             onSuccessCallback(createdMessage);
@@ -108,7 +106,7 @@ Message.prototype.create = function(message, onSuccessCallback, onErrorCallback)
                         }
                     },
                     function(error) {
-                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
+                        errorHandler.newErrorWithData(onErrorCallback, response, error, messages.no_api_connection,
                             {"methodPath": "Service/Message::create()"});
                     }
                 )

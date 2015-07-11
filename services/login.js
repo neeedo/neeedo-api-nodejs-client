@@ -2,6 +2,7 @@ var http = require('../client/http'),
     User = require('../models/user'),
     errorHandler = require('../helpers/error-handler'),
     messages = require('../config/messages.json'),
+    ResponseHandler = require('../helpers/response-handler'),
     globalOptions = require('../client/options'),
     OptionBuilder = require('../helpers/option-builder');
 
@@ -34,17 +35,13 @@ Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallb
     try {
         http.doGet(loginUrlPath,
             function(response) {
-                var completeData = '';                
-                
-                    response.on('data', function(chunk) {
-                        completeData += chunk;
-                    });
-                    
-                    response.on('end', function (data) {
+                var responseHandler = new ResponseHandler();
+
+                responseHandler.handle(
+                    response,
+                    function(completeData) {
                         if (200 == response.statusCode) {
                             var userData = JSON.parse(completeData);
-
-                            globalOptions.getLogger().info("Services/Login::loginUser(): server sent response data " + completeData);
 
                             var loggedInUser = new User().loadFromSerialized(userData['user']);
 
@@ -60,12 +57,12 @@ Login.prototype.loginUser = function(loginModel, onSuccessCallback, onErrorCallb
                                     { "methodPath" : "Service/Login::loginUser()" });
                             }
                         }
-                    });
-
-                    response.on('error', function(error) {
-                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
-                            { "methodPath" : "Services/Login::loginUser()" });
-                    });
+                    },
+                    function(error) {
+                            errorHandler.newErrorWithData(onErrorCallback, response, error, messages.no_api_connection,
+                                { "methodPath" : "Services/Login::loginUser()" });
+                    }
+                )
             },
             onErrorCallback,
             new OptionBuilder().add('authorizationToken', loginModel.generateAccessToken()).getOptions());

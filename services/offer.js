@@ -1,6 +1,7 @@
 var http = require('../client/http'),
     OfferModel = require('../models/offer'),
     errorHandler = require('../helpers/error-handler'),
+    ResponseHandler = require('../helpers/response-handler'),
     messages = require('../config/messages.json'),
     globalOptions = require('../client/options'),
     OptionBuilder = require('../helpers/option-builder');
@@ -26,13 +27,11 @@ Offer.prototype.load = function(offerId, user, onSuccessCallback, onErrorCallbac
     try {
         http.doGet(getOfferUrl,
             function(response) {
-                var completeData = '';               
-                   
-                    response.on('data', function(chunk) {
-                        completeData += chunk;
-                    });
-                    
-                    response.on('end', function () {
+                var responseHandler = new ResponseHandler();
+
+                responseHandler.handle(
+                    response,
+                    function(completeData) {
                         // success on 200 OK
                         if (200 == response.statusCode) {
                             // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-offer
@@ -47,12 +46,12 @@ Offer.prototype.load = function(offerId, user, onSuccessCallback, onErrorCallbac
                             errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.get_offer_error,
                                 { "methodPath" : "Service/Offer::load()" });
                         }
-                    });
-
-                    response.on('error', function(error) {
+                    },
+                    function(completeData) {
                         errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
                             { "methodPath" : "Services/Offer::load()" });
-                    });
+                    }
+                )
             },
             onErrorCallback,
             new OptionBuilder().addAuthorizationToken(user).getOptions());
@@ -81,12 +80,11 @@ Offer.prototype.createOffer = function(offerModel, onSuccessCallback, onErrorCal
     try {
         http.doPost(createOfferUrlPath, json,
             function(response) {
-                var completeData = '';              
-                    response.on('data', function(chunk) {
-                        completeData += chunk;
-                    });
-                    
-                    response.on('end', function () {
+                var responseHandler = new ResponseHandler();
+
+                responseHandler.handle(
+                    response,
+                    function(completeData) {
                         // success on 201 = Created
                         if (201 == response.statusCode) {
 
@@ -103,12 +101,12 @@ Offer.prototype.createOffer = function(offerModel, onSuccessCallback, onErrorCal
                                 { "methodPath" : "Service/Offer::createOffer()",
                                     "requestJson" : json });
                         }
-                    });
-
-                    response.on('error', function(error) {
-                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
+                    },
+                    function(error) {
+                        errorHandler.newErrorWithData(onErrorCallback, response, error, messages.no_api_connection,
                             { "methodPath" : "Services/Offer::createOffer()" });
-                    });
+                    }
+                )
             },
             onErrorCallback,
             new OptionBuilder().addAuthorizationToken(offerModel.getUser()).getOptions());
@@ -137,13 +135,11 @@ Offer.prototype.updateOffer = function(offerModel, onSuccessCallback, onErrorCal
     try {
         http.doPut(updateOfferPath, json,
             function(response) {
-                var completeData = '';                
-                  
-                    response.on('data', function(chunk) {
-                        completeData += chunk;
-                    });
-                    
-                    response.on('end', function () {
+                var responseHandler = new ResponseHandler();
+
+                responseHandler.handle(
+                    response,
+                    function(completeData) {
                         // success on 200 = OK
                         if (200 == response.statusCode) {
                             // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#update-offer
@@ -165,12 +161,12 @@ Offer.prototype.updateOffer = function(offerModel, onSuccessCallback, onErrorCal
                                         "requestJson" : json });
                             }
                         }
-                    });
-
-                    response.on('error', function(error) {
-                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
+                    },
+                    function(error) {
+                        errorHandler.newErrorWithData(onErrorCallback, response, error, messages.no_api_connection,
                             { "methodPath" : "Services/Offer::updateOffer()" });
-                    });
+                    }
+                )
             },
             onErrorCallback,
             new OptionBuilder().addAuthorizationToken(offerModel.getUser()).getOptions());
@@ -198,19 +194,30 @@ Offer.prototype.deleteOffer = function(offerModel, onSuccessCallback, onErrorCal
     try {
         http.doDelete(deleteOfferPath,
             function(response) {
-                // success on 200 = OK
-                if (200 == response.statusCode) {
-                   onSuccessCallback(offerModel);
-                } else {
-                    if (404 == response.statusCode) {
-                        errorHandler.newMessageError(onErrorCallback, messages.offer_not_found);
-                    } else if (401 == response.statusCode) {
-                        errorHandler.newMessageError(onErrorCallback, messages.login_wrong_credentials);
-                    } else {
-                        errorHandler.newError(onErrorCallback, response, messages.delete_offer_internal_error,
-                            { "methodPath" : "Service/Offer::deleteOffer()" });
+                var responseHandler = new ResponseHandler();
+
+                responseHandler.handle(
+                    response,
+                    function(completeData) {
+                        // success on 200 = OK
+                        if (200 == response.statusCode) {
+                            onSuccessCallback(offerModel);
+                        } else {
+                            if (404 == response.statusCode) {
+                                errorHandler.newMessageError(onErrorCallback, messages.offer_not_found);
+                            } else if (401 == response.statusCode) {
+                                errorHandler.newMessageError(onErrorCallback, messages.login_wrong_credentials);
+                            } else {
+                                errorHandler.newError(onErrorCallback, response, messages.delete_offer_internal_error,
+                                    { "methodPath" : "Service/Offer::deleteOffer()" });
+                            }
+                        }
+                    },
+                    function(error) {
+                        errorHandler.newErrorWithData(onErrorCallback, response, error, messages.no_api_connection,
+                            { "methodPath" : "Services/Offer::deleteOffer()" });
                     }
-                }
+                )
             },
             onErrorCallback,
             new OptionBuilder().addAuthorizationToken(offerModel.getUser()).getOptions());

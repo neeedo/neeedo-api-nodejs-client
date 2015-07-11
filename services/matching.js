@@ -1,6 +1,7 @@
 var http = require('../client/http'),
     OfferListModel = require('../models/offer-list'),
     errorHandler = require('../helpers/error-handler'),
+    ResponseHandler = require('../helpers/response-handler'),
     messages = require('../config/messages.json'),
     globalOptions = require('../client/options'),
     _ = require('underscore'),
@@ -43,19 +44,15 @@ Matching.prototype.matchDemand = function(demandModel, demandQueryModel, onSucce
     try {
         http.doPost(matchDemandUrl, json,
             function(response) {
-                   var completeData = '';
-       
-                    response.on('data', function(chunk) {
-                        completeData += chunk;
-                    });
+                var responseHandler = new ResponseHandler();
 
-                    response.on('end', function () {
+                responseHandler.handle(
+                    response,
+                    function(completeData) {
                         // success on 200 OK
                         if (200 == response.statusCode) {
                             // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-offer
                             var offerData = JSON.parse(completeData);
-
-                            globalOptions.getLogger().info("Services/Matching::matchDemand(): server sent response data " + completeData);
 
                             var matchedOffers = new OfferListModel().loadFromSerialized(offerData['offers']);
                             onSuccessCallback(matchedOffers, demandModel);
@@ -63,12 +60,12 @@ Matching.prototype.matchDemand = function(demandModel, demandQueryModel, onSucce
                             errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.matching_demands_internal_error,
                                 { "methodPath" : "Services/Matching::matchDemand()" });
                         }
-                    });
-
-                    response.on('error', function(error) {
+                    },
+                    function(error) {
                         errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
                             { "methodPath" : "Services/Matching::matchDemand()" });
-                    });
+                    }
+                )
             },
             onErrorCallback,
             new OptionBuilder().addAuthorizationToken(demandModel.getUser()).getOptions());

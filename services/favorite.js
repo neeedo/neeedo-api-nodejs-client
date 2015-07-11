@@ -41,8 +41,6 @@ function Favorite()
                     responseHandler.handle(
                         response,
                         function(completeData) {
-                            globalOptions.getLogger().info("Services/Favorite::addFavoriteOffer(): server sent response data " + completeData);
-                            
                             // success on 200 Created
                             if (201 == response.statusCode) {
                                 _this.wasAdded = true;
@@ -90,8 +88,6 @@ function Favorite()
                     responseHandler.handle(
                         response,
                         function(completeData) {
-                            globalOptions.getLogger().info("Services/Favorite::removeFavoriteOffer(): server sent response data " + completeData);
-                            
                             // success on 200 OK
                             if (200 == response.statusCode) {
                                 _this.wasRemoved = true;

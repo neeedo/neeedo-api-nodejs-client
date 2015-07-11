@@ -2,6 +2,7 @@ var http = require('../client/http'),
     OfferListModel = require('../models/offer-list'),
     errorHandler = require('../helpers/error-handler'),
     messages = require('../config/messages.json'),
+    ResponseHandler = require('../helpers/response-handler'),
     globalOptions = require('../client/options'),
     _ = require('underscore'),
     OptionBuilder = require('../helpers/option-builder');
@@ -45,36 +46,31 @@ FavoriteList.prototype.loadFavoritesOfUser = function(user, offerQueryModel, onS
     try {
         http.doGet(getFavoritesOfUser,
             function(response) {
-                var completeData = '';
+                var responseHandler = new ResponseHandler();
 
-                response.on('data', function(chunk) {
-                    completeData += chunk;
-                });
+                responseHandler.handle(
+                    response,
+                    function(completeData) {
+                        // success on 200 OK
+                        if (200 == response.statusCode) {
+                            // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-offer
+                            var offersData = JSON.parse(completeData);
 
-                response.on('end', function () {
-                    // success on 200 OK
-                    if (200 == response.statusCode) {
+                            var loadedOfferList = new OfferListModel().loadFromSerialized(offersData['favorites']);
 
-                        // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-offer
-                        var offersData = JSON.parse(completeData);
-
-                        globalOptions.getLogger().info("Services/FavoriteList::loadFavoritesOfUser(): server sent response data " + completeData);
-
-                        var loadedOfferList = new OfferListModel().loadFromSerialized(offersData['favorites']);
-
-                        onSuccessCallback(loadedOfferList);
-                    } else {
-                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.get_favorite_offers_error,
-                            { "methodPath" : "Service/FavoriteList::loadFavoritesOfUser()" });
+                            onSuccessCallback(loadedOfferList);
+                        } else {
+                            errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.get_favorite_offers_error,
+                                {"methodPath": "Service/FavoriteList::loadFavoritesOfUser()"});
+                        }
+                    },
+                    function(error) {
+                        errorHandler.newErrorWithData(onErrorCallback, response, error, messages.no_api_connection,
+                            {"methodPath": "Services/FavoriteList::loadFavoritesOfUser()"});
                     }
-                });
-
-                response.on('error', function(error) {
-                    // API not reachable
-                    errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
-                        {"methodPath": "Services/FavoriteList::loadFavoritesOfUser()"});
-                });
-            }, onErrorCallback,
+                )
+            }
+            , onErrorCallback,
             new OptionBuilder().addAuthorizationToken(user).getOptions());
     } catch (e) {
         errorHandler.newMessageAndLogError(onErrorCallback, messages.get_favorite_offers_internal_error, e.message);

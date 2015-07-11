@@ -1,6 +1,7 @@
 var http = require('../client/http'),
     OfferListModel = require('../models/offer-list'),
     errorHandler = require('../helpers/error-handler'),
+    ResponseHandler = require('../helpers/response-handler'),
     messages = require('../config/messages.json'),
     globalOptions = require('../client/options'),
     _ = require('underscore'),
@@ -45,35 +46,29 @@ OfferList.prototype.loadByUser = function(user, offerQueryModel, onSuccessCallba
     try {
         http.doGet(getOfferByUserUrl,
             function(response) {
-                var completeData = '';
+                    var responseHandler = new ResponseHandler();
 
-                response.on('data', function(chunk) {
-                    completeData += chunk;
-                });
+                    responseHandler.handle(
+                        response,
+                        function(completeData) {
+                            // success on 200 OK
+                            if (200 == response.statusCode) {
 
-                response.on('end', function () {
-                    // success on 200 OK
-                    if (200 == response.statusCode) {
+                                // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-offer
+                                var offersData = JSON.parse(completeData);
+                                var loadedOfferList = new OfferListModel().loadFromSerialized(offersData['offers']);
 
-                        // data should be the JSON returned by neeedo API, see https://github.com/neeedo/neeedo-api#create-offer
-                        var offersData = JSON.parse(completeData);
-
-                        globalOptions.getLogger().info("Services/OfferList::loadByUser(): server sent response data " + completeData);
-
-                        var loadedOfferList = new OfferListModel().loadFromSerialized(offersData['offers']);
-
-                        onSuccessCallback(loadedOfferList);
-                    } else {
-                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.get_offers_error,
-                            { "methodPath" : "Service/OfferList::loadByUser()" });
-                    }
-                });
-
-                response.on('error', function(error) {
-                    // API not reachable
-                    errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
-                        {"methodPath": "Services/OfferList::loadByUser()"});
-                });
+                                onSuccessCallback(loadedOfferList);
+                            } else {
+                                errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.get_offers_error,
+                                    { "methodPath" : "Service/OfferList::loadByUser()" });
+                            }
+                        },
+                        function(error) {
+                            errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.get_offers_error,
+                                { "methodPath" : "Service/OfferList::loadByUser()" });
+                        }
+                    )
             }, onErrorCallback,
             new OptionBuilder().addAuthorizationToken(user).getOptions());
     } catch (e) {
@@ -101,31 +96,28 @@ OfferList.prototype.loadMostRecent = function(offerQueryModel, onSuccessCallback
     try {
         http.doGet(getMostRecentOffersUrl,
             function(response) {
-                var completeData = '';
-                response.on('data', function(chunk) {
-                    completeData += chunk;
-                });
+                var responseHandler = new ResponseHandler();
 
-                response.on('end', function () {
-                    // success on 200 OK
-                    if (200 == response.statusCode) {
-                        var offersData = JSON.parse(completeData);
+                responseHandler.handle(
+                    response,
+                    function(completeData) {
+                        // success on 200 OK
+                        if (200 == response.statusCode) {
+                            var offersData = JSON.parse(completeData);
 
-                        globalOptions.getLogger().info("Services/OfferList::loadMostRecent(): server sent response data " + completeData);
+                            var loadedOfferList = new OfferListModel().loadFromSerialized(offersData['offers']);
 
-                        var loadedOfferList = new OfferListModel().loadFromSerialized(offersData['offers']);
-
-                        onSuccessCallback(loadedOfferList);
-                    } else {
-                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.get_most_recent_offers_error,
+                            onSuccessCallback(loadedOfferList);
+                        } else {
+                            errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.get_most_recent_offers_error,
+                                { "methodPath" : "Services/OfferList::loadMostRecent()" });
+                        }
+                    },
+                    function(error) {
+                        errorHandler.newErrorWithData(onErrorCallback, response, error, messages.no_api_connection,
                             { "methodPath" : "Services/OfferList::loadMostRecent()" });
                     }
-                });
-
-                response.on('error', function(error) {
-                    errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
-                        { "methodPath" : "Services/OfferList::loadMostRecent()" });
-                });
+                )
             }, onErrorCallback, {});
     } catch (e) {
         errorHandler.newMessageAndLogError(onErrorCallback, messages.get_most_recent_offers_error, e.message);

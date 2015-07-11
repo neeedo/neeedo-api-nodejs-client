@@ -1,3 +1,5 @@
+var globalOptions = require('../client/options');
+
 /**
  * Simplify handling of HTTP responses.
  * Constructor
@@ -15,6 +17,7 @@ ResponseHandler.prototype.handle = function(response, successCallback, errorCall
     });
 
     response.on('end', function () {
+        globalOptions.getLogger().info("Server sent response data " + completeData);
         // data is complete, so let's call the callback method
         successCallback(completeData);
     });

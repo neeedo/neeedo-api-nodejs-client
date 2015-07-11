@@ -46,8 +46,6 @@ MessageList.prototype.loadByConversation = function(conversation, onSuccessCallb
                         if (200 == response.statusCode) {
                             var messagesData = JSON.parse(completeData);
 
-                            globalOptions.getLogger().info("Services/MessageList::loadByConversation(): server sent response data " + completeData);
-
                             var loadedMessages = new MessageListModel().loadFromSerialized(messagesData['messages']);
 
                             onSuccessCallback(loadedMessages);
@@ -57,7 +55,7 @@ MessageList.prototype.loadByConversation = function(conversation, onSuccessCallb
                         }
                     },
                     function(error) {
-                        errorHandler.newErrorWithData(onErrorCallback, response, completeData, messages.no_api_connection,
+                        errorHandler.newErrorWithData(onErrorCallback, response, error, messages.no_api_connection,
                             {"methodPath": "Services/MessageList::loadByConversation()"});
                     }
                 )
