@@ -81,7 +81,7 @@ Conversation.prototype.loadFromSerialized = function(serializedConversation) {
     return this;
 };
 
-Conversation.prototype.equals = function(otherConversation) {
+Conversation.prototype.isEqualTo = function(otherConversation) {
     return this.getSender().getId() == otherConversation.getSender().getId()
         && this.getRecipient().getId() == otherConversation.getRecipient().getId();
 };

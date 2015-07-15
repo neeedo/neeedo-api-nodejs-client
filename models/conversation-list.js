@@ -34,7 +34,7 @@ ConversationList.prototype.addConversation = function(conversation)
 ConversationList.prototype.replaceIfExists = function(conversation)
 {
     for (var i=0; i < this.conversations.length; i++) {
-        if (conversation.equals(this.conversations[i])) {
+        if (this.conversations[i].isEqualTo(conversation)) {
             this.conversations[i] = conversation; // replace
             return true;
         }
