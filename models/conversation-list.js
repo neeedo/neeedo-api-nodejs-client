@@ -24,9 +24,23 @@ ConversationList.prototype.getConversations = function()
 
 ConversationList.prototype.addConversation = function(conversation)
 {
-    this.conversations.push(conversation);
+    if (!this.replaceIfExists(conversation)) {
+        this.conversations.push(conversation);
+    }
 
     return this;
+};
+
+ConversationList.prototype.replaceIfExists = function(conversation)
+{
+    for (var i=0; i < this.conversations.length; i++) {
+        if (conversation.equals(this.conversations[i])) {
+            this.conversations[i] = conversation; // replace
+            return true;
+        }
+    };
+    
+    return false;
 };
 
 ConversationList.prototype.setSender = function(sender)
