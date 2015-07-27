@@ -10,6 +10,7 @@ function Error()
     this.response = undefined;
     this.errorMessages = [];
     this.validationMessages = [];
+    this.originalParams = [];
     this.logMessages = [];
 }
 
@@ -43,19 +44,51 @@ Error.prototype.getErrorMessages = function()
     return this.errorMessages;
 };
 
-Error.prototype.addValidationMessage = function(validationMessages)
+Error.prototype.setValidationMessages = function(validationMessages)
 {
     if (!_.isArray(validationMessages) ) {
-        throw new Error("Type of validationMessages must be string, but is " + typeof (message));
+        throw new Error("Type of validationMessages must be array");
     }
 
     this.validationMessages = validationMessages;
     return this;
 };
 
+Error.prototype.hasValidationMessages = function()
+{
+    for (var key in this.validationMessages) {
+        // at least one iteration on this associative array / object, so we have validation messages
+        return true;        
+    }
+    
+    return false;
+};
+
 Error.prototype.getValidationMessages = function()
 {
     return this.validationMessages;
+};
+
+Error.prototype.setOriginalParameters = function(originalParams)
+{
+    if (!_.isObject(originalParams) ) {
+        sails.log.info('exce');
+        throw new Error("Type of originalParams must be array");
+    }
+
+    for (var i=0; i < originalParams.length; i++) {
+        if (originalParams[i] == undefined) {
+            originalParams[i] = "";
+        }
+    }
+    
+    this.originalParams = originalParams;
+    return this;
+};
+
+Error.prototype.getOriginalParameters = function()
+{
+    return this.originalParams;
 };
 
 Error.prototype.addLogMessage = function(message)

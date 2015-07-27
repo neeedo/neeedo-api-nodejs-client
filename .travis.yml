@@ -2,6 +2,9 @@ language: node_js
 node_js:
 - '0.10'
 - '0.12'
+env:
+  global:
+    - CODECOV_TOKEN=5cf172c5-522a-4953-a3a6-76edb1a8918a
 before_install:
   - npm install -g istanbul
 notifications:
